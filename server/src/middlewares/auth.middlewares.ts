@@ -5,19 +5,21 @@ import { AuthService } from "../services/auth.services";
 
 const authService = new AuthService();
 
-export class AuthMiddlewares {
-     authenticateAndRefresh: RequestHandler = async(req, res, next) => {
+export class AuthMiddleware {
+     authenticateOrRefresh: RequestHandler = async(req, res, next) => {
       const header = req.headers.authorization ?? '';
       if(!header.startsWith('Bearer ')){
         throw new UnauthorizedError('Invalid Token.');
       }
       const accessToken = header.split(' ')[1];
       const decodedToken = await verifyToken(accessToken);
-      if(decodedToken){
+    
+      if(decodedToken?.user){
+        req.locals.user = decodedToken.user;
         return next();
       }   
 
       const { accessToken: newAccessToken } = await authService.refresh(req.cookies?.['refresh-token']);
-      throw new ExpiredSessionError(newAccessToken);  //frontend will renew the token and retry
+      throw new ExpiredSessionError(newAccessToken);  //frontend will replace in-memory token and retry
     }
 }

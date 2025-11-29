@@ -30,6 +30,18 @@ export class ConflictError extends CustomError {
     }
 }
 
+export class ValidationError extends CustomError {
+    constructor(message: string = 'ValidationError'){
+        super(message, 400, 'ValidationError');
+    }
+}
+
+export class ForbiddenError extends CustomError {
+    constructor(message: string = 'ForbiddenError'){
+        super(message, 403, 'ForbiddenError');
+    }
+}
+
 export class ExpiredSessionError extends Error {
     public name: string = 'ExpiredSession';
     constructor( public readonly accessToken: string){

@@ -5,6 +5,7 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "types": ["node"],
+   
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     /* Output */

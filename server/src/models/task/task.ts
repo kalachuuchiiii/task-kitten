@@ -1,6 +1,6 @@
 
 import mongoose, { Types } from "mongoose";
-import { TaskSchema } from "../../types/task";
+import { Status, TaskSchema } from "../../types/task";
 
 
 const taskSchema = new mongoose.Schema<TaskSchema>({
@@ -12,12 +12,15 @@ const taskSchema = new mongoose.Schema<TaskSchema>({
     },
     status: {
         type: String,
-        enum: ['pending', 'cancelled', 'in_progress', 'completed']
+        enum: Object.keys(Status),
+        default: Status.PENDING
     },
-    user: {
+    userId: {
         type: Types.ObjectId,
         ref: 'User'
     }
+}, {
+    timestamps: true
 })
 
 export const Task = mongoose.model('Task', taskSchema);

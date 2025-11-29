@@ -15,12 +15,12 @@ import { UnauthorizedError } from '../utils/errors/Errors';
     
     export const verifyToken = async (
       token: string | undefined
-    ): Promise<string | jwt.JwtPayload> => {
+    ): Promise<jwt.JwtPayload> => {
       if (!token) throw new UnauthorizedError("Invalid Token");
 
       try {
         const decoded = await jwt.verify(token, process.env.JWT_KEY as string);
-        return decoded;
+        return decoded as jwt.JwtPayload;
       } catch (e) {
         throw new UnauthorizedError("Invalid Token");
       }
