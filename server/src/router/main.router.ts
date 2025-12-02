@@ -6,6 +6,6 @@ import taskRouter from "./task.router";
 const mainRouter = Router();
 
 mainRouter.use('/auth', authRouter);
-mainRouter.use("/task", taskRouter);
+mainRouter.use('/api', taskRouter);
 
 export default mainRouter;

@@ -1,21 +1,24 @@
+
+import { verifyToken } from "@/helpers";
+import { AuthService } from "@/services";
+import { ExpiredSessionError, UnauthorizedError } from "@/utils/errors";
 import { RequestHandler } from "express";
-import { ExpiredSessionError, UnauthorizedError } from "../utils/errors/Errors";
-import { verifyToken } from "../helpers/jwt";
-import { AuthService } from "../services/auth.services";
 
 const authService = new AuthService();
 
 export class AuthMiddleware {
      authenticateOrRefresh: RequestHandler = async(req, res, next) => {
       const header = req.headers.authorization ?? '';
+ 
       if(!header.startsWith('Bearer ')){
         throw new UnauthorizedError('Invalid Token.');
       }
       const accessToken = header.split(' ')[1];
       const decodedToken = await verifyToken(accessToken);
+
     
       if(decodedToken?.user){
-        req.locals.user = decodedToken.user;
+        req.user = decodedToken.user;
         return next();
       }   
 

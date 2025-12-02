@@ -4,8 +4,13 @@
     "target": "esnext",
     "module": "commonjs",
     "moduleResolution": "node",
-    "types": ["node"],
-   
+    "types": ["node", "jest"],
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["./src/*"],
+      "@shared/*": ["../shared/src/*"]
+    },
+
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     /* Output */

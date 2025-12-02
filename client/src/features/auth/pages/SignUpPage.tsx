@@ -10,7 +10,7 @@ const SignUpPage = () => {
   return (
     <form
       onSubmit={(e) => handleSignUp(e)}
-      className="mx-auto space-y-5 align-y pb-20 max-w-lg "
+      className="mx-auto space-y-5 align-y  "
     >
       <div className="text-4xl">
         <TaskKitten size={20} />

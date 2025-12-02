@@ -1,7 +1,7 @@
 
+import { isAlphanumeric } from "@/utils";
+import { UserSchema } from "@shared/types";
 import mongoose from "mongoose";
-import { UserSchema } from "../../types/user";
-import { isAlphanumeric } from "../../utils/text-validators";
 
 
 const userSchema = new mongoose.Schema<UserSchema>({

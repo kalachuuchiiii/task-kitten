@@ -1,34 +1,31 @@
+import { EntityHelper } from "@/helpers";
+import { Task } from "@/models";
+import { TaskFields, TaskListOptions, TaskSchema } from "@shared/types";
 
-import { Task } from "../models/task/task";
-import { getOwnResource } from "../utils/getOwnResource";
-import { Status, TaskSchema } from "../types/task";
-import { Document } from "mongoose";
-import z from "zod";
 
-const taskSchema = z.object({
-  description: z.string(),
-  userId: z.string(),
-  status: Object.keys(Status)
-})
+
+const taskHelper = new EntityHelper<TaskSchema>(Task);
 
 export class TaskServices {
   getTask = async (taskId: string, userId: string) => {
-    const task = getOwnResource<TaskSchema>(Task, {
-      queryFilter: { _id: taskId },
-      userId,
-      ownerField: "userId",
-    });
+    const task = (await taskHelper.getResource({ _id: taskId })).verifyOwner(userId);
     return task;
   };
 
-  createTask = async (
-    taskFields: Partial<Omit<TaskSchema, keyof Document>>,
-  ) => {
-    const verifiedTaskFields = taskSchema.parse(taskFields);
+  createTask = async (taskForm: TaskFields) => {
     const createdTask = new Task({
-      ...verifiedTaskFields,
+      ...taskForm,
     });
-    return createdTask.save();
+    return await createdTask.save();
+  };
 
+  deleteById = async(taskId: string, userId: string) => {
+    const data = ((await taskHelper.getResource({ _id: taskId })).verifyOwner(userId)).deleteOne();
+    return data;
+  }
+ 
+  getTaskList = async (options: TaskListOptions) => {
+    const { userId, page, limit } = options;
+    return await taskHelper.getListOfResource({ userId }, page, limit);
   };
 }

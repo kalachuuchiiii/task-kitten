@@ -1,0 +1,10 @@
+
+{
+    "name": "tasker",
+    "private" : true,
+    "workspaces": [
+        "@tasker/server",
+        "@tasker/client",
+        "@tasker/shared"
+    ]
+}

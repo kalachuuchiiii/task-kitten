@@ -1,19 +1,18 @@
-import dotenv from 'dotenv';
-dotenv.config();
+
 import 'express';
 
 declare module 'express-serve-static-core' {
   interface Request {
-    locals: {
-      [key: string]: any;
-    };
+    user?: string;
   }
 }
 
 import { connectDatabase } from './src/config/db';
 import { createServer } from './src/utils/createServer';
+import { config } from '@/config/env';
 
-const port = process.env.PORT;
+
+const port = config.PORT;
 
 const app = createServer();
 

@@ -1,14 +1,18 @@
-import { accessTokenExpiration } from './../data/constants';
-import { ConflictError, NotFoundError, UnauthorizedError } from "../utils/errors/Errors";
-import { runWithSession } from "../utils/runWithSession";
-import { Credentials } from "../models/credentials/credentials";
-import { UserSchema } from "../types/user";
+
+
 import { CredentialsSchema } from "../types/credentials";
-import { generateToken, verifyToken } from "../helpers/jwt";
+
 import jwt from 'jsonwebtoken';
-import { User } from "../models/user/user";
+
+import { ACCESS_TOKEN_EXPIRATION, REFRESH_TOKEN_EXPIRATION } from "../constants";
+import { generateToken, verifyToken } from "@/helpers";
+import { ConflictError, NotFoundError, UnauthorizedError } from "@/utils/errors";
+import { Credentials, User } from "@/models";
+import { runWithSession } from "@/utils";
+import { UserSchema } from "@shared/types";
+
 type UserForm = { username: string; password: string; confirmPassword: string; };
-type CreatedEntities = { user: UserSchema; credentials: CredentialsSchema};
+type CreatedEntities = { user: UserSchema; credentials: CredentialsSchema };
 
 export class AuthService {
 
@@ -19,16 +23,15 @@ export class AuthService {
      await User.exists({ _id: userId })
        .orFail(new UnauthorizedError("User not found."))
        .lean();
-    const accessToken = await generateToken({ user: userId }, accessTokenExpiration);
+    const accessToken = await generateToken({ user: userId }, ACCESS_TOKEN_EXPIRATION);
     return { accessToken }; 
   }
 
   async getSession(refreshToken: string | undefined) {
     const decodedToken = await verifyToken(refreshToken);
-
     const userId = (decodedToken as jwt.JwtPayload).user;
     const user = await User.findById(userId).orFail(new UnauthorizedError('User not found.')).lean();
-    const accessToken = await generateToken({ user: userId }, accessTokenExpiration );
+    const accessToken = await generateToken({ user: userId }, ACCESS_TOKEN_EXPIRATION );
 
     return {
       user,
@@ -79,7 +82,7 @@ export class AuthService {
     if(!isPasswordCorrect)throw new UnauthorizedError('Invalid Credentials');
     
     const tokenPayload = { user: doesUserExist._id };
-    const refreshToken = await generateToken(tokenPayload, '30D');
+    const refreshToken = await generateToken(tokenPayload, REFRESH_TOKEN_EXPIRATION);
     
     return {
         user: doesUserExist,

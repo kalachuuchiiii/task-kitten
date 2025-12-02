@@ -6,8 +6,10 @@
   ],
   "compilerOptions": {
       "baseUrl": ".",
+      "noUnusedLocals": false,
       "paths": {
-      "@/*": ["src/*"]
+      "@/*": ["src/*"],
+      "@shared/*": ["../shared/src/*"]
    }
   },
   

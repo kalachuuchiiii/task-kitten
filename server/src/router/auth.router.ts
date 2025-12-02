@@ -1,7 +1,10 @@
 
+
+
+import { AuthController } from "@/controllers";
+import { catchErrors } from "@/utils/errors";
+
 import { Router } from "express";
-import { catchErrors } from "../utils/catchErrors";
-import { AuthController } from "../controllers/auth.controllers";
 
 
 const authRouter = Router();

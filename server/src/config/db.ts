@@ -1,11 +1,9 @@
 import mongoose from "mongoose";
-
+import { config } from "./env";
 
 export const connectDatabase = async() => {
     try{
-        const key = process.env.MONGODB_KEY;
-        if(!key)throw new Error('Missing Database Key.');
-        return await mongoose.connect(key);
+        return await mongoose.connect(config.MONGO_URI);
     }catch(e){
         console.error(e);
         process.exit(1);

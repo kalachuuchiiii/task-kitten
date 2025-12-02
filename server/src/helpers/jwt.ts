@@ -1,27 +1,28 @@
 
-    import jwt, { SignOptions } from 'jsonwebtoken';
-import { UnauthorizedError } from '../utils/errors/Errors';
+import { config } from "@/config/env";
+import { UnauthorizedError } from "@/utils/errors";
+import jwt, { SignOptions } from "jsonwebtoken";
 
-    type Expiry = NonNullable<SignOptions['expiresIn']>
+type Expiry = NonNullable<SignOptions["expiresIn"]>;
 
-    export const generateToken = async<T extends {}>(payload: T, expiresIn: Expiry) => {
-    const key = process.env.JWT_KEY;
-    if(!key)throw new Error('Missing key');
+export const generateToken = async <T extends {}>(
+  payload: T,
+  expiresIn: Expiry
+) => {
+  const key = config.JWT_KEY;
+  const signed = await jwt.sign(payload, key, { expiresIn });
+  return signed;
+};
 
-    const signed = await jwt.sign(payload, key, { expiresIn });
-    return signed;
-    }
+export const verifyToken = async (
+  token: string | undefined
+): Promise<jwt.JwtPayload> => {
+  if (!token) throw new UnauthorizedError("Invalid Token");
 
-    
-    export const verifyToken = async (
-      token: string | undefined
-    ): Promise<jwt.JwtPayload> => {
-      if (!token) throw new UnauthorizedError("Invalid Token");
-
-      try {
-        const decoded = await jwt.verify(token, process.env.JWT_KEY as string);
-        return decoded as jwt.JwtPayload;
-      } catch (e) {
-        throw new UnauthorizedError("Invalid Token");
-      }
-    };
+  try {
+    const decoded = await jwt.verify(token, config.JWT_KEY as string);
+    return decoded as jwt.JwtPayload;
+  } catch (e) {
+    throw new UnauthorizedError("Invalid Token");
+  }
+};

@@ -1,7 +1,9 @@
-import type { Session } from "@/types/session";
+
 import { create } from "zustand";
-import { getSession as get_session } from "../api";
 import { getErrorMessage } from "@/utils/getErrorMessage";
+
+import type { Session } from "../types/auth.types";
+import { API } from "@/utils";
 
 const initialSession: Omit<Session, "getSession" | "clearSession" | 'setAccessToken'> = {
   isAuthenticated: false,
@@ -26,7 +28,7 @@ export const useSession = create<Session>((set) => ({
   getSession: async() => {
     set({ isLookingForSession: true });
    try{ 
-     const response = await get_session();
+     const response = await API.get('/auth/session');
      const { user, accessToken, isAuthenticated } = response.data;
 
      if(!user) throw new Error('No user found in this session.');

@@ -1,8 +1,8 @@
 
 import mongoose, { Types } from "mongoose";
 import bcrypt from 'bcryptjs';
-import { CredentialsSchema } from "../../types/credentials";
-import { InternalServerError } from "../../utils/errors/Errors";
+import { InternalServerError } from "@/utils/errors";
+import { CredentialsSchema } from "@/types";
 
 
 const credentialsSchema = new mongoose.Schema<CredentialsSchema>({

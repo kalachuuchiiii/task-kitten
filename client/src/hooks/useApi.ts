@@ -1,6 +1,8 @@
 import { useSession } from "@/features/auth/hooks/useSession"
-import API from "@/utils/axios-instance";
+import { API } from "@/utils";
+
 import { useEffect } from "react";
+import { toast } from "sonner";
 
 
 export const useApi = () => {
@@ -9,6 +11,11 @@ export const useApi = () => {
 
     useEffect(() => {
       const interceptorId = API.interceptors.request.use((config) => {
+        if(!navigator.onLine){
+          const msg = 'Network connection is unstable. Please check your internet and try again.'
+          toast.error(msg);
+          throw new Error(msg);
+        }
         config.headers.Authorization = `Bearer ${accessToken}`;
         return config;
       });

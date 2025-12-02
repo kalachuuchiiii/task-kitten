@@ -10,6 +10,8 @@
   font-style: normal;
 }
 
+
+
 .button-bg {
   @apply bg-linear-to-r disabled:opacity-80 from-blue-500  to-purple-500 hover:opacity-80 transition-all duration-200 text-indigo-100 font-bold
 }

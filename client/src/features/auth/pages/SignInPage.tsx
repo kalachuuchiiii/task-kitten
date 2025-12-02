@@ -12,7 +12,7 @@ const SignInPage = () => {
   const { handleSignIn, handleChangeForm, form, isSigningIn } = useSignIn();
 
   return (
-    <form id="signin-form" onSubmit={(e) => handleSignIn(e)} className="mx-auto space-y-5   align-y max-w-lg">
+    <form id="signin-form" onSubmit={(e) => handleSignIn(e)} className="mx-auto space-y-5   align-y ">
       <div className="space-y-2 text-2xl flex items-center gap-4">
         <img
           src="/cat22.png "

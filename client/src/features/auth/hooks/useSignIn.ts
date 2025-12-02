@@ -1,10 +1,13 @@
 import { useState, type FormEvent } from 'react';
-import { signIn, type SignInForm } from '../api/index';
+
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
 import { getErrorMessage } from '../../../utils/getErrorMessage';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from './useSession';
+
+import type { SignInForm } from '../types/auth.types';
+import { API } from '@/utils';
 
 export const useSignIn = () => {
     const [form, setForm] = useState<SignInForm>({
@@ -14,6 +17,7 @@ export const useSignIn = () => {
 
     const nav = useNavigate();
     const { getSession } = useSession();
+  
 
     const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -26,7 +30,7 @@ export const useSignIn = () => {
     const { mutate: handleSignIn, isPending} = useMutation({
         mutationFn: async(e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            const p = signIn({ ...form});
+            const p = API.post("/auth/sign-in", { ...form });
             toast.promise(p, {
                 loading: 'Signing you in...',
                 success: 'Sign in successful!',

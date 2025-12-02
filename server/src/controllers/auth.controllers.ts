@@ -1,8 +1,9 @@
 
 import { RequestHandler } from "express";
 import { AuthService } from "../services/auth.services";
-import { UnauthorizedError } from "../utils/errors/Errors";
-import { cookieOptions } from "../data/cookieOptions";
+import { UnauthorizedError } from "../utils/errors/customErrors";
+import { cookieOptions } from "../constants";
+
 
 const authService = new AuthService();
 

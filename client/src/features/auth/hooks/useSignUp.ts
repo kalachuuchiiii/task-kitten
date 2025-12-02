@@ -3,7 +3,10 @@ import { useState, type FormEvent } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { getErrorMessage } from "../../../utils/getErrorMessage";
-import { signUp, type SignUpForm } from "../api";
+
+
+import type { SignUpForm } from "../types/auth.types";
+import { API } from "@/utils";
 
 
 export const useSignUp = () => {
@@ -25,7 +28,7 @@ export const useSignUp = () => {
   const { mutate: handleSignUp, isPending } = useMutation({
     mutationFn: async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const p = signUp({ ...form });
+      const p = API.post('/auth/sign-up', { ...form });
       toast.promise(p, {
         loading: "Creating your account...",
         error: (err) => getErrorMessage(err),
