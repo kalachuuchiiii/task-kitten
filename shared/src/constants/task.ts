@@ -1,4 +1,14 @@
-import { Priority, TaskStatus } from "../types";
+import { TaskFields, TaskPriority, TaskStatus } from "../types";
+type Limiter = {
+    LENGTH: number;
+    MESSAGE: string;
+}
 
-export const statusEnum: TaskStatus[] = ['pending', 'cancelled', 'completed', 'in_progress'];
-export const priorityEnum: Priority[] = ['low', 'moderate', 'high']
+export const taskStatus: TaskStatus[] = ['pending', 'cancelled', 'completed', 'in_progress'] as const;
+export const taskPriority: TaskPriority[] = ['low', 'moderate', 'high'] as const;
+export const taskHistoryAllowedFields = ['description', 'keywords', 'due', 'startedAt', 'priority', 'status'] as const;
+export const KEYWORD_LIMIT: Limiter = { LENGTH: 12, MESSAGE: "Keyword must be 1-12 characters." } as const;
+export const KEYWORDS_LIMIT: Limiter = { LENGTH: 10, MESSAGE: 'You can only add up to 10 keyword. '} as const;
+export const KEYWORD_CONFLICT_MSG = 'Keyword already exists.' as const;
+export const DESCRIPTION_LIMIT: Limiter = { LENGTH: 5000, MESSAGE: "Description must be 1-5000 characters." } as const;
+export const NOTE_LIMIT: Limiter = { LENGTH: 250, MESSAGE: 'Note must not exceed 250 characters'} as const;

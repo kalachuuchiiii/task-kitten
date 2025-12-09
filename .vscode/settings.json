@@ -1,12 +1,12 @@
 {
-    "cSpell.words": [
-        "bunbunny",
-        "Kalachuuchiiii's",
-        "maxlength",
-        "nums",
-        "tasker",
-        "Taskitten",
-        "timeago",
-        "yourusername"
-    ]
+  "eslint.workingDirectories": [
+    { "directory": "./server", "changeProcessCWD": true },
+    { "directory": "./client", "changeProcessCWD": true }
+  ],
+  "eslint.run": "onSave",
+  "eslint.alwaysShowStatus": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": "always",
+    "source.fixAll.eslint": "always"
+  }
 }

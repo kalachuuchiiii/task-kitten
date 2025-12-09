@@ -1,16 +1,17 @@
+import { useSession } from "@/features/auth";
 import { useApi } from "@/hooks";
-import { getErrorMessage } from "@/utils";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-import { useNavigate, useParams } from "react-router-dom"
-import { toast } from "sonner";
+import type { TaskDocument, TaskFormFieldTypes, TaskHistoryBatch } from "@shared/types";
+import {  useInfiniteQuery, useQuery } from "@tanstack/react-query";
+import { useEffect, useMemo } from "react";
+import { useInView } from "react-intersection-observer";
+import {  useParams } from "react-router-dom";
 
 export const useTaskDetails = () => {
 
     
     const { id } = useParams();
+    const { accessToken } = useSession();
     const api = useApi();
-    const nav = useNavigate();
     const {
       data: taskDetail,
       refetch,
@@ -21,34 +22,47 @@ export const useTaskDetails = () => {
       queryKey: ["task", id],
       queryFn: async () => {
         const res = await api.get(`/api/task/${id}`);
-        return res.data.task;
+        return res.data.task as TaskDocument;
       },
-      enabled: false,
+      enabled: !!id && !!accessToken,
     });
 
-    const { mutate: deleteTask, isPending: isDeletingTask } = useMutation({
-      mutationFn: async() => {
-        const p = api.delete(`/api/task/${id}`);
-        toast.promise(p, { 
-          loading: 'Deleting task...',
-          error: (err) => getErrorMessage(err),
-          success: 'Task Deleted Successfully!'
-        }) 
-        return await p;
+    const { data: taskHistory, isPending: isFetchingTaskHistory, hasNextPage, fetchNextPage } = useInfiniteQuery({
+      queryKey: ['task-history'],
+      queryFn: async({ pageParam = 1}) => {
+        const res = await api.get(`/api/task-history/${id}/?page=${pageParam}&limit=5`);
+        return res.data;
       },
-      onSuccess: () => {
-        nav(-1);
-      }
-    })  
+      getNextPageParam: (nextPage) => nextPage.nextPage,
+      initialPageParam: 1,
+      enabled: !!id && !!accessToken
+    })
+
+    const history = useMemo(() => {
+        const pages: TaskHistoryBatch[] = taskHistory?.pages ? taskHistory.pages.flatMap((history) => history.updateHistory) : [];
+        return pages;
+      }, [taskHistory]);
+
+          const { ref, inView } = useInView();
+
 
     useEffect(() => {
+      if(isFetchingTaskDetail)return;
         refetch();
-    }, [id, refetch])
+    }, [id])
+
+
+    useEffect(() => {
+      if(!hasNextPage || isFetchingTaskHistory || !inView)return;
+     fetchNextPage();
+    }, [inView])
+
 
     return {
         taskDetail,
-        deleteTask,
-        isDeletingTask,
+        history,
+        ref,
+        isFetchingTaskHistory,
         isFetchingTaskDetail,
         isError,
         error

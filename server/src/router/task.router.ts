@@ -15,6 +15,10 @@ taskRouter.get('/task/:id', catchErrors(taskController.getTask));
 taskRouter.post('/task',  catchErrors(taskController.createTask));
 taskRouter.get('/tasks',  catchErrors(taskController.getTaskList));
 taskRouter.delete('/task/:id',  catchErrors(taskController.deleteTaskById));
+taskRouter.get('/task-history/:id', catchErrors(taskController.getTaskHistory));
+taskRouter.patch('/task/:id', catchErrors(taskController.updateTaskById));
+
+
 
 
 export default taskRouter;

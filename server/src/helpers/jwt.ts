@@ -15,14 +15,18 @@ export const generateToken = async <T extends {}>(
 };
 
 export const verifyToken = async (
-  token: string | undefined
+  token: string | undefined,
+  throwImmediately: boolean = true
 ): Promise<jwt.JwtPayload> => {
-  if (!token) throw new UnauthorizedError("Invalid Token");
+  if (!token) throw new UnauthorizedError("Invalid Token.");
 
   try {
     const decoded = await jwt.verify(token, config.JWT_KEY as string);
     return decoded as jwt.JwtPayload;
   } catch (e) {
-    throw new UnauthorizedError("Invalid Token");
+    if(throwImmediately){
+      throw new UnauthorizedError("Invalid Token.");
+    }
+    return new UnauthorizedError('Invalid Token.')
   }
 };

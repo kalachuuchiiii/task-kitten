@@ -7,9 +7,12 @@ declare module 'express-serve-static-core' {
   }
 }
 
+
+
 import { connectDatabase } from './src/config/db';
 import { createServer } from './src/utils/createServer';
 import { config } from '@/config/env';
+import { resetDb } from '@/utils';
 
 
 const port = config.PORT;
@@ -22,6 +25,8 @@ connectDatabase().then(() => {
       console.log(`Listening at port ${port}`);
     });
 })
+
+
 
 
 

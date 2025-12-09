@@ -1,25 +1,65 @@
 import { RequestHandler } from "express";
 import z from "zod";
-
-import { priorityEnum, statusEnum } from "@tasker/shared/src/constants/task";
+import { taskPriority, taskStatus } from "@tasker/shared/src/constants/task";
 import { TaskServices } from "@/services";
-
+import { paramSchema } from "@/utils/paramSchema";
 const taskService = new TaskServices();
 
 const taskSchema = z.object({
   description: z.string(),
-  status: z.enum(statusEnum),
-  due: z.date(),
-  priority: z.enum(priorityEnum),
-});
+  status: z.enum(taskStatus),
+  keywords: z.array(z.string()),
+  due: z.preprocess((val: string) => {
+    return new Date(val);
+  }, z.date()),
+  startedAt: z.preprocess((val: string) => {
+    return new Date(val);
+  }, z.date()),
+  priority: z.enum(taskPriority),
+}).strip();
 
-const paramSchema = (fallback: number = 1) =>
-  z.preprocess((val) => {
-    const num = Number(val);
-    return isNaN(num) ? fallback : num;
-  }, z.number());
+const taskHistorySchema = taskSchema.merge(
+  z.object({
+    note: z.string(),
+  }),
+).strip();
 
 export class TaskController {
+
+  
+
+  //GET /task-history/:id (taskId)
+  getTaskHistory: RequestHandler = async (req, res) => {
+    const taskId = z.string().parse(req.params.id);
+    const userId = z.string().parse(req.user);
+    const { page, limit } = paramSchema.parse(req.query);
+    const history = await taskService.getTaskHistory(taskId, userId, {
+      page,
+      limit,
+    });
+
+    return res.status(200).json({
+      success: true,
+      ...history,
+    });
+  };
+
+  //PATCH /task/:id
+  updateTaskById: RequestHandler = async(req, res) => {
+    const taskFormFields =
+      taskHistorySchema.parse(req.body);
+      const taskId = z.string().parse(req.params.id);
+      const userId = z.string().parse(req.user);
+
+      const [ updatedTask, newHistoryRecord ] = await taskService.updateTask(taskFormFields, taskId, userId);
+      
+      return res.status(200).json({
+        success: true, 
+        updatedTask,
+        newHistoryRecord
+      })
+  };
+
   //DELETE /task/:id
   deleteTaskById: RequestHandler = async (req, res) => {
     const userId = z.string().parse(req.user);
@@ -35,7 +75,6 @@ export class TaskController {
   getTask: RequestHandler = async (req, res) => {
     const taskId = z.string().parse(req.params.id);
     const userId = z.string().parse(req.user);
-
     const task = await taskService.getTask(taskId, userId);
 
     return res.status(200).json({
@@ -46,10 +85,12 @@ export class TaskController {
 
   //POST /task
   createTask: RequestHandler = async (req, res) => {
+    console.log(req.body.taskForm);
     const taskForm = taskSchema.parse(req.body.taskForm);
+ 
 
     const userId = z.string().parse(req.user);
-    const createdTask = await taskService.createTask({
+    const [createdTask] = await taskService.createTask({
       ...taskForm,
       userId,
     });
@@ -63,8 +104,8 @@ export class TaskController {
   //GET /tasks
   getTaskList: RequestHandler = async (req, res) => {
     const userId = z.string().parse(req.user);
-    const page = paramSchema(1).parse(req.query.page);
-    const limit = paramSchema(6).parse(req.query.limit);
+    console.log('ran this time')
+    const { page, limit } = paramSchema.parse(req.query);
     const { resourceList, nextPage, totalResource } =
       await taskService.getTaskList({ userId, page, limit });
 

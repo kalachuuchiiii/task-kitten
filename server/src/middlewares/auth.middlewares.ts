@@ -9,12 +9,13 @@ const authService = new AuthService();
 export class AuthMiddleware {
      authenticateOrRefresh: RequestHandler = async(req, res, next) => {
       const header = req.headers.authorization ?? '';
+     
  
       if(!header.startsWith('Bearer ')){
         throw new UnauthorizedError('Invalid Token.');
       }
       const accessToken = header.split(' ')[1];
-      const decodedToken = await verifyToken(accessToken);
+      const decodedToken = await verifyToken(accessToken, false);
 
     
       if(decodedToken?.user){

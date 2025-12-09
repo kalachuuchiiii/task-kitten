@@ -1,43 +1,18 @@
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   InputGroup,
   InputGroupAddon,
   InputGroupButton,
   InputGroupTextarea,
 } from "@/components/ui/input-group";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-} from "@/components/ui/select";
-import { taskStatus } from "@/constants/taskStatus";
-import { capitalize } from "@/utils/capitalize";
 
-import { FilterIcon, Plus, Search } from "lucide-react";
+import { FilterIcon, Search } from "lucide-react";
 
-import { Textarea } from "@/components/ui/textarea";
-import { Button } from "@/components/ui/button";
 import { useTasks } from "../hooks/useTasks";
 import { TaskCard } from "../components/TaskCard";
+import { CreateTaskDialog } from "../components";
 
 const Tasks = () => {
-  const {
-    taskForm,
-    handleChangeStatus,
-    tasks,
-    createTask,
-    isCreatingTask,
-    handleChangeDescription,
-    ref,
-  } = useTasks();
+  const { tasks, ref } = useTasks();
 
   return (
     <div className="py-12 w-full  px-20">
@@ -60,52 +35,13 @@ const Tasks = () => {
             <FilterIcon />
           </InputGroupButton>
           <p className="text-neutral-200 mx-2">|</p>
-
-          <Dialog>
-            <DialogTrigger>
-              <InputGroupButton className="flex items-center gap-2">
-                <Plus />
-              </InputGroupButton>
-            </DialogTrigger>
-            <DialogContent>
-              <DialogTitle>New task</DialogTitle>
-              <DialogDescription>You can change these later</DialogDescription>
-              <div className="flex gap-2 p-2 items-start">
-                <Textarea
-                  placeholder="Describe the task"
-                  onChange={handleChangeDescription}
-                  value={taskForm.description}
-                  className="pt-1 max-w-xs  "
-                />
-
-                <Select onValueChange={handleChangeStatus}>
-                  <SelectTrigger>{capitalize(taskForm.status)}</SelectTrigger>
-                  <SelectContent>
-                    {taskStatus.map((status) => (
-                      <SelectItem value={status}>
-                        {capitalize(status)}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-              <DialogFooter>
-                <Button
-                  disabled={isCreatingTask}
-                  onClick={() => createTask()}
-                  className="button-bg w-full"
-                >
-                  Create task
-                </Button>
-              </DialogFooter>
-            </DialogContent>
-          </Dialog>
+          <CreateTaskDialog />
         </InputGroup>
       </div>
       <div className="my-8 grid grid-cols-1 gap-2 md:grid-cols-2 space-y-2">
         {tasks.map((task) => (
-          <TaskCard task={task} />
-        ))}
+          <TaskCard key={task._id} task={task} />
+        ))} 
       </div>
       <div ref={ref} />
     </div>

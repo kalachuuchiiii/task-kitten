@@ -1,4 +1,4 @@
-import { NotFoundError } from "@/utils/errors";
+
 import { Model, QueryFilter } from "mongoose";
 
 
@@ -8,13 +8,7 @@ export class EntityHelper<T> {
     this.Entity = Entity;
   }
 
-  getResource = async (queryFilter: QueryFilter<T>): Promise<T> => {
-    const resource = await this.Entity.findOne<T>(queryFilter).orFail(
-      new NotFoundError(`${this.Entity.modelName} not found.`)
-    );
-    return resource;
-  };
-
+ 
   getListOfResource = async (
     queryFilter: QueryFilter<T>,
     page: number,
@@ -26,7 +20,7 @@ export class EntityHelper<T> {
       this.Entity.countDocuments(queryFilter),
     ]);
 
-    const nextPage = skip < totalResource ? page + 1 : null;
+    const nextPage = (page * limit) < totalResource ? page + 1 : null;
 
     return {
       resourceList,

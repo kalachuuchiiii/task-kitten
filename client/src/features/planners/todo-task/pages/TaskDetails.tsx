@@ -1,29 +1,38 @@
 import { LoadingDisplay } from "@/components/ui/LoadingDisplay";
 import { useTaskDetails } from "../hooks";
-import { Card, CardContent, CardFooter, CardTitle } from "@/components/ui/card";
-import { format } from "timeago.js";
-import { TaskOptions } from "../components";
+import { Card } from "@/components/ui/card";
+import { TaskOverview } from "../components/TaskOverview";
+import { HistoryCard, TaskOptions } from "../components";
+import type { TaskFormFieldTypes } from "@shared/types";
+import _ from "lodash";
 
 const TaskDetails = () => {
-  const { taskDetail, isFetchingTaskDetail } = useTaskDetails();
+  const { taskDetail, isFetchingTaskDetail, history, isFetchingTaskHistory, ref } = useTaskDetails();
 
-  if (isFetchingTaskDetail) {
+  if (isFetchingTaskDetail || !taskDetail) {
     return <LoadingDisplay />;
   }
 
+  const taskOptionDetails: TaskFormFieldTypes = {..._.omit(taskDetail, ['__v', '_id', 'createdAt', 'userId', 'updatedAt']), note: ''};
+  
   return (
-    <div>
-      <Card className={` p-5 relative `}>
-        <div className="absolute  p-3 right-4 top-4">
-          <TaskOptions />
+    <Card
+      className={` task-card-${taskDetail.status} relative flex flex-col justify-between`}
+    >
+      <div className="absolute top-10 right-10">
+        <TaskOptions taskDetail={taskOptionDetails}/>
+      </div>
+      <TaskOverview task={taskDetail} />
+      <div>
+        <div>
+          {
+            history.map((h) => <HistoryCard history={h} />)
+          }
         </div>
-        <CardTitle>Task</CardTitle>
-        <CardContent className="break-all">
-          {taskDetail.description}
-        </CardContent>
-        <CardFooter>{format(taskDetail.createdAt)}</CardFooter>
-      </Card>
-    </div>
+        {isFetchingTaskHistory && <p>Loading History...</p>}
+        <div ref = {ref} />
+      </div>
+    </Card>
   );
 };
 

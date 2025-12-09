@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 
 export const resetDb = async () => {
-  const modelsToDelete = ["User", "Credential"];
+  const modelsToDelete = ["Credential", "Task", "TaskHistory"];
   const modelsDeleted = await Promise.all(
     modelsToDelete.map((modelName) => {
       const Model = mongoose.model(modelName);

@@ -4,7 +4,7 @@ import { SidebarProvider } from "@/components/ui/sidebar";
 
  const Home = () => {
 
-    return (
+    return ( 
       <div>
         <SidebarProvider>
           <AppSidebar />

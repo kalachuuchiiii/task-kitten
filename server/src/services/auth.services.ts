@@ -7,9 +7,9 @@ import jwt from 'jsonwebtoken';
 import { ACCESS_TOKEN_EXPIRATION, REFRESH_TOKEN_EXPIRATION } from "../constants";
 import { generateToken, verifyToken } from "@/helpers";
 import { ConflictError, NotFoundError, UnauthorizedError } from "@/utils/errors";
-import { Credentials, User } from "@/models";
-import { runWithSession } from "@/utils";
-import { UserSchema } from "@shared/types";
+import { Credentials, User } from "@/models"; 
+import { runWithSession } from "@/utils"; 
+import { UserSchema } from "@shared/types";    
 
 type UserForm = { username: string; password: string; confirmPassword: string; };
 type CreatedEntities = { user: UserSchema; credentials: CredentialsSchema };

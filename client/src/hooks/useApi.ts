@@ -7,41 +7,42 @@ import { toast } from "sonner";
 
 export const useApi = () => {
 
-    const { accessToken, setAccessToken } = useSession();
+  const { accessToken, setAccessToken, isLookingForSession } = useSession();
+  useEffect(() => {
 
-    useEffect(() => {
-      const interceptorId = API.interceptors.request.use((config) => {
-        if(!navigator.onLine){
-          const msg = 'Network connection is unstable. Please check your internet and try again.'
-          toast.error(msg);
-          throw new Error(msg);
+    if (!accessToken || isLookingForSession) return;
+    const interceptorId = API.interceptors.request.use((config) => {
+      if (!navigator.onLine) {
+        const msg = 'Network connection is unstable. Please check your internet and try again.'
+        toast.error(msg);
+        throw new Error(msg);
+      }
+      config.headers.Authorization = `Bearer ${accessToken}`;
+      return config;
+    });
+
+    const responseInterceptorId = API.interceptors.response.use(
+      (response) => {
+        console.log(`${response.config.method} ${response.config.url}`, response);
+        return response;
+      },
+      (error) => {
+        const originalRequest = error.config;
+        const newAccessToken = error?.response?.data?.newAccessToken;
+        if (error.response.status === 401 && newAccessToken) {
+          setAccessToken(newAccessToken);
+          originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
+          return API(originalRequest);
         }
-        config.headers.Authorization = `Bearer ${accessToken}`;
-        return config;
-      });
+        throw error;
+      }
+    );
 
-      const responseInterceptorId = API.interceptors.response.use(
-        (response) => {
-         console.log(`${response.config.method} ${response.config.url}`, response);
-         return response;
-        },
-        (error) => {
-          const originalRequest = error.config;
-          const newAccessToken = error?.response?.data?.newAccessToken;
-          if (error.response.status === 401 && newAccessToken) {
-            setAccessToken(newAccessToken);
-            originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
-            return API(originalRequest);
-          }
-          throw error;
-        }
-      );
+    return () => {
+      API.interceptors.request.eject(interceptorId);
+      API.interceptors.response.eject(responseInterceptorId);
+    };
+  }, [accessToken]);
 
- return () => {
-   API.interceptors.request.eject(interceptorId);
-   API.interceptors.response.eject(responseInterceptorId);
- };
-    }, [accessToken, setAccessToken]);
-
-    return API;
+  return API;
 }
