@@ -16,7 +16,7 @@ export type TaskFields = {
 };
 
 export type TaskFormFieldTypes = Omit<TaskFields, 'userId'> & { note: string };
-export type TaskHistoryFields = {
+export type TaskRecordFields = {
   [K in keyof Omit<TaskFields, 'userId'>]: {
     field: K;
     oldValue: TaskFields[K]
@@ -24,12 +24,6 @@ export type TaskHistoryFields = {
   }
 }[keyof Omit<TaskFields, 'userId'>];
 
-export type TaskHistoryBatch  = Document & { 
-  taskId: string;
-  note: string;
-  updatedFields: TaskHistoryFields[],
-  createdAt: Date;
-}
 
 export type TaskDocument = TaskFields & {
   createdAt: string;
@@ -39,9 +33,8 @@ export type TaskDocument = TaskFields & {
 };
 
 
-
-export type UpdatedFieldsSchema =  TaskHistoryFields;
-export type TaskHistorySchema = Document & { note: string; taskId: string | Types.ObjectId; updatedFields: UpdatedFieldsSchema[]}
+export type TaskHistory = { note: string; taskId: string | Types.ObjectId; updatedFields: TaskRecordFields[]; createdAt: string; _id: string;};
+export type TaskHistorySchema = Document & TaskHistory;
 
 export type TaskFilter = {
   status: TaskStatus[];
@@ -56,7 +49,7 @@ export type TaskSchema = Omit<TaskFields, 'userId'> &
   Document & {
     userId: Types.ObjectId;
     historyId: Types.ObjectId;
-    verifyOwner: (ownerId: string) => TaskSchema;
+    verifyOwner: (userId: string) => TaskSchema;
   };
 
 export type TaskListOptions = {

@@ -1,61 +1,82 @@
 import { EntityHelper } from "@/helpers";
 import { Task } from "@/models";
-import { TaskHistory } from "@/models/task/taskHistory";
+import { TaskRecord } from "@/models/task/taskRecord";
 import { Params } from "@/types";
-import { getChangesInValue, runWithSession } from "@/utils";
-import { ConflictError, NotFoundError, ValidationError } from "@/utils/errors";
-import { taskHistoryAllowedFields } from "@shared/constants";
+import { runWithSession } from "@/utils";
+import { ConflictError, NotFoundError } from "@/utils/errors";
+import { taskRecordAllowedFields } from "@shared/constants";
 import {
   TaskFields,
   TaskFormFieldTypes,
-  TaskHistoryFields,
+  TaskRecordFields,
   TaskHistorySchema,
   TaskListOptions,
   TaskSchema,
+  TaskHistory,
 } from "@shared/types";
 import _ from "lodash";
 
 const taskHelper = new EntityHelper<TaskSchema>(Task);
-const taskHistoryHelper = new EntityHelper<TaskHistorySchema>(TaskHistory);
+const taskRecordHelper = new EntityHelper<TaskHistorySchema>(TaskRecord);
+type IDS<T extends object = {}> = { taskId: string; userId: string } & T;
 
 export class TaskServices {
 
-  updateTask = async (taskForm: TaskFormFieldTypes, taskId: string, userId: string) => {
-    const currentTask = (await Task.findById(taskId).orFail(new NotFoundError('Task not found.'))).verifyOwner(userId);
-    const changes: TaskHistoryFields[] = [];
+  revertTask = async ({ taskId, userId, recordId }: IDS<{ recordId: string }>) => {
+    const task = (await Task.findById(taskId).orFail(new NotFoundError('Task not found.'))).verifyOwner(userId);
+    const taskRecord = await TaskRecord.findOne({ taskId, _id: recordId }).orFail(new NotFoundError('History Record not found.')).lean();
 
-    for (const field of taskHistoryAllowedFields) {
+    const changes = taskRecord.updatedFields.reduce<Record<string, TaskHistory>>((acc, prev) => {
+      acc[prev.field] = prev.newValue;
+      return acc;
+    }, {})
+
+    const updated = await task.updateOne({ ...changes }, { runValidators: true });
+    return updated;
+
+  }
+
+
+
+  updateTask = async ({ taskForm, userId, taskId }: IDS<{ taskForm: TaskFormFieldTypes }>) => {
+    const currentTask = (await Task.findById(taskId).orFail(new NotFoundError('Task not found.'))).verifyOwner(userId);
+    const changes: TaskRecordFields[] = [];
+    let hasChanges = false;
+
+    for (const field of taskRecordAllowedFields) {
       const oldValue = currentTask[field as keyof typeof currentTask];
       const newValue = taskForm[field as keyof typeof taskForm]
-
-      if (!_.isEqual(oldValue, newValue)) {
-        changes.push({ field, oldValue, newValue })
+      if (!_.isEqual(newValue, oldValue)) {
+        hasChanges = true;
       }
+      changes.push({ field, oldValue, newValue })
     }
 
-    if (changes.length === 0) {
+    if (!hasChanges) {
       throw new ConflictError('No changes found.');
     }
 
     return await runWithSession(async (session) => {
-      const newRecord = await new TaskHistory({ updatedFields: changes, note: taskForm.note, taskId }).save({ session });
-      const updatedTask = await Task.findByIdAndUpdate(taskId, { ...taskForm }, { new: true, session });
+      const newRecord = await new TaskRecord({ updatedFields: changes, note: taskForm.note, taskId }).save({ session });
+      const updatedTask = await Task.findByIdAndUpdate(taskId, { ...taskForm }, { new: true, session, runValidators: true });
 
       return [updatedTask, newRecord];
     })
 
   }
-  getTask = async (taskId: string, userId: string) => {
+  getTask = async ({ taskId, userId }: IDS) => {
     const task = (await Task.findById(taskId).orFail(new NotFoundError('Task not found.'))).verifyOwner(userId);
     return task;
   };
 
-  getTaskHistory = async (taskId: string, userId: string, options: Params) => {
-    const { page, limit } = options;
-    const { resourceList: updateHistory, totalResource: totalUpdates, nextPage } = await taskHistoryHelper.getListOfResource(
+  getTaskHistory = async ({ taskId, userId, options }: IDS<{options: Params}>) => {
+    const { page, limit, sort } = options;
+    const task = (await Task.findById(taskId).select('userId').orFail(new NotFoundError('Task not found.'))).verifyOwner(userId);
+    const { resourceList: updateHistory, totalResource: totalUpdates, nextPage } = await taskRecordHelper.getListOfResource(
       { taskId: taskId },
       page,
-      limit
+      limit,
+      sort
     );
     return { updateHistory, totalUpdates, nextPage };
   };
@@ -63,16 +84,16 @@ export class TaskServices {
   createTask = async (taskForm: TaskFields) => {
     return await runWithSession(async (session) => {
       const newValues = Object.entries(taskForm)
-        .filter(([key, val]) => taskHistoryAllowedFields.includes(key as typeof taskHistoryAllowedFields[number]))
+        .filter(([key, val]) => taskRecordAllowedFields.includes(key as typeof taskRecordAllowedFields[number]))
         .map(([key, value]) => ({
           field: key,
           newValue: value,
-          oldValue: null
+          oldValue: value
         }));
       const createdTask = await new Task({
         ...taskForm,
       }).save({ session });
-      const history = await new TaskHistory({
+      const history = await new TaskRecord({
         updatedFields: newValues,
         note: 'Created',
         taskId: String(createdTask._id),
@@ -82,13 +103,13 @@ export class TaskServices {
     });
   };
 
-  deleteById = async (taskId: string, userId: string) => {
+  deleteById = async ({ taskId, userId }: IDS) => {
     const data = (await Task.findById(taskId).orFail(new NotFoundError('Task not found.'))).verifyOwner(userId).deleteOne();
     return data;
   };
 
-  getTaskList = async (options: TaskListOptions) => {
-    const { userId, page, limit } = options;
-    return await taskHelper.getListOfResource({ userId }, page, limit);
+  getTaskList = async ({ userId, options }: Omit<IDS<{options: Params}>, 'taskId'>) => {
+    const {  page, limit, sort } = options;
+    return await taskHelper.getListOfResource({ userId }, page, limit, sort);
   };
 }

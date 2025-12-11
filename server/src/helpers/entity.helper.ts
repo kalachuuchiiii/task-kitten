@@ -12,11 +12,12 @@ export class EntityHelper<T> {
   getListOfResource = async (
     queryFilter: QueryFilter<T>,
     page: number,
-    limit: number
+    limit: number,
+    sort: -1 | 1
   ) => {
     const skip = (page - 1) * limit;
     const [resourceList, totalResource] = await Promise.all([
-      this.Entity.find(queryFilter).skip(skip).limit(limit),
+      this.Entity.find(queryFilter).sort({ createdAt: sort }).skip(skip).limit(limit),
       this.Entity.countDocuments(queryFilter),
     ]);
 

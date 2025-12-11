@@ -11,13 +11,13 @@ const authMiddleware = new AuthMiddleware();
 
 taskRouter.use(catchErrors(authMiddleware.authenticateOrRefresh));
 
-taskRouter.get('/task/:id', catchErrors(taskController.getTask));
+taskRouter.get('/task/:taskId', catchErrors(taskController.getTask));
 taskRouter.post('/task',  catchErrors(taskController.createTask));
 taskRouter.get('/tasks',  catchErrors(taskController.getTaskList));
-taskRouter.delete('/task/:id',  catchErrors(taskController.deleteTaskById));
-taskRouter.get('/task-history/:id', catchErrors(taskController.getTaskHistory));
-taskRouter.patch('/task/:id', catchErrors(taskController.updateTaskById));
-
+taskRouter.delete('/task/:taskId',  catchErrors(taskController.deleteTaskById));
+taskRouter.get('/task-history/:taskId', catchErrors(taskController.getTaskHistory));
+taskRouter.patch('/task/:taskId', catchErrors(taskController.updateTaskById));
+taskRouter.patch('/task/:taskId/:recordId', catchErrors(taskController.revertTask));
 
 
 

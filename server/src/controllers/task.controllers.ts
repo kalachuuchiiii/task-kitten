@@ -18,7 +18,7 @@ const taskSchema = z.object({
   priority: z.enum(taskPriority),
 }).strip();
 
-const taskHistorySchema = taskSchema.merge(
+const taskRecordSchema = taskSchema.merge(
   z.object({
     note: z.string(),
   }),
@@ -27,16 +27,25 @@ const taskHistorySchema = taskSchema.merge(
 export class TaskController {
 
   
+  
+  revertTask: RequestHandler = async(req, res) => {
+    const taskId = z.string().parse(req.params.taskId);
+    const recordId = z.string().parse(req.params.recordId);
+    const userId = z.string().parse(req.user);
+
+    const update = await taskService.revertTask({ taskId, userId, recordId });
+    return res.status(200).json({
+      success: true,
+      update
+    })
+  }
 
   //GET /task-history/:id (taskId)
   getTaskHistory: RequestHandler = async (req, res) => {
-    const taskId = z.string().parse(req.params.id);
+    const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
-    const { page, limit } = paramSchema.parse(req.query);
-    const history = await taskService.getTaskHistory(taskId, userId, {
-      page,
-      limit,
-    });
+    const options = paramSchema.parse(req.query);
+    const history = await taskService.getTaskHistory({ taskId, userId, options });
 
     return res.status(200).json({
       success: true,
@@ -46,12 +55,12 @@ export class TaskController {
 
   //PATCH /task/:id
   updateTaskById: RequestHandler = async(req, res) => {
-    const taskFormFields =
-      taskHistorySchema.parse(req.body);
-      const taskId = z.string().parse(req.params.id);
+    const taskForm =
+      taskRecordSchema.parse(req.body);
+      const taskId = z.string().parse(req.params.taskId);
       const userId = z.string().parse(req.user);
 
-      const [ updatedTask, newHistoryRecord ] = await taskService.updateTask(taskFormFields, taskId, userId);
+      const [ updatedTask, newHistoryRecord ] = await taskService.updateTask({ taskForm, taskId, userId });
       
       return res.status(200).json({
         success: true, 
@@ -63,8 +72,8 @@ export class TaskController {
   //DELETE /task/:id
   deleteTaskById: RequestHandler = async (req, res) => {
     const userId = z.string().parse(req.user);
-    const taskId = z.string().parse(req.params.id);
-    const data = await taskService.deleteById(taskId, userId);
+    const taskId = z.string().parse(req.params.taskId);
+    const data = await taskService.deleteById({ taskId, userId });
     return res.status(200).json({
       success: true,
       data,
@@ -73,9 +82,9 @@ export class TaskController {
   };
   //GET /task/:id
   getTask: RequestHandler = async (req, res) => {
-    const taskId = z.string().parse(req.params.id);
+    const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
-    const task = await taskService.getTask(taskId, userId);
+    const task = await taskService.getTask({ taskId, userId });
 
     return res.status(200).json({
       success: true,
@@ -85,9 +94,7 @@ export class TaskController {
 
   //POST /task
   createTask: RequestHandler = async (req, res) => {
-    console.log(req.body.taskForm);
     const taskForm = taskSchema.parse(req.body.taskForm);
- 
 
     const userId = z.string().parse(req.user);
     const [createdTask] = await taskService.createTask({
@@ -104,10 +111,9 @@ export class TaskController {
   //GET /tasks
   getTaskList: RequestHandler = async (req, res) => {
     const userId = z.string().parse(req.user);
-    console.log('ran this time')
-    const { page, limit } = paramSchema.parse(req.query);
+    const options = paramSchema.parse(req.query);
     const { resourceList, nextPage, totalResource } =
-      await taskService.getTaskList({ userId, page, limit });
+      await taskService.getTaskList({ userId, options });
 
     return res.status(200).json({
       success: true,

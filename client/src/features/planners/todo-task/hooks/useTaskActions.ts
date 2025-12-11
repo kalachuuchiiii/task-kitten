@@ -12,7 +12,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
 
   const queryClient = useQueryClient();
   const formControl = useTaskForm(initialTaskForm);
-  const { taskForm, handleAddKeyword, handleChangeDate, handleChangeDescription, handleSelect, handleChangeNote, handleRemoveKeyword } = formControl;
+  const { taskForm } = formControl;
 
 
   const api = useApi();
@@ -65,10 +65,24 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
     }
   })
 
+  const { mutate: revertTask, isPending: isRevertingTask } = useMutation({
+    mutationFn: async (historyId: string) => {
+      const p = api.patch(`/api/task/${id}/${historyId}`);
+      toast.promise(p, {
+        loading: 'Reverting...',
+        success: 'Reverted back successfully!',
+        error: (err) => getErrorMessage(err)
+      })
+      return p;
+    }
+  })
+
   return {
     deleteTask,
+    revertTask,
     createTask,
     updateTask,
+    isRevertingTask,
     isUpdatingTask,
     formControl,
     isCreatingTask,

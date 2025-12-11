@@ -22,6 +22,7 @@ export class AuthMiddleware {
         req.user = decodedToken.user;
         return next();
       }   
+   
 
       const { accessToken: newAccessToken } = await authService.refresh(req.cookies?.['refresh-token']);
       throw new ExpiredSessionError(newAccessToken);  //frontend will replace in-memory token and retry

@@ -1,15 +1,15 @@
 import mongoose from "mongoose";
-import { TaskHistorySchema, UpdatedFieldsSchema } from "@shared/types";
-import { NOTE_LIMIT, taskHistoryAllowedFields } from "@shared/constants";
+import { TaskHistorySchema, TaskRecordFields } from "@shared/types";
+import { NOTE_LIMIT, taskRecordAllowedFields } from "@shared/constants";
 import { formatDate } from "@shared/utils";
 
-const updatedFields = new mongoose.Schema<UpdatedFieldsSchema>({ // [old, new] values. if !changes, [old, old]
-  field: { type: String ,required: true, enum: taskHistoryAllowedFields}, 
+const updatedFields = new mongoose.Schema<TaskRecordFields>({ // [old, new] values. if !changes, [old, old]
+  field: { type: String ,required: true, enum: taskRecordAllowedFields}, 
   oldValue: { type: mongoose.Schema.Types.Mixed, required: false, default: null }, 
   newValue: {type: mongoose.Schema.Types.Mixed, required: true }
 }, { _id: false });
 
-const taskHistorySchema = new mongoose.Schema<TaskHistorySchema>({
+const taskRecordSchema = new mongoose.Schema<TaskHistorySchema>({
    updatedFields: {
     type: [updatedFields]
    },
@@ -25,11 +25,11 @@ const taskHistorySchema = new mongoose.Schema<TaskHistorySchema>({
    }
 }, { timestamps: true, _id: true })
 
-taskHistorySchema.pre('save', function () {
+taskRecordSchema.pre('save', function () {
   if(!this.isModified('note') || !this.note || this.note.length === 0){
     this.note = formatDate(new Date());
   }
 })
 
 
-export const TaskHistory = mongoose.model('TaskHistory', taskHistorySchema);
+export const TaskRecord = mongoose.model('TaskRecord', taskRecordSchema);

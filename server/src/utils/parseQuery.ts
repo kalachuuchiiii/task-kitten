@@ -6,7 +6,6 @@ export const parseQuery = (
 ) => {
   const parser = new MongooseQueryParser({ blacklist: options.blacklist });
   const parsed = parser.parse(query);
-  console.log(parsed);
   return parsed;
 };
 
