@@ -1,0 +1,14 @@
+import { X } from "lucide-react"
+import { memo } from "react"
+
+
+export const KeywordList = memo(({ keywords = [], handleRemoveKeyword }:{keywords: string[], handleRemoveKeyword: (val: string) => void}) => {
+
+    return <div className="w-full text-xs  flex flex-wrap items-center gap-1">
+         {keywords.map((kw) => (
+          <p className="px-2 py-1 bg-muted rounded-lg   w-fit rounded flex items-center gap-1 ">
+            {kw} <X size="12" onClick={() => handleRemoveKeyword(kw)} />{" "}
+          </p>
+        ))}
+    </div>
+})

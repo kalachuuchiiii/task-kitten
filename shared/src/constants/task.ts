@@ -1,5 +1,5 @@
 import { TaskFields, TaskPriority, TaskStatus } from "../types";
-type Limiter = {
+export type Limiter = {
     LENGTH: number;
     MESSAGE: string;
 }

@@ -38,11 +38,21 @@ export type TaskHistorySchema = Document & TaskHistory;
 
 export type TaskFilter = {
   status: TaskStatus[];
-  priority: TaskPriority[],
-  due: Date;
-  q: string;
-  createdAt: number;
+  priority: TaskPriority[];
+  startedAtRange: {
+    from: Date;
+    to: Date;
+  };
+  dueRange: {
+    from: Date;
+    to: Date;
+  };
+  description: string;
+  keywords: string[],
+
 };
+
+
 
 
 export type TaskSchema = Omit<TaskFields, 'userId'> &

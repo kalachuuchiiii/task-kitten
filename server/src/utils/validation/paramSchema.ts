@@ -1,6 +1,5 @@
 import z from "zod";
 
-
 export const paramSchema = z.object({ 
     limit: z.preprocess((val) => {
         if(!val)return 5;

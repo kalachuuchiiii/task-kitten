@@ -10,9 +10,11 @@ import { FilterIcon, Search } from "lucide-react";
 import { useTasks } from "../hooks/useTasks";
 import { TaskCard } from "../components/TaskCard";
 import { CreateTaskDialog } from "../components";
+import { FilterTaskForm } from "../components/FilterTaskForm";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 
 const Tasks = () => {
-  const { tasks, ref } = useTasks();
+  const { tasks, ref, filterControl } = useTasks();
 
   return (
     <div className="py-12 w-full  px-20">
@@ -32,7 +34,12 @@ const Tasks = () => {
           <InputGroupButton>Search</InputGroupButton>
           <p className="text-neutral-200 mx-2">|</p>
           <InputGroupButton>
-            <FilterIcon />
+            <Sheet>
+              <SheetTrigger>
+                <FilterIcon />
+              </SheetTrigger>
+              <FilterTaskForm {...filterControl} />
+            </Sheet>
           </InputGroupButton>
           <p className="text-neutral-200 mx-2">|</p>
           <CreateTaskDialog />

@@ -10,7 +10,6 @@ const taskController = new TaskController();
 const authMiddleware = new AuthMiddleware();
 
 taskRouter.use(catchErrors(authMiddleware.authenticateOrRefresh));
-
 taskRouter.get('/task/:taskId', catchErrors(taskController.getTask));
 taskRouter.post('/task',  catchErrors(taskController.createTask));
 taskRouter.get('/tasks',  catchErrors(taskController.getTaskList));

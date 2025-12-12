@@ -17,6 +17,7 @@ import { useTaskActions } from "../hooks";
 
 import { Button } from "@/components/ui/button";
 import { TaskFormFields } from "./TaskFormFields";
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export const CreateTaskDialog = () => {
   const {
@@ -26,17 +27,19 @@ export const CreateTaskDialog = () => {
   } = useTaskActions();
 
   return (
-    <Dialog>
-      <DialogTrigger>
+    <Sheet>
+      <SheetTrigger>
         <InputGroupButton className="flex items-center gap-2">
           <Plus />
         </InputGroupButton>
-      </DialogTrigger>
-      <DialogContent>
-        <DialogTitle>New task</DialogTitle>
-        <DialogDescription>You can change these later</DialogDescription>
+      </SheetTrigger>
+      <SheetContent className="p-3">
+       <SheetHeader>
+         <SheetTitle>New task</SheetTitle>
+        <SheetDescription>You can change these later</SheetDescription>
+       </SheetHeader>
        <TaskFormFields {...formControl} />
-        <DialogFooter>
+        <SheetFooter>
           <Button
             disabled={isCreatingTask}
             onClick={() => createTask()}
@@ -44,8 +47,8 @@ export const CreateTaskDialog = () => {
           >
             Create task
           </Button>
-        </DialogFooter>
-      </DialogContent>
-    </Dialog>
+        </SheetFooter>
+      </SheetContent>
+    </Sheet>
   );
 };

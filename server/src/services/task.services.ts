@@ -4,17 +4,19 @@ import { TaskRecord } from "@/models/task/taskRecord";
 import { Params } from "@/types";
 import { runWithSession } from "@/utils";
 import { ConflictError, NotFoundError } from "@/utils/errors";
+import {  FilterTaskType } from "@/utils/validation/filterQuerySchema";
 import { taskRecordAllowedFields } from "@shared/constants";
 import {
   TaskFields,
   TaskFormFieldTypes,
   TaskRecordFields,
   TaskHistorySchema,
-  TaskListOptions,
   TaskSchema,
   TaskHistory,
 } from "@shared/types";
-import _ from "lodash";
+import _, { filter } from "lodash";
+import { QueryFilter } from "mongoose";
+import z from "zod";
 
 const taskHelper = new EntityHelper<TaskSchema>(Task);
 const taskRecordHelper = new EntityHelper<TaskHistorySchema>(TaskRecord);
@@ -69,7 +71,7 @@ export class TaskServices {
     return task;
   };
 
-  getTaskHistory = async ({ taskId, userId, options }: IDS<{options: Params}>) => {
+  getTaskHistory = async ({ taskId, userId, options }: IDS<{ options: Params }>) => {
     const { page, limit, sort } = options;
     const task = (await Task.findById(taskId).select('userId').orFail(new NotFoundError('Task not found.'))).verifyOwner(userId);
     const { resourceList: updateHistory, totalResource: totalUpdates, nextPage } = await taskRecordHelper.getListOfResource(
@@ -108,8 +110,15 @@ export class TaskServices {
     return data;
   };
 
-  getTaskList = async ({ userId, options }: Omit<IDS<{options: Params}>, 'taskId'>) => {
-    const {  page, limit, sort } = options;
-    return await taskHelper.getListOfResource({ userId }, page, limit, sort);
+  getTaskList = async ({ userId, filters }: Omit<IDS<{ filters: FilterTaskType }>, 'taskId'>) => {
+    const { page, limit, sort, priority, description, dueRange, startedAtRange, status, keywords } = filters;
+    const filterQuery: QueryFilter<TaskSchema> = { userId, status, due: { $gt: dueRange[0], $lt: dueRange[1] }, startedAt: { $gt: startedAtRange[0], $lt: startedAtRange[1] }, priority } 
+    if(description !== ''){
+      filterQuery.description = { $regex: description, $options: 'i'}; 
+    }
+    if(keywords.length !== 0){
+      filterQuery.keywords = { $in: keywords };
+    }
+    return await taskHelper.getListOfResource(filterQuery, page, limit, sort);
   };
 }
