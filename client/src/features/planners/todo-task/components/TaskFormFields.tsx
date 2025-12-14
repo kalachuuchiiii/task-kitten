@@ -107,12 +107,13 @@ export const TaskFormFields = memo(
             </Select>
           </div>
         </div>
-        <div className="flex items-center w-full  gap-2">
-          <div className="w-full">
-            <header>
+    
+          <div className="w-full space-y-2">
+            <header className="px-2 py-1">
               <Label>Timeframe</Label>
             </header>
-            <Dialog>
+          <div className="border rounded-lg">
+               <Dialog>
               <Item className="w-full ">
                 <ItemContent>
                   <ItemTitle>
@@ -161,7 +162,8 @@ export const TaskFormFields = memo(
               </DialogContent>
             </Dialog>
           </div>
-        </div>
+          </div>
+     
         <KeywordInput handleAddKeyword={handleAddKeyword} />
         <KeywordList
           keywords={taskForm.keywords}

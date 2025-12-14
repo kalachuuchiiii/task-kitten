@@ -19,7 +19,7 @@ const TaskDetails = () => {
   
   return (
     <Card
-      className={` task-card-${taskDetail.status} relative flex flex-col justify-between`}
+      className={`  relative flex flex-col justify-between`}
     >
       <div className="absolute top-10 right-10">
         <TaskOptions taskDetail={taskOptionDetails}/>
@@ -27,7 +27,7 @@ const TaskDetails = () => {
       <TaskOverview task={taskDetail} />
       <div>
         <div>
-          <header className="flex px-5 items-center gap-5 mb-5 "><h1 className=" text-2xl  font-bold tracking-tight shrink-0"> Change logs </h1> <Separator className="min-w-0 shrink-1 " /> </header>
+          <header className="flex px-5 items-center gap-5 mb-5 "><h1 className=" text-2xl  font-bold tracking-tight shrink-0"> Change log </h1> <Separator className="min-w-0 shrink-1 " /> </header>
           {
             history.map((h) => <HistoryCard key = {h._id} history={h} />)
           }

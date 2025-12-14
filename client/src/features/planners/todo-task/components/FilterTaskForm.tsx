@@ -101,7 +101,7 @@ export const FilterTaskForm = () => {
   } = filterControl;
 
   return (
-    <SheetContent className="p-3 overflow-y-auto">
+    <SheetContent className="p-4 overflow-y-auto">
       <SheetHeader>
         <SheetTitle>Advanced filter</SheetTitle>
         <SheetDescription>Filter tasks you want to include</SheetDescription>

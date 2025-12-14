@@ -19,7 +19,7 @@ export const AuthGuard = ({ children }: { children: JSX.Element }) => {
           exit={{ opacity: 0 }}
           className="w-full z-20 backdrop-blur-xs flex flex-col items-center justify-center fixed inset-0"
         >
-          <div className="p-4 h-[90%] bg-neutral-50 max-w-xl w-full rounded-xl shadow-xl outline-1 space-y-8 outline-black/20">
+          <div className="p-4 h-[90%] border dark:bg-black/50  max-w-xl w-full rounded-xl shadow-xl outline-1 space-y-8 outline-black/20">
             <p className="text-4xl text-center font-bold tracking-tighter my-10">
               Sign in to access this page
             </p>

@@ -14,6 +14,7 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, Di
 import { TaskFormFields } from "./TaskFormFields";
 import type { TaskDocument, TaskFormFieldTypes } from "@shared/types";
 import { Textarea } from "@/components/ui/textarea";
+import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
 
 export const TaskOptions = ({ taskDetail }: { taskDetail: TaskFormFieldTypes  }) => {
   const { deleteTask, isDeletingTask, formControl, updateTask, isUpdatingTask } = useTaskActions(taskDetail);
@@ -25,23 +26,25 @@ export const TaskOptions = ({ taskDetail }: { taskDetail: TaskFormFieldTypes  })
       <DropdownMenuContent>
         <DropdownMenuLabel>Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <Dialog >
-          <DialogTrigger asChild>
+        <Sheet >
+          <SheetTrigger asChild>
             <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="w-full">Update</DropdownMenuItem>
-          </DialogTrigger>
-          <DialogContent>
-            <DialogTitle>Update</DialogTitle>
-            <DialogDescription>Update existing task.</DialogDescription>
+          </SheetTrigger>
+          <SheetContent className="p-4 overflow-y-auto">
+           <SheetHeader>
+              <SheetTitle>Update</SheetTitle>
+            <SheetDescription>Update existing task.</SheetDescription>
+           </SheetHeader>
             <TaskFormFields {...formControl} />
-            <Textarea onChange = {formControl.handleChangeNote} value = {formControl.taskForm.note} placeholder= "Describe this update (optional)" className="border-0 resize-none" aria-haspopup = 'false' />
-            <DialogFooter>
+            <Textarea onChange = {formControl.handleChangeNote} value = {formControl.taskForm.note} placeholder= "Describe this update (optional)" className="border resize-none w-[98%] mx-auto " aria-haspopup = 'false' />
+            <SheetFooter>
             
               <button onClick = {() => updateTask()} disabled = {isUpdatingTask} className="button-bg w-full rounded p-2">
                  Update
               </button>
-            </DialogFooter>
-          </DialogContent>
-        </Dialog>
+            </SheetFooter>
+          </SheetContent>
+        </Sheet>
 
         <AlertDialog>
           <AlertDialogTrigger className="w-full">
@@ -58,12 +61,12 @@ export const TaskOptions = ({ taskDetail }: { taskDetail: TaskFormFieldTypes  })
             </AlertDialogTitle>
             <AlertDialogDescription>This action cannot be undone!</AlertDialogDescription>
             <AlertDialogFooter>
-              <div className="w-full grid grid-cols-12  mt-6 space-y-2">
+              <div className="w-full grid gap-2 grid-cols-12  mt-6 space-y-2">
                 <AlertDialogCancel className=" button-bg col-span-7 p-1 rounded">
                   Cancel
                 </AlertDialogCancel>
                 <Button
-                  className="w-full p-2 rounded font-semibold col-span-5 tracking-tight text-red-600"
+                  className="w-full p-2 rounded-lg font-semibold col-span-5 tracking-tight"
                   onClick={() => deleteTask()}
                   variant={"secondary"}
                   disabled={isDeletingTask}

@@ -46,11 +46,11 @@ export const TaskOverview = ({
             {daysBetween(task.startedAt, task.due)} d
           </p>
         </div>
-        <div className="flex w-full justify-between  items-center">
-          <p className="text-xs font-semibold opacity-70">
+        <div className="flex w-full gap-1 justify-between  items-center">
+          <p className="text-xs truncate shrink-1 font-semibold opacity-70">
             Created {format(task.createdAt)}
           </p>
-          <ButtonGroup orientation={"horizontal"} className="flex  ">
+          <ButtonGroup orientation={"horizontal"} className="flex shrink-0  ">
             <PriorityBadge priority={task.priority} />
             <StatusBadge badgeName={task.status} />
           </ButtonGroup>

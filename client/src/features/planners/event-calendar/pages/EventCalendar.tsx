@@ -1,10 +1,11 @@
+import { PageLayout } from "@/components/layout/PageLayout"
 
 
 
 
 const EventCalendar = () => {
   return (
-    <div>EventCalendar</div>
+   <div></div>
   )
 }
 

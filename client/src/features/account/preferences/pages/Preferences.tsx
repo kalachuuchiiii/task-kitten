@@ -1,15 +1,11 @@
+import { PageLayout } from '@/components/layout/PageLayout'
 import { Button } from '@/components/ui/button'
 import React from 'react'
 
 const Preferences = () => {
 
-  const handleToggle = () => {
-    document.documentElement.classList.add("dark")
-  }
   return (
-    <div>
-      <Button onClick = {handleToggle}>Turn on darkmode  </Button>
-    </div>
+  <div></div>
   )
 }
 

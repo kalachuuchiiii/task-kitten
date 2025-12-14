@@ -44,7 +44,7 @@ const HistoryDisplay = ({ history }: { history: TaskHistory }) => {
                 <ValueDisplay change={change} />
             </div>
             )}
-            <p className="text-xs">{formatDate(history.createdAt)}</p>
+            <p className="text-xs ">{formatDate(history.createdAt)}</p>
         </div></>)
 }
 

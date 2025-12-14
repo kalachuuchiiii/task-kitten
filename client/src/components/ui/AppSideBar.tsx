@@ -18,6 +18,9 @@ import {
 
 import { RouteLinkButton } from "./RouteLink";
 import { SignOutDialog } from "./SignOutDialog";
+import { AlertDialog, AlertDialogTrigger } from "./alert-dialog";
+import { LogOut } from "lucide-react";
+import { Separator } from "./separator";
 
 export const AppSidebar = () => {
   const { user } = useSession();
@@ -30,7 +33,7 @@ export const AppSidebar = () => {
         </div>
       </SidebarHeader>
       <SidebarSeparator />
-      <SidebarContent>
+      <SidebarContent className="overflow-x-hidden">
         <SidebarGroup>
           <SidebarGroupLabel className="text-[10px]">You</SidebarGroupLabel>
           {featureRouteLinks.map((route) => (
@@ -39,7 +42,7 @@ export const AppSidebar = () => {
         </SidebarGroup>
         <SidebarSeparator />
         <SidebarGroup>
-          <SidebarGroupLabel className="text-[10px]">
+          <SidebarGroupLabel className="text-[10px] ">
             Planners
           </SidebarGroupLabel>
           {plannerRouteLinks.map((route) => (
@@ -53,9 +56,17 @@ export const AppSidebar = () => {
           ))}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter>
+      <SidebarFooter className="text-xs  opacity-70">
         <SidebarMenuButton asChild>
-          <SignOutDialog />
+          <AlertDialog>
+            <AlertDialogTrigger className="flex items-center gap-2 p-2">
+              <LogOut size="18" className="text-red-600 " />
+              <Separator orientation="vertical" />
+              <p>Sign out</p>
+            </AlertDialogTrigger>
+                <SignOutDialog />
+          </AlertDialog>
+      
         </SidebarMenuButton>
       </SidebarFooter>
     </Sidebar>

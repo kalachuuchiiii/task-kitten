@@ -27,13 +27,9 @@ export const CreateTaskDialog = () => {
   } = useTaskActions();
 
   return (
-    <Sheet>
-      <SheetTrigger>
-        <InputGroupButton className="flex items-center gap-2">
-          <Plus />
-        </InputGroupButton>
-      </SheetTrigger>
-      <SheetContent className="p-3">
+
+
+     <SheetContent className="p-4 overflow-y-auto">
        <SheetHeader>
          <SheetTitle>New task</SheetTitle>
         <SheetDescription>You can change these later</SheetDescription>
@@ -49,6 +45,5 @@ export const CreateTaskDialog = () => {
           </Button>
         </SheetFooter>
       </SheetContent>
-    </Sheet>
   );
 };

@@ -9,10 +9,6 @@ export const plannerRouteLinks: RouteLink[] = [
       path: '/planners/to-do-list',
       icon: <ListChecksIcon />
     },{
-      name: 'Expense Tracker', 
-      path: '/planners/expense-tracker',
-      icon: <CoinsIcon />
-    }, {
       name: 'Event Calendar',
       path: '/planners/event-calendar',
       icon: <CalendarCheck />

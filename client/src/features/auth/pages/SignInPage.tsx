@@ -16,7 +16,7 @@ const SignInPage = () => {
       <div className="space-y-2 text-2xl flex items-center gap-4">
         <img
           src="/cat22.png "
-          className="rounded-full object-cover mx-auto  outline-4 outline-offset-4 outline-indigo-600 size-20 overflow-hidden"
+          className="rounded-full bg-white object-cover mx-auto  outline-4 outline-offset-4 outline-indigo-600 size-20 overflow-hidden"
         />
         <TaskKitten size = {10} />
       </div>

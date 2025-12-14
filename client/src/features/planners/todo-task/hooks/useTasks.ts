@@ -4,6 +4,7 @@ import {  useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSession } from "@/features/auth";
 import { useFilterTask } from "./useFilterTasks";
+import type { TaskDocument } from "@shared/types";
 
 export const useTasks = () => {
   const { accessToken } = useSession();
@@ -34,10 +35,8 @@ export const useTasks = () => {
     getNextPageParam: (nextPage) => nextPage?.nextPage ?? null,
   });
 
-  const tasks = useMemo(() => {
-    const pages = data?.pages ? data.pages.flatMap((task) => task.tasks) : [];
-    return pages;
-  }, [data]);
+  const tasks: TaskDocument[] = data?.pages.flatMap((task) => task.tasks ) ?? [];
+  
 
   const resetFilterAndRefetch = async() => {
     resetFilter();

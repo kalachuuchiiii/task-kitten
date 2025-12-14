@@ -10,10 +10,10 @@ export const PriorityBadge = ({ priority }: { priority: TaskPriority }) => {
     high: <ChevronsUp  size = {13} />,
   };
   return (
-    <div
+    <p
       className={`priority-${priority} font-semibold  tracking-tight flex items-center gap-2 rounded-md`}
     >
       {icons[priority]} {capitalize(priority)} Priority
-    </div>
+    </p>
   );
 };

@@ -1,28 +1,21 @@
 import { lazy } from "react";
-import { type RouteObject } from "react-router-dom";
+import type { RouteObject } from "react-router-dom";
 
 import { AppLayout } from "@/components/layout/AppLayout";
 import { AuthGuard, AuthLayout, RequireGuest } from "@/features/auth";
+import { PageLayout } from "@/components/layout/PageLayout";
 
 const HomePage = lazy(() => import("@/features/dashboard/pages/Home.tsx"));
-
 const SignUpPage = lazy(() => import("@/features/auth/pages/SignUpPage"));
 const SignInPage = lazy(() => import("@/features/auth/pages/SignInPage"));
 const LandingPage = lazy(() => import("@/pages/LandingPage"));
 const NotFoundPage = lazy(() => import("@/pages/NotFoundPage.tsx"));
-
-const EventCalendar = lazy(
-  () => import("@/features/planners/event-calendar/pages/EventCalendar")
-);
-const ExpenseTracker = lazy(
-  () => import("@/features/planners/expense-tracker/pages/ExpenseTracker")
-);
+const GettingStarted = lazy(() => import("@/pages/GettingStarted"));
+const EventCalendar = lazy(() => import("@/features/planners/event-calendar/pages/EventCalendar"));
 const Tasks = lazy(() => import("@/features/planners/todo-task/pages/Tasks"));
-const TaskDetails = lazy(() => import("@/features/planners/todo-task/pages/TaskDetails"))
-
-const Manager = lazy(() => import('@/features/account/manager/pages/Manager.tsx'));
-const Preferences = lazy(() => import('@/features/account/preferences/pages/Preferences.tsx'));
-
+const TaskDetails = lazy(() => import("@/features/planners/todo-task/pages/TaskDetails"));
+const Manager = lazy(() => import("@/features/account/manager/pages/AccountManager"));
+const Preferences = lazy(() => import("@/features/account/preferences/pages/Preferences.tsx"));
 
 export const routes: RouteObject[] = [
   {
@@ -31,61 +24,75 @@ export const routes: RouteObject[] = [
       {
         path: "/home",
         element: (
-          <AuthGuard>
-            <HomePage />
-          </AuthGuard>
+          <PageLayout title="Welcome to Taskitten!">
+            <AuthGuard>
+              <HomePage />
+            </AuthGuard>
+          </PageLayout>
         ),
       },
       {
         path: "/planners/to-do-list",
         element: (
-          <AuthGuard>
-            <Tasks />
-          </AuthGuard>
+          <PageLayout
+            title="Your task list"
+            description="Track your tasks, view changelogs, and other stuffs!"
+          >
+            <AuthGuard>
+              <Tasks />
+            </AuthGuard>
+          </PageLayout>
         ),
       },
       {
         path: "/task/:id",
         element: (
-          <AuthGuard>
-            <TaskDetails />
-          </AuthGuard>
-        ),
-      },
-      {
-        path: "/planners/expense-tracker",
-        element: (
-          <AuthGuard>
-            <ExpenseTracker />
-          </AuthGuard>
+          <PageLayout title = 'Task details'>
+            <AuthGuard>
+              <TaskDetails />
+            </AuthGuard>
+          </PageLayout>
         ),
       },
       {
         path: "/planners/event-calendar",
         element: (
-          <AuthGuard>
-            <EventCalendar />
-          </AuthGuard>
+          <PageLayout title="Event Calendar" description="Events presented in a calendar.">
+            <AuthGuard>
+              <EventCalendar />
+            </AuthGuard>
+          </PageLayout>
         ),
       },
       {
         path: "/account/manager",
         element: (
-          <AuthGuard>
-            <Manager />
-          </AuthGuard>
+          <PageLayout
+            title="Account Manager"
+            description="Manage your account, security, and privacy."
+          >
+            <AuthGuard>
+              <Manager />
+            </AuthGuard>
+          </PageLayout>
         ),
       },
       {
         path: "/account/preferences",
         element: (
-          <AuthGuard>
-            <Preferences />
-          </AuthGuard>
+          <PageLayout
+            title="Preferences"
+            description="Customize themes, notifications, and others."
+          >
+            <AuthGuard>
+              <Preferences />
+            </AuthGuard>
+          </PageLayout>
         ),
       },
     ],
-  }, //public & auth-related routes starts here
+  },
+  // Public & auth-related routes
   {
     path: "/",
     element: (
@@ -112,6 +119,14 @@ export const routes: RouteObject[] = [
           <SignUpPage />
         </AuthLayout>
       </RequireGuest>
+    ),
+  },
+  {
+    path: "/getting-started",
+    element: (
+      <PageLayout title="Getting Started" description="Taskitten's documentation.">
+        <GettingStarted />
+      </PageLayout>
     ),
   },
   {
