@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/select";
 import { capitalize } from "@/utils";
 import { taskPriority, taskStatus } from "@shared/constants";
-import { ChevronDown, X } from "lucide-react";
+import { CalendarCogIcon, ChevronDown, X } from "lucide-react";
 import type { TaskForm } from "../types/task";
 import { memo, useState, type ChangeEvent } from "react";
 import { formatDate } from "@shared/utils";
@@ -46,120 +46,128 @@ type TaskFormFieldProps = {
   handleRemoveKeyword: (val: string) => void;
 };
 
-export const TaskFormFields = memo(({
-  taskForm,
-  handleChangeDescription,
-  handleRemoveKeyword,
-  handleChangeDate,
-  handleAddKeyword,
-  handleSelect,
-}: TaskFormFieldProps) => {
-  const [keyword, setKeyword] = useState<string>("");
-
-  return (
-    <div className="flex flex-col w-full gap-6 p-1 items-start">
-      <div className="w-full space-y-2">
+export const TaskFormFields = memo(
+  ({
+    taskForm,
+    handleChangeDescription,
+    handleRemoveKeyword,
+    handleChangeDate,
+    handleAddKeyword,
+    handleSelect,
+  }: TaskFormFieldProps) => {
+    return (
+      <div className="flex flex-col w-full gap-6 p-1 items-start">
         <div className="w-full space-y-2">
-          <Label>Description</Label>
-          <Textarea
-            placeholder="Describe the task"
-            onChange={handleChangeDescription}
-            value={taskForm.description}
-            name="description"
-            className="pt-1 w-full break-all "
-          />
+          <div className="w-full space-y-2">
+            <Label>Description</Label>
+            <Textarea
+              placeholder="Describe the task"
+              onChange={handleChangeDescription}
+              value={taskForm.description}
+              name="description"
+              className="pt-1 w-full break-all "
+            />
+          </div>
+          <div className="flex mb-1 gap-2 items-center">
+            <Select onValueChange={(val) => handleSelect(val, "status")}>
+              <SelectTrigger
+                className={` text-xs`}
+                size="sm"
+                style={{ height: 24 }}
+              >
+                Status {capitalize(taskForm.status)}
+              </SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Status</SelectLabel>
+                  {taskStatus.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {capitalize(status)}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+            <Select onValueChange={(val) => handleSelect(val, "priority")}>
+              <SelectTrigger
+                size="sm"
+                className={` text-xs  w-fit`}
+                style={{ height: 24 }}
+              >{`${capitalize(taskForm.priority)} Priority`}</SelectTrigger>
+              <SelectContent>
+                <SelectGroup>
+                  <SelectLabel>Priority</SelectLabel>
+                  {taskPriority.map((status) => (
+                    <SelectItem key={status} value={status}>
+                      {capitalize(status)}
+                    </SelectItem>
+                  ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
         </div>
-        <div className="flex mb-1 gap-2 items-center">
-          <Select onValueChange={(val) => handleSelect(val, "status")}>
-            <SelectTrigger
-              className={`status-${taskForm.status} text-xs`}
-              size="sm"
-              style={{ height: 24 }}
-            >
-              Status {capitalize(taskForm.status)}
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Status</SelectLabel>
-                {taskStatus.map((status) => (
-                  <SelectItem value={status}>{capitalize(status)}</SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-          <Select onValueChange={(val) => handleSelect(val, "priority")}>
-            <SelectTrigger
-              size="sm"
-              className={`priority-${taskForm.priority}   w-fit`}
-              style={{ height: 24 }}
-            >{`${capitalize(taskForm.priority)} Priority`}</SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Priority</SelectLabel>
-                {taskPriority.map((status) => (
-                  <SelectItem value={status}>{capitalize(status)}</SelectItem>
-                ))}
-              </SelectGroup>
-            </SelectContent>
-          </Select>
-        </div>
-      </div>
-      <div className="flex items-center w-full  gap-2">
-        <div className="w-full">
-          <header>
-            <Label>Timeframe</Label>
-          </header>
-          <Dialog>
-            <Item className="w-full ">
-              <ItemContent>
-                <ItemTitle>
-                  Started at {formatDate(taskForm.startedAt)}
-                </ItemTitle>
-                <ItemDescription>When did the task start</ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <DialogTrigger asChild className="w-full ">
-                 <Button size ='sm' variant={'ghost'}>Pick</Button>
-                </DialogTrigger>
-              </ItemActions>
-            </Item>
+        <div className="flex items-center w-full  gap-2">
+          <div className="w-full">
+            <header>
+              <Label>Timeframe</Label>
+            </header>
+            <Dialog>
+              <Item className="w-full ">
+                <ItemContent>
+                  <ItemTitle>
+                    Started at {formatDate(taskForm.startedAt)}
+                  </ItemTitle>
+                  <ItemDescription>When did the task start</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <DialogTrigger asChild className="w-full ">
+                    <Button size="sm" variant={"ghost"}>
+                      {" "}
+                      <CalendarCogIcon />
+                    </Button>
+                  </DialogTrigger>
+                </ItemActions>
+              </Item>
 
-            <DialogContent className="w-fit flex items-center justify-center">
-              <Calendar
-                mode="single"
-                selected={taskForm.startedAt}
-                onSelect={(val) => handleChangeDate(val, "startedAt")}
-              />
-            </DialogContent>
-          </Dialog>
-          <Dialog>
-            <Item className="w-full">
-              <ItemContent>
-                <ItemTitle>Due at {formatDate(taskForm.due)}</ItemTitle>
-                <ItemDescription>When will the task end</ItemDescription>
-              </ItemContent>
-              <ItemActions>
-                <DialogTrigger asChild className="w-full ">
-                      <Button size ='sm' variant={'ghost'}>Pick</Button>
-                </DialogTrigger>
-              </ItemActions>
-            </Item>
-            <DialogContent className="w-fit flex items-center justify-center">
-              <Calendar
-                mode="single"
-                selected={taskForm.due}
-                onSelect={(value) => handleChangeDate(value, "due")}
-              />
-            </DialogContent>
-          </Dialog>
+              <DialogContent className="w-fit flex items-center justify-center">
+                <Calendar
+                  mode="single"
+                  selected={taskForm.startedAt}
+                  onSelect={(val) => handleChangeDate(val, "startedAt")}
+                />
+              </DialogContent>
+            </Dialog>
+            <Dialog>
+              <Item className="w-full">
+                <ItemContent>
+                  <ItemTitle>Due at {formatDate(taskForm.due)}</ItemTitle>
+                  <ItemDescription>When will the task end</ItemDescription>
+                </ItemContent>
+                <ItemActions>
+                  <DialogTrigger asChild className="w-full ">
+                    <Button size="sm" variant={"ghost"}>
+                      <CalendarCogIcon />
+                    </Button>
+                  </DialogTrigger>
+                </ItemActions>
+              </Item>
+              <DialogContent className="w-fit flex items-center justify-center">
+                <Calendar
+                  mode="single"
+                  selected={taskForm.due}
+                  onSelect={(value) => handleChangeDate(value, "due")}
+                />
+              </DialogContent>
+            </Dialog>
+          </div>
         </div>
+        <KeywordInput handleAddKeyword={handleAddKeyword} />
+        <KeywordList
+          keywords={taskForm.keywords}
+          handleRemoveKeyword={handleRemoveKeyword}
+        />
       </div>
-      <KeywordInput handleAddKeyword={handleAddKeyword} />
-      <KeywordList
-        keywords={taskForm.keywords}
-        handleRemoveKeyword={handleRemoveKeyword}
-      />
-    </div>
-  );
-}
-)
+    );
+  }
+);

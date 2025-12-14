@@ -2,8 +2,9 @@ import { RequestHandler } from "express";
 import z from "zod";
 import { taskPriority, taskStatus } from "@tasker/shared/src/constants/task";
 import { TaskServices } from "@/services";
-import { filterQuerySchema, processDate } from "@/utils/validation/filterQuerySchema";
+import { filterQuerySchema } from "@/utils/validation/filterQuerySchema";
 import { paramSchema } from "@/utils/validation";
+import { excludeTime } from "@/utils/date";
 const taskService = new TaskServices();
 
 
@@ -11,8 +12,8 @@ const taskSchema = z.object({
   description: z.string(),
   status: z.enum(taskStatus),
   keywords: z.array(z.string()),
-  due: z.preprocess(processDate, z.date()),
-  startedAt: z.preprocess(processDate, z.date()),
+  due: z.preprocess(excludeTime, z.date()),
+  startedAt: z.preprocess(excludeTime, z.date()),
   priority: z.enum(taskPriority),
 }).strip();
 
@@ -114,7 +115,6 @@ export class TaskController {
     const userId = z.string().parse(req.user);
     const filter: Record<string, any> = JSON.parse(String(req.query.filters ?? {}) ?? '{}') ?? {};
     const filters = filterQuerySchema().parse(filter);
-    console.log(filter);
 
     const { resourceList, nextPage, totalResource } =
       await taskService.getTaskList({ userId, filters });

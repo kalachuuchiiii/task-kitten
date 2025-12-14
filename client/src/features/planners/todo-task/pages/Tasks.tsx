@@ -12,6 +12,7 @@ import { TaskCard } from "../components/TaskCard";
 import { CreateTaskDialog } from "../components";
 import { FilterTaskForm } from "../components/FilterTaskForm";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
+import { TaskContext } from "../context";
 
 const Tasks = () => {
   const { tasks, ref, filterControl } = useTasks();
@@ -21,7 +22,6 @@ const Tasks = () => {
       <h1 className="h-full w-full mb-10 text-center text-4xl font-bold tracking-tight">
         To Do List
       </h1>
-
       <div className="flex w-full gap-4">
         <InputGroup className="p-5 flex items-start rounded-xl">
           <InputGroupAddon>
@@ -38,7 +38,9 @@ const Tasks = () => {
               <SheetTrigger>
                 <FilterIcon />
               </SheetTrigger>
-              <FilterTaskForm {...filterControl} />
+               <TaskContext value = {{...filterControl}}>
+                <FilterTaskForm />
+               </TaskContext>
             </Sheet>
           </InputGroupButton>
           <p className="text-neutral-200 mx-2">|</p>

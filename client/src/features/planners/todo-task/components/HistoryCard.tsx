@@ -2,7 +2,7 @@
 import { capitalize } from "@/utils"
 import type { TaskHistory, TaskRecordFields } from "@shared/types"
 import { formatDate } from "@shared/utils";
-import { ChevronRight, GitCommit, LucideSendToBack } from "lucide-react"
+import { ChevronRight, GitCommit, Key, LucideSendToBack } from "lucide-react"
 import { useTaskActions } from "../hooks";
 import { Tooltip, TooltipContent } from "@/components/ui/tooltip";
 import { TooltipTrigger } from "@radix-ui/react-tooltip";
@@ -38,7 +38,7 @@ const ValueDisplay = ({ change }: { change: TaskRecordFields }) => {
 const HistoryDisplay = ({ history }: { history: TaskHistory }) => {
     return (<><header className="flex items-center gap-2"> <GitCommit size='20' /> <h1 className="font-semibold text-xl tracking-tight">{history.note}</h1></header>
         <div className="space-y-1 border-l-3 pl-2 w-full ml-2 pb-6 h-full">
-            {history.updatedFields.map((change) => <div className="flex text-xs gap-2 items-start">
+            {history.updatedFields.map((change) => <div key = {change.field} className="flex text-xs gap-2 items-start">
                 <p className="opacity-70">{capitalize(change.field)}</p>
                 <p >:</p>
                 <ValueDisplay change={change} />

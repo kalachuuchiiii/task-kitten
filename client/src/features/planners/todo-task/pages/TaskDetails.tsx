@@ -29,7 +29,7 @@ const TaskDetails = () => {
         <div>
           <header className="flex px-5 items-center gap-5 mb-5 "><h1 className=" text-2xl  font-bold tracking-tight shrink-0"> Change logs </h1> <Separator className="min-w-0 shrink-1 " /> </header>
           {
-            history.map((h) => <HistoryCard history={h} />)
+            history.map((h) => <HistoryCard key = {h._id} history={h} />)
           }
         </div>
         {isFetchingTaskHistory && <p>Loading History...</p>}

@@ -56,7 +56,7 @@ export const TaskOverview = ({
           </ButtonGroup>
         </div>
         <div className="flex max-w-xl font-semibold  underline  tracking-tighter flex-wrap gap-5 text-xs">
-         {task.keywords.map((kw) => <p>#{kw}</p>)}
+         {task.keywords.map((kw) => <p key = {kw}>#{kw}</p>)}
         </div>
       </CardFooter>
     </>

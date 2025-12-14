@@ -1,3 +1,4 @@
+import { COMPARISON_OPERATORS } from '../constants';
 import { UpdatedFieldsSchema } from './task.d';
 
 import { Types, Document } from 'mongoose';
@@ -36,17 +37,22 @@ export type TaskDocument = TaskFields & {
 export type TaskHistory = { note: string; taskId: string | Types.ObjectId; updatedFields: TaskRecordFields[]; createdAt: string; _id: string;};
 export type TaskHistorySchema = Document & TaskHistory;
 
+type DateFilter = {
+   range: {
+    from: Date | undefined;
+    to: Date | undefined;
+   },
+   specific: {
+    date: Date | undefined;
+    operator: typeof COMPARISON_OPERATORS[number];
+   }
+  }
+
 export type TaskFilter = {
   status: TaskStatus[];
   priority: TaskPriority[];
-  startedAtRange: {
-    from: Date;
-    to: Date;
-  };
-  dueRange: {
-    from: Date;
-    to: Date;
-  };
+  startedAt: DateFilter,
+  due: DateFilter,
   description: string;
   keywords: string[],
 

@@ -1,23 +1,31 @@
 import z from "zod";
 
-import { taskPriority, taskStatus } from "@shared/constants";
+import { COMPARISON_OPERATORS, taskPriority, taskStatus } from "@shared/constants";
 
 import { paramSchema } from "./paramSchema";
-import { adjustCurrentYear } from "@shared/utils";
+import { excludeTime } from "../date";
 
-export const processDate = (val: string) => {
-  return new Date(val);
-}
+
 
 
 export const filterQuerySchema = () => {
+     const dateFilterSchema = z.object({
+      range: z.object({
+        from:  z.preprocess(excludeTime, z.date().optional()),
+        to: z.preprocess(excludeTime, z.date().optional())
+      }),
+      specific: z.object({
+        date: z.preprocess(excludeTime, z.date().optional()),
+        operator: z.enum(COMPARISON_OPERATORS)
+      })
+     }).strip();
      const schema = z.object({
           description: z.string().default(''),
           priority: z.array(z.enum(taskPriority)).default(taskPriority),
           status: z.array(z.enum(taskStatus)).default(taskStatus),
           keywords: z.array(z.string()).default([]),
-          dueRange: z.array(z.preprocess(processDate, z.date())).max(2).default([adjustCurrentYear(-1), adjustCurrentYear(1)]),
-          startedAtRange: z.array(z.preprocess(processDate, z.date())).max(2).default([adjustCurrentYear(-1), adjustCurrentYear(1)])
+          due: dateFilterSchema,
+          startedAt: dateFilterSchema
         }).merge(paramSchema).strip();
 
         return schema;

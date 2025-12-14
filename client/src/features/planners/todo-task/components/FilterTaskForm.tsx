@@ -1,6 +1,12 @@
 import { ButtonGroup } from "@/components/ui/button-group";
 import { Calendar } from "@/components/ui/calendar";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import {
   InputGroup,
   InputGroupButton,
@@ -17,10 +23,20 @@ import {
   SelectTrigger,
 } from "@/components/ui/select";
 import { capitalize } from "@/utils";
-import { taskPriority, taskStatus } from "@shared/constants";
-import { ChevronDown, X } from "lucide-react";
+import {
+  COMPARISON_OPERATORS,
+  taskPriority,
+  taskStatus,
+} from "@shared/constants";
+import {
+  CalendarCogIcon,
+  ChevronDown,
+  ChevronRight,
+  Filter,
+  X,
+} from "lucide-react";
 import type { TaskForm } from "../types/task";
-import { useState, type ChangeEvent } from "react";
+import { useContext, useState, type ChangeEvent } from "react";
 import { formatDate } from "@shared/utils";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
@@ -35,6 +51,7 @@ import {
   ItemActions,
   ItemContent,
   ItemDescription,
+  ItemFooter,
   ItemTitle,
 } from "@/components/ui/item";
 import {
@@ -47,8 +64,18 @@ import { Label } from "@/components/ui/label";
 import { KeywordInput } from "./KeywordInput";
 import type { TaskFilter } from "@shared/types";
 import type { TextChangeEvent } from "../hooks";
-import type { InfiniteData, QueryObserverResult, RefetchOptions } from "@tanstack/react-query";
+import type {
+  InfiniteData,
+  QueryObserverResult,
+  RefetchOptions,
+} from "@tanstack/react-query";
 import { KeywordList } from "./KeywordList";
+import type { DateRange, OnSelectHandler } from "react-day-picker";
+import { Card } from "@/components/ui/card";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { TaskContext } from "../context";
+import { LoadingDisplay } from "@/components/ui/LoadingDisplay";
+import { DateFilterTabs } from "./DateFilterTabs";
 
 //  refetchTasks: refetch,
 //       handleSelect,
@@ -58,29 +85,38 @@ import { KeywordList } from "./KeywordList";
 //       handleRemoveKeyword,
 //       filter,
 
-type FilterTaskFormProps = {
-    refetchTasks: ( options?: RefetchOptions | undefined) => Promise<QueryObserverResult<InfiniteData<any, unknown>, Error>>;
-    handleSelect: (val: string, name: 'status' | 'priority') => void;
-    handleChangeDescription: (e: TextChangeEvent) => void;
-    handleAddKeyword: (val: string) => void;
-    handleRemoveKeyword: (val: string) => void;
-    filter: TaskFilter;
-    handleChangeDateRange: (e: Date | undefined, name: 'dueRange' | 'startedAtRange', end: boolean) => void;
-}
+export const FilterTaskForm = () => {
+  const filterControl = useContext(TaskContext);
+  if (!filterControl) return null;
 
-export const FilterTaskForm = ({ refetchTasks, handleSelect, handleChangeDescription, handleChangeDateRange, filter, handleRemoveKeyword, handleAddKeyword }: FilterTaskFormProps) => {
+  const {
+    refetchTasks,
+    handleSelect,
+    handleChangeDescription,
+    filter,
+    handleRemoveKeyword,
+    handleAddKeyword,
+    resetFilterAndRefetch,
+    isFetchingTasks,
+  } = filterControl;
 
   return (
-    <SheetContent className="p-3">
+    <SheetContent className="p-3 overflow-y-auto">
       <SheetHeader>
-        <SheetTitle>Filter tasks</SheetTitle>
+        <SheetTitle>Advanced filter</SheetTitle>
         <SheetDescription>Filter tasks you want to include</SheetDescription>
       </SheetHeader>
-      <Textarea onChange={handleChangeDescription} value = {filter.description} placeholder="Type description keywords you want to filter..." />
+      <Textarea
+        onChange={handleChangeDescription}
+        value={filter.description}
+        placeholder="Type description keywords you want to filter..."
+      />
       <Item>
+        {" "}
+        {/**status start */}
         <ItemContent>
           <ItemTitle>Status</ItemTitle>
-          <ItemDescription>Choose status you want to filter</ItemDescription>
+          <ItemDescription>Status you want to filter</ItemDescription>
         </ItemContent>
         <ItemActions>
           <Popover>
@@ -92,18 +128,35 @@ export const FilterTaskForm = ({ refetchTasks, handleSelect, handleChangeDescrip
             <PopoverContent className="space-y-4">
               <Label>Status</Label>
               {taskStatus.map((status) => (
-                <div  key ={status} className="flex items-center gap-2">
-                  <Checkbox checked = {filter.status.includes(status)} onCheckedChange={() => handleSelect(status, 'status')} /> {capitalize(status)}
+                <div key={status} className="flex items-center gap-2">
+                  <Checkbox
+                    checked={filter.status.includes(status)}
+                    onCheckedChange={() => handleSelect(status, "status")}
+                  />{" "}
+                  {capitalize(status)}
                 </div>
               ))}
             </PopoverContent>
           </Popover>
         </ItemActions>
+        <ItemFooter>
+          <div className="text-xs flex items-center gap-1 ">
+            {filter.status.map((st) => (
+              <p className="px-3 py-1 truncate rounded-xl border">
+                {capitalize(st)}
+              </p>
+            ))}
+          </div>
+        </ItemFooter>
       </Item>
+      <div></div>
+      {/**status end */}
       <Item>
+        {" "}
+        {/**priority start */}
         <ItemContent>
           <ItemTitle>Priority</ItemTitle>
-          <ItemDescription>Choose priority you want to filter</ItemDescription>
+          <ItemDescription>Priorities you want to filter</ItemDescription>
         </ItemContent>
         <ItemActions>
           <Popover>
@@ -115,63 +168,51 @@ export const FilterTaskForm = ({ refetchTasks, handleSelect, handleChangeDescrip
             <PopoverContent className="space-y-3">
               <Label>Priority</Label>
               {taskPriority.map((priority) => (
-                <div className="flex items-center gap-2">
-                  <Checkbox checked = {filter.priority.includes(priority)} onCheckedChange={() => handleSelect(priority, 'priority')} className="data-[state=checked]:border-blue-600 data-[state=checked]:bg-blue-600 data-[state=checked]:text-white" />{" "}
+                <div key={priority} className="flex items-center gap-2">
+                  <Checkbox
+                    checked={filter.priority.includes(priority)}
+                    onCheckedChange={() => handleSelect(priority, "priority")}
+                    className=" "
+                  />{" "}
                   {capitalize(priority)}
                 </div>
               ))}
             </PopoverContent>
           </Popover>
         </ItemActions>
-      </Item>
-      <div>
-        <Item>
-          <ItemContent>
-            <ItemTitle>Started At</ItemTitle>
-            <ItemDescription>Range</ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <Dialog>
-                <DialogTrigger>
-                    Start {formatDate(filter.startedAtRange.from)}
-                </DialogTrigger>
-              <DialogContent className="w-fit flex items-center justify-center">
-                <Calendar />
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>End {formatDate(filter.startedAtRange.to)}</DialogTrigger>
-              <DialogContent  className="w-fit flex items-center justify-center">
-                <Calendar />
-              </DialogContent>
-            </Dialog>
-          </ItemActions>
-        </Item>
-        <Item>
-          <ItemContent className="flex">
-            <ItemTitle>Due</ItemTitle>
-            <ItemDescription>Range</ItemDescription>
-          </ItemContent>
-          <ItemActions>
-            <Dialog>
-              <DialogTrigger>Start {formatDate(filter.dueRange.from)}</DialogTrigger>
-              <DialogContent  className="w-fit flex items-center justify-center">
-                <Calendar  mode = 'range' />
-              </DialogContent>
-            </Dialog>
-            <Dialog>
-              <DialogTrigger>End {formatDate(filter.dueRange.to)}</DialogTrigger>
-              <DialogContent  className="w-fit flex items-center justify-center">
-                <Calendar />
-              </DialogContent>
-            </Dialog>
-          </ItemActions>
-        </Item>
-      </div>
-      <KeywordInput
-        handleAddKeyword={handleAddKeyword}
+        <ItemFooter>
+          <div className="text-xs flex items-center gap-1">
+            {filter.priority.map((pr) => (
+              <p className="px-3 py-1 truncate rounded-xl border">
+                {capitalize(pr)}
+              </p>
+            ))}
+          </div>
+        </ItemFooter>
+      </Item>{" "}
+      {/**priority end */}
+      <DateFilterTabs />
+      <KeywordInput handleAddKeyword={handleAddKeyword} />
+      <KeywordList
+        keywords={filter.keywords}
+        handleRemoveKeyword={handleRemoveKeyword}
       />
-      <KeywordList keywords={filter.keywords} handleRemoveKeyword={handleRemoveKeyword} />
+      <footer className="space-y-1 transition-all ">
+        <button
+         disabled={isFetchingTasks}
+          className="button-bg w-full   p-1.5 rounded-lg"
+          onClick={() => refetchTasks()}
+        >
+          <p>Filter</p>
+        </button>
+        <button
+          disabled={isFetchingTasks}
+          className=" w-full disabled:opacity-50 hover-highlight flex flex-col p-1.5 rounded-lg"
+          onClick={resetFilterAndRefetch}
+        >
+          <p>Reset</p>
+        </button>
+      </footer>
     </SheetContent>
   );
 };
