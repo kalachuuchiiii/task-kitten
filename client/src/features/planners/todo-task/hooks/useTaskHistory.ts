@@ -17,7 +17,7 @@ export const useTaskHistory = () => {
     const { data: taskHistory, isPending: isFetchingTaskHistory, hasNextPage, fetchNextPage } = useInfiniteQuery({
         queryKey: ['task-history'],
         queryFn: async ({ pageParam = 1 }) => {
-            const res = await api.get(`/api/task-history/${id}/?page=${pageParam}&limit=5`);
+            const res = await api.get(`/task/history/${id}/?page=${pageParam}&limit=5`);
             return res.data;
         },
         getNextPageParam: (nextPage) => nextPage.nextPage,

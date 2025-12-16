@@ -18,7 +18,7 @@ export const useSession = create<Session>((set) => ({
   accessToken: null,
   isLookingForSession: true,
   setAccessToken: (accessToken: string) => set({ accessToken }),
-  clearSession: () => {  //used while logging out
+  clearSession: () => {  //logging out
     set((state) => ({ 
       ...state,
       ...initialSession,

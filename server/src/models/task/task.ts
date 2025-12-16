@@ -1,3 +1,4 @@
+import { verifyOwnerPlugin } from "@/plugins";
 import { ForbiddenError } from "@/utils/errors";
 import { DESCRIPTION_LIMIT, KEYWORD_CONFLICT_MSG, KEYWORD_LIMIT, KEYWORDS_LIMIT, taskPriority, taskStatus } from "@shared/constants";
 import { TaskStatus, TaskSchema, TaskPriority } from "@shared/types";
@@ -57,12 +58,7 @@ const taskSchema = new mongoose.Schema<TaskSchema>(
 );
 
 
-taskSchema.methods.verifyOwner = function (userId: string) {
-  if (String(this.userId) !== userId) {
-    throw new ForbiddenError("You do not have access to this task");
-  }
-  return this;
-};
+taskSchema.plugin(verifyOwnerPlugin<TaskSchema>('userId'));
 
 export const taskFields = Object.keys(taskSchema.paths);
 export const Task = mongoose.model("Task", taskSchema);

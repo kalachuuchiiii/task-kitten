@@ -21,7 +21,7 @@ export const useTaskDetails = () => {
     } = useQuery({
       queryKey: ["task", id],
       queryFn: async () => {
-        const res = await api.get(`/api/task/${id}`);
+        const res = await api.get(`/task/details/${id}`);
         return res.data.task as TaskDocument;
       },
       enabled: !!id && !!accessToken,

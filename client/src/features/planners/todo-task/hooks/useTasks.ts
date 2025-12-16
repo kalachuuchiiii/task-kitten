@@ -23,7 +23,7 @@ export const useTasks = () => {
     enabled: !!accessToken,
     queryFn: async ({ pageParam }) => {
       const res = await API.get(
-        `/api/tasks?limit=5&sort=-1`,
+        `/task/list?limit=5&sort=-1`,
         {
           params: {
             filters: JSON.stringify({...filter, page: pageParam, limit: 5, sort: -1}),

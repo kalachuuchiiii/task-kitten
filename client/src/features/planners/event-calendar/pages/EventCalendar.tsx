@@ -1,13 +1,14 @@
-import { PageLayout } from "@/components/layout/PageLayout"
+
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-
+import { CreateNewEvent } from "../components/CreateNewEvent";
 
 
 const EventCalendar = () => {
   return (
    <div>
+      <CreateNewEvent />
       <FullCalendar
       plugins={[dayGridPlugin, interactionPlugin]}
       initialView="dayGridMonth"

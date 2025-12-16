@@ -3,6 +3,7 @@ import { verifyToken } from "@/helpers";
 import { AuthService } from "@/services";
 import { ExpiredSessionError, UnauthorizedError } from "@/utils/errors";
 import { RequestHandler } from "express";
+import { isValidObjectId } from "mongoose";
 
 const authService = new AuthService();
 
@@ -19,6 +20,9 @@ export class AuthMiddleware {
 
     
       if(decodedToken?.user){
+        if(!isValidObjectId(decodedToken.user)){
+            throw new UnauthorizedError('Invalid Session.');
+        }
         req.user = decodedToken.user;
         return next();
       }   

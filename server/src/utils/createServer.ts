@@ -23,7 +23,7 @@ export const createServer = () => {
       message: "Healthy",
     });
   });
-  app.use(mainRouter);
+  app.use('/api', mainRouter);
   app.use(errorHandler);
 
   return app;

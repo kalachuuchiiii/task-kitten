@@ -28,7 +28,7 @@ const taskRecordSchema = taskSchema.merge(
 export class TaskController {
 
 
-
+  //PATCH /task/revert/:taskId/:recordId
   revertTask: RequestHandler = async (req, res) => {
     const taskId = z.string().parse(req.params.taskId);
     const recordId = z.string().parse(req.params.recordId);
@@ -41,7 +41,7 @@ export class TaskController {
     })
   }
 
-  //GET /task-history/:id (taskId)
+  //GET /task/history/:taskId
   getTaskHistory: RequestHandler = async (req, res) => {
     const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
@@ -54,7 +54,7 @@ export class TaskController {
     });
   };
 
-  //PATCH /task/:id
+  //PATCH /task/update/:taskId
   updateTaskById: RequestHandler = async (req, res) => {
     const taskForm =
       taskRecordSchema.parse(req.body);
@@ -70,7 +70,7 @@ export class TaskController {
     })
   };
 
-  //DELETE /task/:id
+  //DELETE /task/delet/:taskId
   deleteTaskById: RequestHandler = async (req, res) => {
     const userId = z.string().parse(req.user);
     const taskId = z.string().parse(req.params.taskId);
@@ -81,7 +81,7 @@ export class TaskController {
       message: "Task deleted successfully!",
     });
   };
-  //GET /task/:id
+  //GET /task/details/:taskId
   getTask: RequestHandler = async (req, res) => {
     const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
@@ -93,7 +93,7 @@ export class TaskController {
     });
   };
 
-  //POST /task
+  //POST /task/create 
   createTask: RequestHandler = async (req, res) => {
     const taskForm = taskSchema.parse(req.body.taskForm);
 
@@ -109,7 +109,7 @@ export class TaskController {
     });
   };
 
-  //GET /tasks
+  //GET /task/list
   getTaskList: RequestHandler = async (req, res) => {
    
     const userId = z.string().parse(req.user);

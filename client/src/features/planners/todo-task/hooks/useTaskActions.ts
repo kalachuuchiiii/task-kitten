@@ -20,7 +20,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
   const nav = useNavigate();
   const { mutate: deleteTask, isPending: isDeletingTask } = useMutation({
     mutationFn: async () => {
-      const p = api.delete(`/api/task/${id}`);
+      const p = api.delete(`/task/delete/${id}`);
       toast.promise(p, {
         loading: "Deleting task...",
         error: (err) => getErrorMessage(err),
@@ -39,7 +39,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       if (taskForm.description.length > DESCRIPTION_LIMIT.LENGTH) {
         return toast.error(DESCRIPTION_LIMIT.MESSAGE);
       }
-      const p = api.post("/api/task", { taskForm });
+      const p = api.post("/task/create", { taskForm });
       await toast.promise(p, {
         loading: "Creating task...",
         success: "Created successfully!",
@@ -55,7 +55,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
   const { mutate: updateTask, isPending: isUpdatingTask } = useMutation({
     mutationKey: ['task', id],
     mutationFn: async () => {
-      const p = api.patch(`/api/task/${id}`, { ...taskForm });
+      const p = api.patch(`/task/update/${id}`, { ...taskForm });
       await toast.promise(p, {
         loading: "Updating task...",
         success: "Updated successfully!",
@@ -67,7 +67,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
 
   const { mutate: revertTask, isPending: isRevertingTask } = useMutation({
     mutationFn: async (historyId: string) => {
-      const p = api.patch(`/api/task/${id}/${historyId}`);
+      const p = api.patch(`/task/revert/${id}/${historyId}`);
       toast.promise(p, {
         loading: 'Reverting...',
         success: 'Reverted back successfully!',
