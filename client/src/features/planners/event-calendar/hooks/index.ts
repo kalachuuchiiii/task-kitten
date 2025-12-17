@@ -1,2 +1,2 @@
 
-export * from './useEventActions';
+export * from './useEventCalendar';

@@ -14,16 +14,14 @@ export class EventService {
   };
 
   getMonthEvents = async ({
-    year,
-    month,
+    endDate,
+    startDate,
     userId,
   }: {
-    year: number;
-    month: number;
+    endDate: Date;
+    startDate: Date;
     userId: string;
   }) => {
-    const startDate = new Date(year, month - 1, 1);
-    const endDate = new Date(year, month, 1);
     const query = {
       userId,
       $or: [

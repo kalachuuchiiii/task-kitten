@@ -1,4 +1,3 @@
-
 import { verifyToken } from "@/helpers";
 import { AuthService } from "@/services";
 import { ExpiredSessionError, UnauthorizedError } from "@/utils/errors";
@@ -8,27 +7,26 @@ import { isValidObjectId } from "mongoose";
 const authService = new AuthService();
 
 export class AuthMiddleware {
-     authenticateOrRefresh: RequestHandler = async(req, res, next) => {
-      const header = req.headers.authorization ?? '';
-     
- 
-      if(!header.startsWith('Bearer ')){
-        throw new UnauthorizedError('Invalid Token.');
-      }
-      const accessToken = header.split(' ')[1];
-      const decodedToken = await verifyToken(accessToken, false);
+  authenticateOrRefresh: RequestHandler = async (req, res, next) => {
+    const header = req.headers.authorization ?? "";
 
-    
-      if(decodedToken?.user){
-        if(!isValidObjectId(decodedToken.user)){
-            throw new UnauthorizedError('Invalid Session.');
-        }
-        req.user = decodedToken.user;
-        return next();
-      }   
-   
-
-      const { accessToken: newAccessToken } = await authService.refresh(req.cookies?.['refresh-token']);
-      throw new ExpiredSessionError(newAccessToken);  //frontend will replace in-memory token and retry
+    if (!header.startsWith("Bearer ")) {
+      throw new UnauthorizedError("Invalid Token.");
     }
+    const accessToken = header.split(" ")[1];
+    const decodedToken = await verifyToken(accessToken, false);
+
+    if (decodedToken?.user) {
+      if (!isValidObjectId(decodedToken.user)) {
+        throw new UnauthorizedError("Invalid Session.");
+      }
+      req.user = decodedToken.user;
+      return next();
+    }
+
+    const { accessToken: newAccessToken } = await authService.refresh(
+      req.cookies?.["refresh-token"]
+    );
+    throw new ExpiredSessionError(newAccessToken); //frontend will replace in-memory token and retry
+  };
 }
