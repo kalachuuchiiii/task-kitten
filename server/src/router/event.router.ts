@@ -12,6 +12,8 @@ const authMiddleware = new AuthMiddleware();
 eventRouter.use(catchErrors(authMiddleware.authenticateOrRefresh));
 eventRouter.post('/create', catchErrors(eventController.createEvent));
 eventRouter.get('/month-events', catchErrors(eventController.getMonthEvents));
+eventRouter.delete('/delete/:eventId', catchErrors(eventController.deleteEvent));
+eventRouter.patch('/update/:eventId', catchErrors(eventController.updateEvent));
 
 export default eventRouter;
 

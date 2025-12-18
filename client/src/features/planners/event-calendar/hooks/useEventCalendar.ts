@@ -1,49 +1,27 @@
-import { useSession } from "@/features/auth";
+
 import { useApi } from "@/hooks";
-import type FullCalendar from "@fullcalendar/react";
-import type { EventFields, EventForm } from "@shared/types";
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { useEffect, useRef, useState } from "react";
-import type { TextChangeEvent } from "../../todo-task";
-import { toast } from "sonner";
-import { getErrorMessage } from "@/utils";
+import {  useQuery } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { useEventActions } from "./useEventActions";
+import { useEventDetails } from "./useEventDetails";
+
+
 
 export const useEventCalendar = () => {
   const api = useApi();
-  const eventCalendarRef = useRef<FullCalendar>(null);
-  const [eventForm, setEventForm] = useState<EventForm>({
-    title: "",
-    start: new Date(),
-    end: undefined,
-  });
   const [timeframe, setTimeframe] = useState({
     startDate: new Date(new Date().getFullYear(), new Date().getMonth(), 1),
     endDate: new Date(new Date().getFullYear(), new Date().getMonth() + 1, 1),
   });
-
-  const { mutate: createEvent, isPending: isCreatingEvent } = useMutation({
-    mutationFn: async () => {
-      const p = api.post("/event/create", { eventForm });
-      await toast.promise(p, {
-        loading: "Creating event...",
-        success: "Event created successfully!",
-        error: (err: unknown) => getErrorMessage(err),
-      });
-      const res = await p;
-      eventCalendarRef.current?.getApi().addEvent(res.data.newEvent);
-      return res;
-    },
-  });
-
+  const eventActions = useEventActions();
+  const eventDetailsControl = useEventDetails();
   const {
     data,
     isPending: isFetchingEvents,
     refetch,
   } = useQuery({
-    queryKey: ["month-events", timeframe.startDate.toISOString()],
+    queryKey: ["month-events", timeframe.startDate.toISOString(), timeframe.endDate.toISOString()],
     queryFn: async () => {
-      const eventCalendar = eventCalendarRef.current;
-      if (!eventCalendar) return;
       const res = await api.get("/event/month-events", {
         params: {
           timeframe: JSON.stringify(timeframe),
@@ -51,8 +29,7 @@ export const useEventCalendar = () => {
       });
       console.log(res);
       return res.data;
-    },
-    enabled: false,
+    }
   });
 
   useEffect(() => {
@@ -71,38 +48,14 @@ export const useEventCalendar = () => {
     });
   };
 
-  const handleSetTimeframe = (name: "start" | "end") => {
-    return (date: Date | undefined) => {
-      setEventForm((prev) => ({
-        ...prev,
-        [name]: date,
-      }));
-    };
-  };
-
-  const handleSetEventTitle = (e: TextChangeEvent) => {
-    const { value } = e.target;
-    setEventForm((prev) => ({
-      ...prev,
-      title: value,
-    }));
-  };
-
   const events = data?.events ?? [];
 
   return {
     events,
     onDateChange,
-    actions: {
-      eventCalendarRef,
-      handleSetTimeframe,
-      eventForm,
-      isCreatingEvent,
-      createEvent,
-      handleSetEventTitle,
-    },
+    eventActions,
+    eventDetailsControl,
     timeframe,
     isFetchingEvents,
-    eventCalendarRef,
   };
 };

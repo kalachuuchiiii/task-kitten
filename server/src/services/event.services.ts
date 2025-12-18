@@ -1,7 +1,21 @@
 import { Event } from "@/models/event";
+import { NotFoundError } from "@/utils/errors";
 import { EventForm } from "@shared/types";
 
 export class EventService {
+
+  deleteEvent = async({ userId, eventId }: { userId: string; eventId: string}) => {
+    const event = (await Event.findById(eventId).orFail(new NotFoundError('Event not found.'))).verifyOwner(userId);
+    const deleted = await event.deleteOne();
+    return deleted;
+  }
+
+  updateEvent = async({ userId, eventId, eventForm }: {userId: string; eventId: string; eventForm: EventForm}) => {
+     const event = (await Event.findById(eventId).orFail(new NotFoundError('Event not found.'))).verifyOwner(userId);
+     const updatedEvent = await event.updateOne({ ...eventForm }, { new: true });
+     return updatedEvent;
+  }
+
   createEvent = async ({
     eventForm,
     userId,
