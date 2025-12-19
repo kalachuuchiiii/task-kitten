@@ -1,38 +1,19 @@
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog";
+
 import {
   Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetFooter,
-  SheetHeader,
-  SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
-import {
-  Item,
-  ItemActions,
-  ItemContent,
-  ItemDescription,
-  ItemFooter,
-  ItemTitle,
-} from "@/components/ui/item";
-import { CalendarCogIcon, Plus } from "lucide-react";
-import { Calendar } from "@/components/ui/calendar";
-import { DialogTitle } from "@radix-ui/react-dialog";
-import { formatDate } from "@shared/utils";
+import { CalendarCogIcon } from "lucide-react";
 import { useContext } from "react";
 import { EventCalendarContext } from "../context";
 import { EventFormFields } from "./EventFormFields";
+import { useEventActions } from "../hooks";
 
 export const CreateNewEvent = () => {
-  const eventContext = useContext(EventCalendarContext);
-  if (!eventContext) return null;
   const {
     formControl,
     actions: { isCreatingEvent, createEvent },
-  } = eventContext;
+  } = useEventActions();
 
   return (
     <div className="w-full flex items-center justify-center">

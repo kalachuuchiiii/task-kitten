@@ -3,7 +3,7 @@ import { getErrorMessage } from "@/utils";
 import type FullCalendar from "@fullcalendar/react";
 import type { EventForm } from "@shared/types";
 import { useMutation } from "@tanstack/react-query";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { TextChangeEvent } from "../../todo-task";
 import { createEventFormDefault } from "@shared/defaults";
@@ -55,13 +55,13 @@ export const useEventActions = (
     },
   });
 
-  const handleSetEventTitle = (e: TextChangeEvent) => {
-    const { value } = e.target;
-    setEventForm((prev) => ({
-      ...prev,
-      title: value,
-    }));
-  };
+  const handleSetEventText =  (e: TextChangeEvent) => {
+    const { name, value } = e.target;
+      setEventForm((prev) => ({
+        ...prev,
+        [name]: value
+      }))
+    }
   const handleSetTimeframe = (name: "start" | "end") => {
     return (date: Date | undefined) => {
       setEventForm((prev) => ({
@@ -81,10 +81,12 @@ export const useEventActions = (
       isUpdatingEvent,
     },
     eventCalendarRef,
+ 
     formControl: {
       handleSetTimeframe,
       eventForm,
-      handleSetEventTitle,
+         setEventForm,
+      handleSetEventText,
     },
   };
 };

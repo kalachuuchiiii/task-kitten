@@ -1,28 +1,28 @@
 import { createEventFormDefault } from "@shared/defaults";
-import type { EventForm } from "@shared/types";
+import type { EventFields, EventForm, EventUpdateFormFields } from "@shared/types";
 import { useState } from "react";
 
 export const useEventDetails = () => {
-  const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventForm>(createEventFormDefault());
+  const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
+  const [selectedEvent, setSelectedEvent] = useState<EventUpdateFormFields>({ ...createEventFormDefault(), _id: ''});
 
   const onOpenChange = (val: boolean) => {
     if(val === false){
-       setSelectedEvent(createEventFormDefault());
+       setSelectedEvent({...createEventFormDefault(), _id: ''});
     }
-    setIsDialogOpen(val);
+    setIsDetailSheetOpen(val);
   }
 
-  const openModal = (event: EventForm) => {
+  const openDetailSheet = (event: EventUpdateFormFields) => {
      setSelectedEvent(event);
-     setIsDialogOpen(true);
+     setIsDetailSheetOpen(true);
   }
 
   return { 
     onOpenChange,
-    openModal,
+    openDetailSheet,
     selectedEvent,
-    isDialogOpen
+    isDetailSheetOpen
   }
 
   

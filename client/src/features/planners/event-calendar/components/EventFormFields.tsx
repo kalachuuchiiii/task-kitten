@@ -2,18 +2,17 @@ import { Button } from "@/components/ui/button"
 import { Calendar } from "@/components/ui/calendar"
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { Item, ItemActions, ItemContent, ItemDescription, ItemFooter, ItemTitle } from "@/components/ui/item"
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
+import {  SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet"
 import { Textarea } from "@/components/ui/textarea"
 import { formatDate } from "@shared/utils"
-import { CalendarClockIcon, CalendarCogIcon, Plus } from "lucide-react"
+import {  CalendarCogIcon } from "lucide-react"
 import type { JSX } from "react"
-import type { TextChangeEvent } from "../../todo-task"
 import type { useEventActions } from "../hooks"
-import type { DialogProps } from "@radix-ui/react-dialog"
+import { Input } from "@/components/ui/input"
 
-type EventFormFieldProps = ReturnType<typeof useEventActions>['formControl'] & { children: JSX.Element; title?: string; } & DialogProps; 
+type EventFormFieldProps = ReturnType<typeof useEventActions>['formControl'] & { children: JSX.Element; title?: string; }
 
-export const EventFormFields = ({  eventForm,  children, handleSetEventTitle, handleSetTimeframe, title = 'New Event', ...props }: EventFormFieldProps) => {
+export const EventFormFields = ({  eventForm,  children, handleSetEventText, handleSetTimeframe, title = 'New Event'}: EventFormFieldProps) => {
 
     return ( 
         <SheetContent className="p-3">
@@ -21,14 +20,25 @@ export const EventFormFields = ({  eventForm,  children, handleSetEventTitle, ha
             <SheetTitle>{title}</SheetTitle>
             <SheetDescription>Event Calendar</SheetDescription>
           </SheetHeader>
-          <div className="w-full space-y-3">
-            <Textarea
-              className="w-11/12 mx-auto"
+          <div className="w-full flex flex-col items-center gap-3 justify-center ">
+            <div className="w-11/12 mx-auto space-y-2">
+               <Input
+              className="w-full"
               value={eventForm.title}
-              onChange={handleSetEventTitle}
+              name = 'title'
+              onChange={handleSetEventText}
               placeholder="Event name"
             />
-            <Item>
+              <Textarea
+              className="w-full"
+              value={eventForm.description}
+              onChange={handleSetEventText}
+              name="description"
+              placeholder="Event description"
+            />
+            </div>
+            <div>
+               <Item>
               <ItemContent>
                 <ItemTitle>Date</ItemTitle>
                 <ItemDescription>
@@ -90,7 +100,8 @@ export const EventFormFields = ({  eventForm,  children, handleSetEventTitle, ha
                 </ItemDescription>
               </ItemFooter>
             </Item>
-            <SheetFooter>
+            </div>
+            <SheetFooter className="w-full">
               { children }
             </SheetFooter>
           </div>
