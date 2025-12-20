@@ -4,9 +4,10 @@ import interactionPlugin from "@fullcalendar/interaction";
 import { CreateNewEvent } from "../components/CreateNewEvent";
 import { useEventCalendar } from "../hooks";
 import { EventCalendarContext } from "../context";
-import { Sheet } from "@/components/ui/sheet";
+import { Sheet, SheetContent } from "@/components/ui/sheet";
 import { EventDetails } from "../components/EventDetails";
-import type { EventUpdateFormFields } from "@shared/types";
+
+
 
 const EventCalendar = () => {
   const {
@@ -14,12 +15,10 @@ const EventCalendar = () => {
     onDateChange,
     timeframe,
     eventActions,
-    eventDetailsControl: { isDetailSheetOpen, openDetailSheet, onOpenChange, selectedEvent },
+    eventDetailsControl: { isDetailSheetOpen, onOpenChange, selectedEvent, handleEventClick },
   } = useEventCalendar();
     const { formControl, actions, eventCalendarRef } = eventActions;
-    const { setEventForm } = formControl;
  
-
   return (
     <div>
       <CreateNewEvent />
@@ -29,24 +28,16 @@ const EventCalendar = () => {
         plugins={[dayGridPlugin, interactionPlugin]}
         initialView="dayGridMonth"
         showNonCurrentDates={false}
-        initialDate={timeframe.startDate}
+        initialDate={timeframe.start}
         datesSet={onDateChange}
         height="100vh"
-        eventClick={(info) => {
-          const eventObj: EventUpdateFormFields = {
-            title: info.event._def.title,
-            _id: info.event._def.extendedProps._id,
-            start: info.event._instance?.range.start ?? new Date(),
-            description: info.event._def.extendedProps?.description ?? "",
-            end: info.event._instance?.range.end ?? undefined,
-          };
-          setEventForm(eventObj);
-          openDetailSheet(eventObj);
-        }}
+        eventClick={handleEventClick}
       />
       <Sheet open = {isDetailSheetOpen} onOpenChange={onOpenChange}>
         <EventCalendarContext value={{ formControl, actions, selectedEvent }}>
-          <EventDetails /> 
+           <SheetContent className="p-3">
+                <EventDetails /> 
+           </SheetContent>
         </EventCalendarContext>
       </Sheet>
     </div>

@@ -1,13 +1,10 @@
 import { useState, type FormEvent } from "react";
-
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
-import { getErrorMessage } from "../../../utils/getErrorMessage";
-
 
 import type { SignUpForm } from "../types/auth.types";
 import { API } from "@/utils";
-
+import { extractErrorMessage } from "@/utils/error";
 
 export const useSignUp = () => {
 
@@ -31,7 +28,7 @@ export const useSignUp = () => {
       const p = API.post('/auth/sign-up', { ...form });
       toast.promise(p, {
         loading: "Creating your account...",
-        error: (err) => getErrorMessage(err),
+        error: (err) => extractErrorMessage(err),
         success: (res) => res.data.message,
       }); 
       return await p;

@@ -2,9 +2,9 @@
 import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSession } from "./useSession";
-import { getErrorMessage } from "@/utils/getErrorMessage";
 import { useNavigate } from "react-router-dom";
 import { API } from "@/utils";
+import { extractErrorMessage } from "@/utils/error";
 
 
 export const useSignOut = () => {
@@ -17,7 +17,7 @@ export const useSignOut = () => {
       toast.promise(p, {
         loading: 'Signing you out...',
         success: 'Signed out successfully!',
-        error: (err) => getErrorMessage(err)
+        error: (err) => extractErrorMessage(err)
       })
       return await p;
     },

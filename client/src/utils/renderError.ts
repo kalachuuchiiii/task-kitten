@@ -1,9 +1,8 @@
-import { toast } from "sonner";
-import { getErrorMessage } from "./getErrorMessage"
 
+import { toast } from "sonner";
+import { extractErrorMessage } from "./error";
 
 export const renderError = (error: unknown) => {
-    const errorMessage = getErrorMessage(error);
-    
+    const errorMessage = extractErrorMessage(error);
     toast.error(errorMessage);
 }

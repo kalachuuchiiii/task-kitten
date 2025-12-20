@@ -28,19 +28,19 @@ export class EventService {
   };
 
   getMonthEvents = async ({
-    endDate,
-    startDate,
-    userId,
+    end,
+    start,
+    userId
   }: {
-    endDate: Date;
-    startDate: Date;
+    end: Date;
+    start: Date;
     userId: string;
   }) => {
     const query = {
       userId,
       $or: [
-        { start: { $gte: startDate, $lt: endDate } },
-        { end: { $gte: startDate, $lt: endDate } },
+        { start: { $gte: start, $lt: end } },
+        { end: { $gte: start, $lt: end } },
       ],
     };
     const [events, totalEvents] = await Promise.all([Event.find(query), Event.countDocuments(query)]);

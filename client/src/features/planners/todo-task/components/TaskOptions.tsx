@@ -9,15 +9,49 @@ import {
 import { EllipsisVerticalIcon } from "lucide-react";
 import { useTaskActions } from "../hooks";
 import { Button } from "@/components/ui/button";
-import { AlertDialog, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogTitle, AlertDialogTrigger } from "@/components/ui/alert-dialog";
-import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  AlertDialog,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { TaskFormFields } from "./TaskFormFields";
 import type { TaskDocument, TaskFormFieldTypes } from "@shared/types";
 import { Textarea } from "@/components/ui/textarea";
-import { Sheet, SheetContent, SheetDescription, SheetFooter, SheetHeader, SheetTitle, SheetTrigger } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetFooter,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger,
+} from "@/components/ui/sheet";
+import { HISTORY_RECORD_LIMIT } from "@shared/limits";
 
-export const TaskOptions = ({ taskDetail }: { taskDetail: TaskFormFieldTypes  }) => {
-  const { deleteTask, isDeletingTask, formControl, updateTask, isUpdatingTask } = useTaskActions(taskDetail);
+export const TaskOptions = ({
+  taskDetail,
+}: {
+  taskDetail: TaskFormFieldTypes;
+}) => {
+  const {
+    deleteTask,
+    isDeletingTask,
+    formControl,
+    updateTask,
+    isUpdatingTask,
+  } = useTaskActions(taskDetail);
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -26,23 +60,41 @@ export const TaskOptions = ({ taskDetail }: { taskDetail: TaskFormFieldTypes  })
       <DropdownMenuContent>
         <DropdownMenuLabel>Options</DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <Sheet >
+        <Sheet>
           <SheetTrigger asChild>
-            <DropdownMenuItem onSelect={(e) => e.preventDefault()} className="w-full">Update</DropdownMenuItem>
+            <DropdownMenuItem
+              onSelect={(e) => e.preventDefault()}
+              className="w-full"
+            >
+              Update
+            </DropdownMenuItem>
           </SheetTrigger>
           <SheetContent className="p-4 overflow-y-auto">
-           <SheetHeader>
-              <SheetTitle>Update</SheetTitle>
-            <SheetDescription>Update existing task.</SheetDescription>
-           </SheetHeader>
-            <TaskFormFields {...formControl} />
-            <Textarea onChange = {formControl.handleChangeNote} value = {formControl.taskForm.note} placeholder= "Describe this update (optional)" className="border resize-none w-[98%] mx-auto " aria-haspopup = 'false' />
-            <SheetFooter>
-            
-              <button onClick = {() => updateTask()} disabled = {isUpdatingTask} className="button-bg w-full rounded p-2">
-                 Update
+           
+              <SheetHeader>
+                <SheetTitle>Update</SheetTitle>
+                <SheetDescription>Update existing task.</SheetDescription>
+              </SheetHeader>
+              <TaskFormFields id = 'update-task' onSubmit={(e) => updateTask(e)} {...formControl} />
+              <Textarea
+                minLength={HISTORY_RECORD_LIMIT.note.MIN}
+                maxLength = {HISTORY_RECORD_LIMIT.note.MAX}
+                onChange={formControl.handleChangeNote}
+                value={formControl.taskForm.note}
+                placeholder="Describe this update (optional)"
+                className="border resize-none w-[98%] mx-auto "
+                aria-haspopup="false"
+              />
+
+              <button
+                type = 'submit'
+                form = 'update-task'
+                disabled={isUpdatingTask}
+                className="button-bg w-full rounded p-2"
+              >
+                Update
               </button>
-            </SheetFooter>
+            
           </SheetContent>
         </Sheet>
 
@@ -59,7 +111,9 @@ export const TaskOptions = ({ taskDetail }: { taskDetail: TaskFormFieldTypes  })
             <AlertDialogTitle>
               Are you sure you want to delete this task?
             </AlertDialogTitle>
-            <AlertDialogDescription>This action cannot be undone!</AlertDialogDescription>
+            <AlertDialogDescription>
+              This action cannot be undone!
+            </AlertDialogDescription>
             <AlertDialogFooter>
               <div className="w-full grid gap-2 grid-cols-12  mt-6 space-y-2">
                 <AlertDialogCancel className=" button-bg col-span-7 p-1 rounded">

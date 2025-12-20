@@ -1,9 +1,11 @@
 
 import { create } from "zustand";
-import { getErrorMessage } from "@/utils/getErrorMessage";
+
 
 import type { Session } from "../types/auth.types";
 import { API } from "@/utils";
+import { extractErrorMessage } from "@/utils/error";
+
 
 const initialSession: Omit<Session, "getSession" | "clearSession" | 'setAccessToken'> = {
   isAuthenticated: false,
@@ -40,7 +42,7 @@ export const useSession = create<Session>((set) => ({
       accessToken
      })
    }catch(error){
-     console.error(getErrorMessage(error))
+     console.error(extractErrorMessage(error))
    }finally{
     set({ isLookingForSession: false });
    }

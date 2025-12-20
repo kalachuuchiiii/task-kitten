@@ -1,7 +1,9 @@
 import { verifyOwnerPlugin } from "@/plugins";
-import { EVENT_DESCRIPTION_LIMIT, EVENT_TITLE_LIMIT } from "@shared/constants";
+import { EVENT_LIMIT } from "@shared/limits";
 import { EventSchema } from "@shared/types";
 import mongoose, { Types } from "mongoose";
+
+const { description, title } = EVENT_LIMIT;
 
 
 const eventSchema = new mongoose.Schema<EventSchema>({
@@ -12,12 +14,12 @@ const eventSchema = new mongoose.Schema<EventSchema>({
     },
     description: {
         type: String,
-        maxlength: [EVENT_DESCRIPTION_LIMIT.LENGTH, EVENT_DESCRIPTION_LIMIT.MESSAGE],
+        maxlength: [description.MAX, description.MESSAGE],
         required: true
     },
     title: {
         type: String,
-        maxlengh: [EVENT_TITLE_LIMIT.LENGTH, EVENT_TITLE_LIMIT.MESSAGE],
+        maxlengh: [title.MAX, title.MESSAGE],
         required: true
     },
     start: {

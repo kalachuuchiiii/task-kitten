@@ -34,6 +34,7 @@ import { Label } from "@/components/ui/label";
 import { KeywordInput } from "./KeywordInput";
 import { KeywordList } from "./KeywordList";
 import { Button } from "@/components/ui/button";
+import { TASK_LIMIT } from "@shared/limits";
 
 type TaskFormFieldProps = {
   taskForm: TaskForm;
@@ -54,13 +55,17 @@ export const TaskFormFields = memo(
     handleChangeDate,
     handleAddKeyword,
     handleSelect,
-  }: TaskFormFieldProps) => {
+    ...props
+  }: TaskFormFieldProps & React.FormHTMLAttributes<HTMLFormElement>) => {
     return (
-      <div className="flex flex-col w-full gap-6 p-1 items-start">
+      <form {...props} className="flex flex-col w-full gap-6 p-1 items-start">
         <div className="w-full space-y-2">
           <div className="w-full space-y-2">
             <Label>Description</Label>
             <Textarea
+              required
+              maxLength={TASK_LIMIT.description.MAX}
+              minLength={TASK_LIMIT.description.MIN}
               placeholder="Describe the task"
               onChange={handleChangeDescription}
               value={taskForm.description}
@@ -107,13 +112,13 @@ export const TaskFormFields = memo(
             </Select>
           </div>
         </div>
-    
-          <div className="w-full space-y-2">
-            <header className="px-2 py-1">
-              <Label>Timeframe</Label>
-            </header>
+
+        <div className="w-full space-y-2">
+          <header className="px-2 py-1">
+            <Label>Timeframe</Label>
+          </header>
           <div className="border rounded-lg">
-               <Dialog>
+            <Dialog>
               <Item className="w-full ">
                 <ItemContent>
                   <ItemTitle>
@@ -162,14 +167,17 @@ export const TaskFormFields = memo(
               </DialogContent>
             </Dialog>
           </div>
-          </div>
-     
-        <KeywordInput handleAddKeyword={handleAddKeyword} />
+        </div>
+
+        <KeywordInput
+          keywords={taskForm.keywords}
+          handleAddKeyword={handleAddKeyword}
+        />
         <KeywordList
           keywords={taskForm.keywords}
           handleRemoveKeyword={handleRemoveKeyword}
         />
-      </div>
+      </form>
     );
   }
 );

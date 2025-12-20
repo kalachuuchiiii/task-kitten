@@ -1,5 +1,5 @@
-import { isValidKeyword, isValidLength } from "@/utils/validation";
-import { COMPARISON_OPERATORS, DESCRIPTION_LIMIT } from "@shared/constants";
+import {  isValidLength } from "@/utils/validation";
+import { COMPARISON_OPERATORS } from "@shared/constants";
 import type { TaskFilter } from "@shared/types";
 import { normalize } from "@shared/utils";
 import { useState } from "react";
@@ -8,6 +8,7 @@ import { create } from "zustand";
 import type { TextChangeEvent } from "./useTaskForm";
 import type { DateRange, OnSelectHandler } from "react-day-picker";
 import { initialFilterValues } from "../constants";
+import { TASK_LIMIT } from "@shared/limits";
 
 
 export const useFilterTask = () => {
@@ -33,7 +34,6 @@ export const useFilterTask = () => {
   }
 
   const handleAddKeyword = (kw: string) => {
-    if (!isValidKeyword(kw, filter.keywords)) return;
     setFilter((prev) => ({
       ...prev,
       keywords: [...prev.keywords, kw],
@@ -52,7 +52,7 @@ export const useFilterTask = () => {
 
      const handleChangeDescription = (e: TextChangeEvent) => {
         const { value } = e.target;
-        if (!isValidLength(value, DESCRIPTION_LIMIT)) return;
+        if (!isValidLength(value, TASK_LIMIT.description)) return;
         setFilter((prev) => ({
           ...prev,
           description: value,

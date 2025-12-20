@@ -1,29 +1,11 @@
 import { RequestHandler } from "express";
 import z from "zod";
-import { taskPriority, taskStatus } from "@tasker/shared/src/constants/task";
 import { TaskServices } from "@/services";
 import { filterQuerySchema } from "@/utils/validation/filterQuerySchema";
 import { paramSchema } from "@/utils/validation";
-import { excludeTime } from "@/utils/date";
+import { historyRecordSchema, taskSchema } from "@shared/schema";
+
 const taskService = new TaskServices();
-
-
-const taskSchema = z.object({
-  description: z.string(),
-  status: z.enum(taskStatus),
-  keywords: z.array(z.string()),
-  due: z.preprocess(excludeTime, z.date()),
-  startedAt: z.preprocess(excludeTime, z.date()),
-  priority: z.enum(taskPriority),
-}).strip();
-
-const taskRecordSchema = taskSchema.merge(
-  z.object({
-    note: z.string(),
-  }),
-).strip();
-
-
 
 export class TaskController {
 
@@ -57,7 +39,7 @@ export class TaskController {
   //PATCH /task/update/:taskId
   updateTaskById: RequestHandler = async (req, res) => {
     const taskForm =
-      taskRecordSchema.parse(req.body);
+      historyRecordSchema.parse(req.body);
     const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
 

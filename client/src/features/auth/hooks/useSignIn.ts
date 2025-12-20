@@ -2,12 +2,12 @@ import { useState, type FormEvent } from 'react';
 
 import { useMutation } from '@tanstack/react-query';
 import { toast } from 'sonner';
-import { getErrorMessage } from '../../../utils/getErrorMessage';
 import { useNavigate } from 'react-router-dom';
 import { useSession } from './useSession';
 
 import type { SignInForm } from '../types/auth.types';
 import { API } from '@/utils';
+import { extractErrorMessage } from '@/utils/error';
 
 export const useSignIn = () => {
     const [form, setForm] = useState<SignInForm>({
@@ -34,7 +34,7 @@ export const useSignIn = () => {
             toast.promise(p, {
                 loading: 'Signing you in...',
                 success: 'Sign in successful!',
-                error: (err) => getErrorMessage(err)
+                error: (err) => extractErrorMessage(err)
             })
             return await p;
         },

@@ -3,11 +3,22 @@ import { RequestHandler } from "express";
 import { AuthService } from "../services/auth.services";
 import { UnauthorizedError } from "../utils/errors/customErrors";
 import { cookieOptions } from "../constants";
+import z from "zod";
+import { USER_LIMIT } from "@shared/limits";
 
 
 const authService = new AuthService();
 
 export class AuthController {
+
+
+  changePassword: RequestHandler = async(req, res) => {
+    const userId = z.string().parse(req.user);
+    const { password } = credentialsSchema.parse(req.body.credentials);
+    
+    
+  }
+
   getSession: RequestHandler = async (req, res) => {
     const refreshToken = req.cookies?.["refresh-token"];
     const { user, accessToken } = await authService.getSession(refreshToken);

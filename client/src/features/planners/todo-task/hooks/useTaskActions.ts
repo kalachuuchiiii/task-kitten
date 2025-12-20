@@ -1,12 +1,16 @@
 import { useApi } from "@/hooks";
-import { getErrorMessage } from "@/utils";
-import { DESCRIPTION_LIMIT, KEYWORD_LIMIT, taskPriority, taskStatus } from "@shared/constants";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useTaskForm } from "./useTaskForm";
 import type { TaskFormFieldTypes } from "@shared/types";
 import { initialVal } from "../constants";
+import { TASK_LIMIT } from "@shared/limits";
+import { isValidLength } from "@/utils/validation";
+import type { FormEvent } from "react";
+import { historyRecordSchema, taskSchema } from "@shared/schema";
+import { extractErrorMessage } from "@/utils/error";
+import { renderError } from "@/utils";
 
 export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal) => {
 
@@ -23,7 +27,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const p = api.delete(`/task/delete/${id}`);
       toast.promise(p, {
         loading: "Deleting task...",
-        error: (err) => getErrorMessage(err),
+        error: (err) => extractErrorMessage(err),
         success: "Task Deleted Successfully!",
       });
       return await p;
@@ -35,34 +39,38 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
 
   const { mutate: createTask, isPending: isCreatingTask } = useMutation({
     mutationKey: ["tasks"],
-    mutationFn: async () => {
-      if (taskForm.description.length > DESCRIPTION_LIMIT.LENGTH) {
-        return toast.error(DESCRIPTION_LIMIT.MESSAGE);
-      }
-      const p = api.post("/task/create", { taskForm });
+    mutationFn: async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const parsed = taskSchema.parse(taskForm);
+      const p = api.post("/task/create", { taskForm: parsed });
       await toast.promise(p, {
         loading: "Creating task...",
         success: "Created successfully!",
-        error: (err) => getErrorMessage(err),
+        error: (err) => extractErrorMessage(err),
       });
       return await p;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
+    onError: renderError
   });
 
   const { mutate: updateTask, isPending: isUpdatingTask } = useMutation({
     mutationKey: ['task', id],
-    mutationFn: async () => {
-      const p = api.patch(`/task/update/${id}`, { ...taskForm });
+    mutationFn: async (e: FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      console.log(taskForm);
+      const parsed = historyRecordSchema.strip().parse(taskForm);
+      const p = api.patch(`/task/update/${id}`, { ...parsed });
       await toast.promise(p, {
         loading: "Updating task...",
         success: "Updated successfully!",
-        error: (err) => getErrorMessage(err),
+        error: (err) => extractErrorMessage(err),
       });
       return await p;
-    }
+    },
+    onError: renderError
   })
 
   const { mutate: revertTask, isPending: isRevertingTask } = useMutation({
@@ -71,7 +79,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       toast.promise(p, {
         loading: 'Reverting...',
         success: 'Reverted back successfully!',
-        error: (err) => getErrorMessage(err)
+        error: (err) => extractErrorMessage(err)
       })
       return p;
     }

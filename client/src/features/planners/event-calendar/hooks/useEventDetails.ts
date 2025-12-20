@@ -18,6 +18,8 @@ export const useEventDetails = () => {
      setIsDetailSheetOpen(true);
   }
 
+  
+
   return { 
     onOpenChange,
     openDetailSheet,

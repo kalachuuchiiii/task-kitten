@@ -1,15 +1,6 @@
 import { useState, type ChangeEvent } from "react";
-import type { TaskForm } from "../types/task";
-import {
-  DESCRIPTION_LIMIT,
-  KEYWORD_LIMIT,
-  NOTE_LIMIT,
-} from "@shared/constants";
-import { toast } from "sonner";
 import type { TaskFormFieldTypes } from "@shared/types";
-import { isValidKeyword } from "@/utils/validation/isValidKeyword";
 import { normalize } from "@shared/utils";
-import { isValidLength } from "@/utils/validation";
 
 export type TextChangeEvent = ChangeEvent<
   HTMLInputElement | HTMLTextAreaElement
@@ -30,7 +21,6 @@ export const useTaskForm = (
 
   const handleChangeDescription = (e: TextChangeEvent) => {
     const { value } = e.target;
-    if(!isValidLength(value, DESCRIPTION_LIMIT))return;
     setTaskForm((prev) => ({
       ...prev,
       description: value,
@@ -39,7 +29,6 @@ export const useTaskForm = (
 
   const handleChangeNote = (e: TextChangeEvent) => {
     const { value } = e.target;
-        if(!isValidLength(value, NOTE_LIMIT))return;
     setTaskForm((prev) => ({
       ...prev,  
       note: value,
@@ -47,7 +36,6 @@ export const useTaskForm = (
   };
 
   const handleAddKeyword = (keyword: string) => {
-    if (!isValidKeyword(keyword, taskForm.keywords)) return;
     setTaskForm((prev) => ({
       ...prev,
       keywords: [...prev.keywords, keyword],

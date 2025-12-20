@@ -1,6 +1,7 @@
 
 import {
   Sheet,
+  SheetContent,
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { CalendarCogIcon } from "lucide-react";
@@ -23,15 +24,16 @@ export const CreateNewEvent = () => {
           <CalendarCogIcon /> <p>New Event</p>
         </button>
       </SheetTrigger>
-        <EventFormFields {...formControl}>
-        <button
+       <SheetContent className="p-3">
+         <EventFormFields onSubmit={createEvent} id = 'create-event' {...formControl} />
+         <button
           disabled={isCreatingEvent}
-          onClick={() => createEvent()}
-          className="button-bg w-full p-1.5"
+          form = 'create-event'
+          className="button-bg w-full p-2"
         >
           Create
         </button>
-      </EventFormFields>
+       </SheetContent>
      </Sheet>
     </div>
   );

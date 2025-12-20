@@ -1,19 +1,21 @@
 import { verifyOwnerPlugin } from "@/plugins";
 import { ForbiddenError } from "@/utils/errors";
-import { DESCRIPTION_LIMIT, KEYWORD_CONFLICT_MSG, KEYWORD_LIMIT, KEYWORDS_LIMIT, taskPriority, taskStatus } from "@shared/constants";
+import {  KEYWORD_CONFLICT_MSG, taskPriority, taskStatus } from "@shared/constants";
+import { TASK_LIMIT } from "@shared/limits";
 import { TaskStatus, TaskSchema, TaskPriority } from "@shared/types";
 
 import mongoose, { Types } from "mongoose";
+const { keywordString, keywordArray, description } = TASK_LIMIT;
 
 const taskSchema = new mongoose.Schema<TaskSchema>(
   {
     keywords: {
-      type: [{ type: String, index: true, unique: false, maxlength: [KEYWORD_LIMIT.LENGTH, KEYWORD_LIMIT.MESSAGE] }],
+      type: [{ type: String, index: true, unique: false, maxlength: [keywordString.MAX, keywordString.MESSAGE] }],
      validate: {
       validator: (keywordArr: string[]) => {
-       return keywordArr.length <= KEYWORDS_LIMIT.LENGTH;
+       return keywordArr.length <= keywordArray.MAX
       },
-      message: KEYWORDS_LIMIT.MESSAGE
+      message: keywordArray.MESSAGE
      }
     },
     startedAt: {
@@ -24,8 +26,9 @@ const taskSchema = new mongoose.Schema<TaskSchema>(
     description: {
       type: String,
       index: true,
-      maxlength: [DESCRIPTION_LIMIT.LENGTH, DESCRIPTION_LIMIT.MESSAGE],
-      required: [true, DESCRIPTION_LIMIT.MESSAGE],
+      minlength: [description.MIN, description.MESSAGE],
+      maxlength: [description.MAX, description.MESSAGE],
+      required: true
     },
     status: {
       type: String,

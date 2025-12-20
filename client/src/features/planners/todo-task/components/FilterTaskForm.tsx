@@ -192,7 +192,7 @@ export const FilterTaskForm = () => {
       </Item>{" "}
       {/**priority end */}
       <DateFilterTabs />
-      <KeywordInput handleAddKeyword={handleAddKeyword} />
+      <KeywordInput keywords = {filter.keywords} handleAddKeyword={handleAddKeyword} />
       <KeywordList
         keywords={filter.keywords}
         handleRemoveKeyword={handleRemoveKeyword}

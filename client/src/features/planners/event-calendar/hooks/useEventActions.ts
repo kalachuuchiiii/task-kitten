@@ -1,5 +1,4 @@
 import { useApi } from "@/hooks";
-import { getErrorMessage } from "@/utils";
 import type FullCalendar from "@fullcalendar/react";
 import type { EventForm } from "@shared/types";
 import { useMutation } from "@tanstack/react-query";
@@ -7,6 +6,9 @@ import { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
 import type { TextChangeEvent } from "../../todo-task";
 import { createEventFormDefault } from "@shared/defaults";
+import { extractErrorMessage } from "@/utils/error";
+import { eventFormSchema } from "@shared/schema";
+import { renderError } from "@/utils";
 
 export const useEventActions = (
   initialValue: EventForm = createEventFormDefault()
@@ -16,31 +18,36 @@ export const useEventActions = (
   const eventCalendarRef = useRef<FullCalendar>(null);
 
   const { mutate: createEvent, isPending: isCreatingEvent } = useMutation({
-    mutationFn: async () => {
-      const p = api.post("/event/create", { eventForm });
+    mutationFn: async (e: React.FormEvent<HTMLFormElement>) => {
+      e.preventDefault();
+      const parsed = eventFormSchema.strip().parse(eventForm);
+      const p = api.post("/event/create", { eventForm: parsed });
       await toast.promise(p, {
         loading: "Creating event...",
         success: "Event created successfully!",
-        error: (err: unknown) => getErrorMessage(err),
+        error: (err: unknown) => extractErrorMessage(err),
       });
       const res = await p;
       eventCalendarRef.current?.getApi().addEvent(res.data.newEvent);
       setEventForm(createEventFormDefault());
       return res;
     },
+    onError: renderError 
   });
 
   const { mutate: updateEvent, isPending: isUpdatingEvent } = useMutation({
     mutationFn: async (eventId: string) => {
-      const p = api.patch(`/event/update/${eventId}`, { eventForm });
+      const parsed = eventFormSchema.strip().parse(eventForm);
+      const p = api.patch(`/event/update/${eventId}`, { eventForm: parsed });
       await toast.promise(p, {
         loading: "Updating event...",
         success: "Event successfully updated!",
-        error: (err: unknown) => getErrorMessage(err),
+        error: (err: unknown) => extractErrorMessage(err),
       });
       setEventForm(createEventFormDefault());
       return await p;
     },
+     onError: renderError
   });
 
   const { mutate: deleteEvent, isPending: isDeletingEvent } = useMutation({
@@ -49,10 +56,11 @@ export const useEventActions = (
       await toast.promise(p, {
         loading: "Deleting event...",
         success: "Event deleted successfully!",
-        error: (err: unknown) => getErrorMessage(err),
+        error: (err: unknown) => extractErrorMessage(err),
       });
       return await p;
     },
+
   });
 
   const handleSetEventText =  (e: TextChangeEvent) => {
@@ -81,7 +89,6 @@ export const useEventActions = (
       isUpdatingEvent,
     },
     eventCalendarRef,
- 
     formControl: {
       handleSetTimeframe,
       eventForm,

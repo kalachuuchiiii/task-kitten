@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 
 
 import { ZodError } from "zod";
-import { CustomError, getErrorMessage } from "@/utils/errors";
+import { CustomError, ExpiredSessionError } from "@/utils/errors";
 import { ErrorRequestHandler } from "express";
 
 
@@ -12,14 +12,16 @@ export const errorHandler: ErrorRequestHandler = async (error, _req, res, _next)
 
 
   if (error instanceof ZodError) {
-    const msg = getErrorMessage(error);
+    const message = JSON.parse(error.message)[0].message ?? 'Validation Error.';
     return res.status(400).json({
       success: false,
-      message: msg,
+      message,
     });
   }
 
-  if (error.name === 'ExpiredSession') {
+  
+
+  if (error instanceof ExpiredSessionError && error.name === 'ExpiredSession') {
     return res.status(401).json({
       success: false,
       newAccessToken: error.accessToken
@@ -27,9 +29,10 @@ export const errorHandler: ErrorRequestHandler = async (error, _req, res, _next)
   }
 
   if (error instanceof mongoose.Error.ValidationError) {
+     const message = Object.values(error.errors)[0]?.message ?? 'Validation Error.';
     return res.status(400).json({
       success: false,
-      message: getErrorMessage(error),
+      message,
     });
   }
 
