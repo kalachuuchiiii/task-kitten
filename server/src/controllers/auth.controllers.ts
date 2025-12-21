@@ -4,19 +4,35 @@ import { AuthService } from "../services/auth.services";
 import { UnauthorizedError } from "../utils/errors/customErrors";
 import { cookieOptions } from "../constants";
 import z from "zod";
-import { USER_LIMIT } from "@shared/limits";
+import { credentialsSchema, signInFormSchema, signUpFormSchema, usernameSchema } from "@shared/schema";
 
 
 const authService = new AuthService();
 
 export class AuthController {
 
-
-  changePassword: RequestHandler = async(req, res) => {
+  updateUsername: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
-    const { password } = credentialsSchema.parse(req.body.credentials);
+    const newUsername = usernameSchema.parse(req.body.newUsername);
+    const update = await authService.updateUsername({ newUsername, userId });
+    return res.status(200).json({
+      success: true,
+      message: 'Username updated successfully!'
+    })
+  }
+
+
+  updatePassword: RequestHandler = async(req, res) => {
+    const userId = z.string().parse(req.user);
+    const { newPassword } = credentialsSchema.parse(req.body.credentials); 
     
-    
+    const update = await authService.updatePassword({ newPassword, userId });
+
+    return res.status(200).json({
+      success: true,
+      message: 'Password changed successfully!'
+    })
+
   }
 
   getSession: RequestHandler = async (req, res) => {
@@ -44,9 +60,7 @@ export class AuthController {
   };
 
   signIn: RequestHandler = async (req, res) => {
-    const { username, password } = req.body;
-    if (!username || !password)
-      throw new UnauthorizedError("Invalid Credentials");
+    const { username, password } = signInFormSchema.strip().parse(req.body.signInForm);
     const { refreshToken, user } = await authService.login({
       username,
       password,
@@ -62,8 +76,8 @@ export class AuthController {
   };
 
   signUp: RequestHandler = async (req, res) => {
-    const { username, password, confirmPassword } = req.body;
-    await authService.register({ username, password, confirmPassword });
+    const { username, password } = signUpFormSchema.strip().parse(req.body.signUpForm);
+    await authService.register({ username, password });
 
     return res.status(200).json({
       success: true,

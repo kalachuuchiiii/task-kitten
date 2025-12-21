@@ -46,7 +46,6 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       await toast.promise(p, {
         loading: "Creating task...",
         success: "Created successfully!",
-        error: (err) => extractErrorMessage(err),
       });
       return await p;
     },
@@ -66,7 +65,6 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       await toast.promise(p, {
         loading: "Updating task...",
         success: "Updated successfully!",
-        error: (err) => extractErrorMessage(err),
       });
       return await p;
     },

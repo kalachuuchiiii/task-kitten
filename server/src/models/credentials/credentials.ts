@@ -14,7 +14,7 @@ const credentialsSchema = new mongoose.Schema<CredentialsSchema>({
         type: String,
         default: null,
     },
-    user: {
+    userId: {
         type: Types.ObjectId,
         ref: 'User',
         unique: true,

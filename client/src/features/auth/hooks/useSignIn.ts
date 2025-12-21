@@ -6,8 +6,9 @@ import { useNavigate } from 'react-router-dom';
 import { useSession } from './useSession';
 
 import type { SignInForm } from '../types/auth.types';
-import { API } from '@/utils';
+import { API, renderError } from '@/utils';
 import { extractErrorMessage } from '@/utils/error';
+import { signInFormSchema } from '@shared/schema';
 
 export const useSignIn = () => {
     const [form, setForm] = useState<SignInForm>({
@@ -30,14 +31,16 @@ export const useSignIn = () => {
     const { mutate: handleSignIn, isPending} = useMutation({
         mutationFn: async(e: FormEvent<HTMLFormElement>) => {
             e.preventDefault();
-            const p = API.post("/auth/sign-in", { ...form });
-            toast.promise(p, {
+            const signInForm = signInFormSchema.strip().parse(form);
+            const p = API.post("/auth/sign-in", { signInForm });
+            await toast.promise(p, {
                 loading: 'Signing you in...',
                 success: 'Sign in successful!',
-                error: (err) => extractErrorMessage(err)
+                
             })
             return await p;
         },
+        onError: renderError,
         onSuccess: async() => {
             await getSession();
             nav('/home');

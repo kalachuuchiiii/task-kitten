@@ -25,7 +25,6 @@ export const useEventActions = (
       await toast.promise(p, {
         loading: "Creating event...",
         success: "Event created successfully!",
-        error: (err: unknown) => extractErrorMessage(err),
       });
       const res = await p;
       eventCalendarRef.current?.getApi().addEvent(res.data.newEvent);
@@ -42,7 +41,6 @@ export const useEventActions = (
       await toast.promise(p, {
         loading: "Updating event...",
         success: "Event successfully updated!",
-        error: (err: unknown) => extractErrorMessage(err),
       });
       setEventForm(createEventFormDefault());
       return await p;

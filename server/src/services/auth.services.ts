@@ -9,26 +9,66 @@ import {
 import { generateToken, verifyToken } from "@/helpers";
 import {
   ConflictError,
+  ForbiddenError,
   NotFoundError,
   UnauthorizedError,
+  ValidationError,
 } from "@/utils/errors";
 import { Credentials, User } from "@/models";
 import { runWithSession } from "@/utils";
 import { UserSchema } from "@shared/types";
+import { formatDuration, intervalToDuration } from "date-fns";
 
-type UserForm = { username: string; password: string; confirmPassword: string };
+type UserForm = { username: string; password: string; };
 type CreatedEntities = { user: UserSchema; credentials: CredentialsSchema };
 
 export class AuthService {
-  changePassword = async ({
+  updateUsername = async ({
     userId,
-    password
-  }: Record<string, string>) => {
+    newUsername,
+  }: {
+    userId: string;
+    newUsername: string;
+  }) => {
+    const user = await User.findById(userId).orFail(
+      new NotFoundError("User not found.")
+    );
+    const remainingTime = user.getUsernameUpdateRemainingCooldown();
+    if (remainingTime > 0) {
+      const duration = intervalToDuration({ start: 0, end: remainingTime });
+      const formattedDuration = formatDuration(duration, { format: ['days', 'hours', 'minutes']})
+      throw new ForbiddenError(
+        `You can change your username again after ${formattedDuration} `
+      );
+    }
+    const { update } = await runWithSession(async (session) => {
+      const upd = await user.updateOne(
+        { username: newUsername },
+        { runValidators: true, session }
+      );
+      const updUser =  user.lastUsernameUpdate = new Date();
+      await user.save({ session });
+      return {
+        update: upd,
+      };
+    });
+
+    return update;
+
+  };
+
+  updatePassword = async ({
+    userId,
+    newPassword,
+  }: {
+    userId: string;
+    newPassword: string;
+  }) => {
     const credentials = await Credentials.findOne({ userId }).orFail(
       new NotFoundError("User credentials not found.")
     );
     const updatedPass = await credentials.updateOne(
-      { password },
+      { password: newPassword },
       { runWIthValidators: true }
     );
     return updatedPass;
@@ -65,11 +105,7 @@ export class AuthService {
   };
 
   register = async (userRequest: UserForm) => {
-    const { username, password, confirmPassword } = userRequest;
-
-    if (String(password) !== String(confirmPassword)) {
-      throw new UnauthorizedError("Passwords do not match.");
-    }
+    const { username, password } = userRequest;
 
     const doesUserExist = await User.findOne({ username });
     if (doesUserExist)
@@ -79,7 +115,7 @@ export class AuthService {
       const user: UserSchema = await new User({ username }).save({ session });
       const credentials: CredentialsSchema = await new Credentials({
         password,
-        user: String(user._id),
+        userId: String(user._id),
       }).save({ session });
 
       return {
@@ -94,13 +130,10 @@ export class AuthService {
   login = async (userRequest: Omit<UserForm, "confirmPassword">) => {
     const { username, password } = userRequest;
 
-    const doesUserExist = await User.findOne({ username });
-    if (!doesUserExist) throw new NotFoundError("User not found.");
-
+    const doesUserExist = await User.findOne({ username }).orFail(new NotFoundError('User not found.'));
     const credentials = await Credentials.findOne({
-      user: String(doesUserExist._id),
-    });
-    if (!credentials) throw new NotFoundError("Credentials not found.");
+      userId: String(doesUserExist._id),
+    }).orFail(new NotFoundError('Credentials not found.'));
 
     const isPasswordCorrect = await credentials.isPasswordCorrect(password);
     if (!isPasswordCorrect) throw new UnauthorizedError("Invalid Credentials");
