@@ -6,9 +6,10 @@ import { useNavigate } from 'react-router-dom';
 import { useSession } from './useSession';
 
 import type { SignInForm } from '../types/auth.types';
-import { API, renderError } from '@/utils';
-import { extractErrorMessage } from '@/utils/error';
+import { API, extractSuccessMessage } from '@/utils';
 import { signInFormSchema } from '@shared/schema';
+import { renderErrorToast } from '@/utils/error';
+import { useTranslation } from 'react-i18next';
 
 export const useSignIn = () => {
     const [form, setForm] = useState<SignInForm>({
@@ -18,6 +19,7 @@ export const useSignIn = () => {
 
     const nav = useNavigate();
     const { getSession } = useSession();
+    const { t } = useTranslation();
   
 
     const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,13 +36,12 @@ export const useSignIn = () => {
             const signInForm = signInFormSchema.strip().parse(form);
             const p = API.post("/auth/sign-in", { signInForm });
             await toast.promise(p, {
-                loading: 'Signing you in...',
-                success: 'Sign in successful!',
-                
+                loading: t('auth.signin.loading'),
+                success: t('auth.signin.success')
             })
             return await p;
         },
-        onError: renderError,
+        onError: renderErrorToast,
         onSuccess: async() => {
             await getSession();
             nav('/home');

@@ -1,0 +1,25 @@
+{
+  "task.created": "Matagumpay na nalikha ang gawain!",
+  "task.updated": "Matagumpay na na-update ang gawain!",
+  "task.deleted": "Matagumpay na natanggal ang gawain!",
+
+  "task.updating": "Ina-update ang gawain...",
+  "task.creating": "Gumagawa ng gawain...",
+  "task.deleting": "Tinatanggal ang gawain...",
+
+  "event.created": "Matagumpay na nalikha ang kaganapan!",
+  "event.updated": "Matagumpay na na-update ang kaganapan!",
+  "event.deleted": "Matagumpay na natanggal ang kaganapan!",
+
+  "event.creating": "Gumagawa ng kaganapan...",
+  "event.updating": "Ina-update ang kaganapan...",
+  "event.deleting": "Tinatanggal ang kaganapan...",
+
+  "auth.signin.success": "Matagumpay na nakapasok!",
+  "auth.signup.success": "Matagumpay na nakapagrehistro!",
+  "auth.signout.success": "Matagumpay na nakalabas!",
+
+  "auth.signin.loading": "Pinapasok ka...",
+  "auth.signup.loading": "Pinaparehistro ka...",
+  "auth.signout.loading": "Pinapalabas ka..."
+}

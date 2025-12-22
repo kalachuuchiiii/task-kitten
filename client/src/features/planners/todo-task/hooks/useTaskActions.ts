@@ -5,12 +5,10 @@ import { toast } from "sonner";
 import { useTaskForm } from "./useTaskForm";
 import type { TaskFormFieldTypes } from "@shared/types";
 import { initialVal } from "../constants";
-import { TASK_LIMIT } from "@shared/limits";
-import { isValidLength } from "@/utils/validation";
 import type { FormEvent } from "react";
 import { historyRecordSchema, taskSchema } from "@shared/schema";
-import { extractErrorMessage } from "@/utils/error";
-import { renderError } from "@/utils";
+import { extractErrorMessage, renderErrorToast } from "@/utils/error";
+import { extractSuccessMessage } from "@/utils";
 
 export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal) => {
 
@@ -28,7 +26,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       toast.promise(p, {
         loading: "Deleting task...",
         error: (err) => extractErrorMessage(err),
-        success: "Task Deleted Successfully!",
+        success: extractSuccessMessage
       });
       return await p;
     },
@@ -45,14 +43,14 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const p = api.post("/task/create", { taskForm: parsed });
       await toast.promise(p, {
         loading: "Creating task...",
-        success: "Created successfully!",
+        success: extractSuccessMessage
       });
       return await p;
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["tasks"] });
     },
-    onError: renderError
+    onError: renderErrorToast
   });
 
   const { mutate: updateTask, isPending: isUpdatingTask } = useMutation({
@@ -64,11 +62,11 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const p = api.patch(`/task/update/${id}`, { ...parsed });
       await toast.promise(p, {
         loading: "Updating task...",
-        success: "Updated successfully!",
+        success: extractSuccessMessage,
       });
       return await p;
     },
-    onError: renderError
+    onError: renderErrorToast
   })
 
   const { mutate: revertTask, isPending: isRevertingTask } = useMutation({
@@ -76,8 +74,8 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const p = api.patch(`/task/revert/${id}/${historyId}`);
       toast.promise(p, {
         loading: 'Reverting...',
-        success: 'Reverted back successfully!',
-        error: (err) => extractErrorMessage(err)
+        success: extractSuccessMessage,
+        error: extractErrorMessage
       })
       return p;
     }

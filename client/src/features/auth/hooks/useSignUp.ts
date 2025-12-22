@@ -3,9 +3,10 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import type { SignUpForm } from "../types/auth.types";
-import { API, renderError } from "@/utils";
-import { extractErrorMessage } from "@/utils/error";
+import { API, extractSuccessMessage } from "@/utils";
 import { signUpFormSchema } from "@shared/schema";
+import { renderErrorToast } from "@/utils/error";
+import { useTranslation } from "react-i18next";
 
 export const useSignUp = () => {
 
@@ -14,6 +15,7 @@ export const useSignUp = () => {
     username: '',
     confirmPassword: ''
   })
+  const { t } = useTranslation();
 
   const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
    const { name, value } = e.target;
@@ -29,12 +31,12 @@ export const useSignUp = () => {
       const signUpForm = signUpFormSchema.strip().parse(form);
       const p = API.post('/auth/sign-up', { signUpForm });
       await toast.promise(p, {
-        loading: "Creating your account...",
-        success: (res) => res.data.message,
+        loading: t('auth.signup.loading'),
+        success: t('auth.signup.success')
       }); 
       return await p;
     },
-    onError: renderError
+    onError: renderErrorToast
   });
 
   return {

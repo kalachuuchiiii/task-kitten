@@ -3,10 +3,8 @@ import { Model, QueryFilter } from "mongoose";
 
 
 export class EntityHelper<T> {
-  public Entity;
-  constructor(Entity: Model<T>) {
-    this.Entity = Entity;
-  }
+
+  constructor(public Entity: Model<T>) {}
 
  
   getListOfResource = async (

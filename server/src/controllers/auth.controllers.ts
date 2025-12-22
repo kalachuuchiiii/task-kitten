@@ -4,7 +4,7 @@ import { AuthService } from "../services/auth.services";
 import { UnauthorizedError } from "../utils/errors/customErrors";
 import { cookieOptions } from "../constants";
 import z from "zod";
-import { credentialsSchema, signInFormSchema, signUpFormSchema, usernameSchema } from "@shared/schema";
+import { credentialsSchema, signInFormSchema, signUpFormSchema, usernameFormSchema } from "@shared/schema";
 
 
 const authService = new AuthService();
@@ -13,14 +13,14 @@ export class AuthController {
 
   updateUsername: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
-    const newUsername = usernameSchema.parse(req.body.newUsername);
-    const update = await authService.updateUsername({ newUsername, userId });
+    const { newUsername } = usernameFormSchema.strip().parse(req.body.usernameForm);
+    const update = await authService.updateUsername({ newUsername, userId })
+
     return res.status(200).json({
       success: true,
-      message: 'Username updated successfully!'
+      code: 'username.updated'
     })
   }
-
 
   updatePassword: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
@@ -30,9 +30,8 @@ export class AuthController {
 
     return res.status(200).json({
       success: true,
-      message: 'Password changed successfully!'
+      code: 'password.updated'
     })
-
   }
 
   getSession: RequestHandler = async (req, res) => {
@@ -56,6 +55,7 @@ export class AuthController {
     return res.status(200).json({
       success: true,
       message: "Logged out successfully!",
+      code: 'auth.signout.success'
     });
   };
 
@@ -72,6 +72,7 @@ export class AuthController {
       success: true,
       user,
       message: "Logged In Successful!",
+      code: 'auth.signin.success'
     });
   };
 
@@ -82,6 +83,7 @@ export class AuthController {
     return res.status(200).json({
       success: true,
       message: "Registered Successfully!",
+      code: 'auth.signup.success'
     });
   };
 }

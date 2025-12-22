@@ -15,7 +15,8 @@ export class EventController {
     const update = await eventService.updateEvent({ userId, eventId, eventForm });
     return res.status(200).json({
       success: true,
-      update
+      update,
+      code: 'event.updated'
     })
   }
 
@@ -26,6 +27,7 @@ export class EventController {
     const deleted = await eventService.deleteEvent({ userId, eventId });
     return res.status(200).json({
       success: true,
+      code: 'event.deleted',
       deleted
     })
 
@@ -38,6 +40,7 @@ export class EventController {
     return res.status(200).json({
       success: true,
       newEvent,
+      code: 'event.created'
     });
   };
 

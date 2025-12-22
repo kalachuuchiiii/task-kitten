@@ -1,2 +1,3 @@
 
-export * from './excludeTime';
+
+export * from './getRemainingCooldown';

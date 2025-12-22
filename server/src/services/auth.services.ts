@@ -33,14 +33,7 @@ export class AuthService {
     const user = await User.findById(userId).orFail(
       new NotFoundError("User not found.")
     );
-    const remainingTime = user.getUsernameUpdateRemainingCooldown();
-    if (remainingTime > 0) {
-      const duration = intervalToDuration({ start: 0, end: remainingTime });
-      const formattedDuration = formatDuration(duration, { format: ['days', 'hours', 'minutes']})
-      throw new ForbiddenError(
-        `You can change your username again after ${formattedDuration} `
-      );
-    }
+ 
     const { update } = await runWithSession(async (session) => {
       const upd = await user.updateOne(
         { username: newUsername },

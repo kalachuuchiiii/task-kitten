@@ -17,7 +17,7 @@ const TaskDetails = lazy(() => import("@/features/planners/todo-task/pages/TaskD
 const Manager = lazy(() => import("@/features/account/manager/pages/AccountManager"));
 const Preferences = lazy(() => import("@/features/account/preferences/pages/Preferences.tsx"));
 
-export const routes: RouteObject[] = [
+export const appRoutes: RouteObject[] = [
   {
     element: <AppLayout />,
     children: [

@@ -19,7 +19,8 @@ export class TaskController {
     const update = await taskService.revertTask({ taskId, userId, recordId });
     return res.status(200).json({
       success: true,
-      update
+      update,
+      code: 'task.reverted'
     })
   }
 
@@ -47,6 +48,7 @@ export class TaskController {
 
     return res.status(200).json({
       success: true,
+      code: 'task.updated',
       updatedTask,
       newHistoryRecord
     })
@@ -59,6 +61,7 @@ export class TaskController {
     const data = await taskService.deleteById({ taskId, userId });
     return res.status(200).json({
       success: true,
+      code: 'task.deleted',
       data,
       message: "Task deleted successfully!",
     });
@@ -71,6 +74,7 @@ export class TaskController {
 
     return res.status(200).json({
       success: true,
+
       task,
     });
   };
@@ -88,6 +92,7 @@ export class TaskController {
     return res.status(201).json({
       success: true,
       createdTask,
+      code: 'task.created'
     });
   };
 

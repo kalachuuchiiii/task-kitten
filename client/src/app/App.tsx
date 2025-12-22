@@ -4,7 +4,7 @@ import { useSession } from '@/features/auth';
 import { NavigationBar } from '@/components/ui/NavigationBar';
 import { Toaster } from 'sonner';
 import { LoadingDisplay } from '@/components/ui/LoadingDisplay';
-import { AppRoutes } from './router';
+import { AppRouter } from './router/AppRouter';
 import { useTheme } from '@/features/account/preferences/hooks';
 
 
@@ -33,7 +33,7 @@ function App() {
       <NavigationBar />
       <Toaster position="top-center" />
       <Suspense fallback={<LoadingDisplay />}>
-       <AppRoutes />
+       <AppRouter />
       </Suspense>
     </div>
   );

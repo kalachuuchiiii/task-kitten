@@ -1,0 +1,25 @@
+{
+  "task.created": "Task created successfully!",
+  "task.updated": "Task updated successfully!",
+  "task.deleted": "Task deleted successfully!",
+
+  "task.updating": "Updating task...",
+  "task.creating": "Creating task...",
+  "task.deleting": "Deleting task...",
+
+  "event.created": "Event created successfully!",
+  "event.updated": "Event updated successfully!",
+  "event.deleted": "Event deleted successfully!",
+
+  "event.creating": "Creating event...",
+  "event.updating": "Updating event...",
+  "event.deleting": "Deleting event...",
+
+  "auth.signin.success": "Signed in successfully!",
+  "auth.signup.success": "Signed up successfully!",
+  "auth.signout.success": "Signed out successfully!",
+
+  "auth.signin.loading": "Signing you in...",
+  "auth.signup.loading": "Signing you in...",
+  "auth.signout.loading": "Signing you out..."
+}
