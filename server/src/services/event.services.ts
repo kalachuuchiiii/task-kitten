@@ -43,7 +43,8 @@ export class EventService {
         { end: { $gte: start, $lt: end } },
       ],
     };
-    const [events, totalEvents] = await Promise.all([Event.find(query), Event.countDocuments(query)]);
+    const [events, totalEvents] = await Promise.all([Event.find(query).lean(), Event.countDocuments(query)]);
+
     return {
         events, totalEvents
     }

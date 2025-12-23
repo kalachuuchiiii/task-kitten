@@ -18,7 +18,6 @@ export class EntityHelper<T> {
       this.Entity.find(queryFilter).sort({ createdAt: sort }).skip(skip).limit(limit),
       this.Entity.countDocuments(queryFilter),
     ]);
-    console.log(totalResource);
     const nextPage = (page * limit) < totalResource ? page + 1 : null;
 
     return {

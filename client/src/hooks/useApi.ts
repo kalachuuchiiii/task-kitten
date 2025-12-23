@@ -26,9 +26,11 @@ export const useApi = () => {
         console.log(`${response.config.method} ${response.config.url}`, response);
         return response;
       },
-      (error) => {
+      async(error) => {
         const originalRequest = error.config;
-        const newAccessToken = error?.response?.data?.newAccessToken;
+        const res = await API.post('/auth/refresh');
+        const newAccessToken = res.data.accessToken;
+    
         if (error.response.status === 401 && newAccessToken) {
           setAccessToken(newAccessToken);
           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;

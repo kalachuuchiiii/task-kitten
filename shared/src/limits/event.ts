@@ -1,6 +1,14 @@
-import { createRestraints } from "../utils";
+import { regexSelelector } from "../utils";
 
-export const EVENT_LIMIT = {
-  title: createRestraints(6, 60, "Event Title"),
-  description: createRestraints(1, 300, "Event Description"),
+export const EVENT_LIMITS = {
+  title: {
+    min: 3,
+    max: 60,
+    code: 'event.error.title_exceeded_length_limit',
+  },
+  description:  {
+    min: 3,
+    max: 60,
+    code: 'event.error.description_exceeded_length_limit',
+  }
 };

@@ -1,51 +1,44 @@
 import { CustomError } from "./customError";
 
 export class InternalServerError extends CustomError {
-    constructor(message: string = 'Internal Server Error'){
-        super(message, 500, 'InternalServerError');
+    constructor(message: string = 'Internal Server Error', code: string){
+        super(message, 500, 'InternalServerError', code);
     }
 }
 
 export class UnauthorizedError extends CustomError {
-    constructor(message: string = 'Unauthorized Error'){
-        super(message, 401, 'UnauthorizedError');
+    constructor(message: string = 'Unauthorized Error', code: string){
+        super(message, 401, 'UnauthorizedError', code);
     }
 }
 
 export class BadRequestError extends CustomError {
-    constructor(message: string = 'Bad Request Error'){
-        super(message, 400, 'BadRequestError');
+    constructor(message: string = 'Bad Request Error', code: string){
+        super(message, 400, 'BadRequestError', code);
     }
 }
 
 export class NotFoundError extends CustomError {
-    constructor(message: string = 'Not Found Error'){
-        super(message, 404, 'NotFoundError');
+    constructor(message: string = 'Not Found Error', code: string){
+        super(message, 404, 'NotFoundError', code);
     }
 }
 
 export class ConflictError extends CustomError {
-    constructor(message: string = 'Conflict Error'){
-        super(message, 409, 'ConflictError');
+    constructor(message: string = 'Conflict Error', code: string){
+        super(message, 409, 'ConflictError', code);
     }
 }
 
 export class ValidationError extends CustomError {
-    constructor(message: string = 'ValidationError'){
-        super(message, 400, 'ValidationError');
+    constructor(message: string = 'ValidationError', code: string){
+        super(message, 400, 'ValidationError', code);
     }
 }
 
 export class ForbiddenError extends CustomError {
-    constructor(message: string = 'ForbiddenError'){
-        super(message, 403, 'ForbiddenError');
-    }
-}
-
-export class ExpiredSessionError extends Error {
-    public name: string = 'ExpiredSession';
-    constructor( public readonly accessToken: string){
-      super('Session Expired.');
+    constructor(message: string = 'ForbiddenError', code: string){
+        super(message, 403, 'ForbiddenError', code);
     }
 }
 

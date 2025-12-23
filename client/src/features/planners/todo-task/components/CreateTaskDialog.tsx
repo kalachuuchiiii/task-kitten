@@ -21,15 +21,19 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import { useTranslation } from "react-i18next";
 
 export const CreateTaskDialog = () => {
   const { createTask, isCreatingTask, formControl } = useTaskActions();
+  const { t }= useTranslation();
 
   return (
     <SheetContent className=" p-3 overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>New task</SheetTitle>
-          <SheetDescription>You can change these later</SheetDescription>
+          <SheetTitle>{t('taskForm.title')}</SheetTitle>
+          <SheetDescription>
+            {t('taskForm.subtitle')}
+          </SheetDescription>
         </SheetHeader>
         <TaskFormFields onSubmit={(e) => createTask(e)} id="create-task" {...formControl} />
           <Button

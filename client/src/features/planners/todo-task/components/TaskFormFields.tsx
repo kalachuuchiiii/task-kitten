@@ -35,6 +35,7 @@ import { KeywordInput } from "./KeywordInput";
 import { KeywordList } from "./KeywordList";
 import { Button } from "@/components/ui/button";
 import { TASK_LIMIT } from "@shared/limits";
+import { useTranslation } from "react-i18next";
 
 type TaskFormFieldProps = {
   taskForm: TaskForm;
@@ -57,6 +58,8 @@ export const TaskFormFields = memo(
     handleSelect,
     ...props
   }: TaskFormFieldProps & React.FormHTMLAttributes<HTMLFormElement>) => {
+    const { t } = useTranslation();
+
     return (
       <form {...props} className="flex flex-col w-full gap-6 p-1 items-start">
         <div className="w-full space-y-2">
@@ -66,7 +69,7 @@ export const TaskFormFields = memo(
               required
               maxLength={TASK_LIMIT.description.MAX}
               minLength={TASK_LIMIT.description.MIN}
-              placeholder="Describe the task"
+              placeholder={t("taskForm.describe")}
               onChange={handleChangeDescription}
               value={taskForm.description}
               name="description"
@@ -80,14 +83,14 @@ export const TaskFormFields = memo(
                 size="sm"
                 style={{ height: 24 }}
               >
-                Status {capitalize(taskForm.status)}
+                {t(`status.${taskForm.status}`)}
               </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Status</SelectLabel>
+                  <SelectLabel>{t("status")}</SelectLabel>
                   {taskStatus.map((status) => (
                     <SelectItem key={status} value={status}>
-                      {capitalize(status)}
+                      {t(`status.${status}`)}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -98,13 +101,15 @@ export const TaskFormFields = memo(
                 size="sm"
                 className={` text-xs  w-fit`}
                 style={{ height: 24 }}
-              >{`${capitalize(taskForm.priority)} Priority`}</SelectTrigger>
+              >
+                {t(`priority.${taskForm.priority}`)}
+              </SelectTrigger>
               <SelectContent>
                 <SelectGroup>
-                  <SelectLabel>Priority</SelectLabel>
-                  {taskPriority.map((status) => (
-                    <SelectItem key={status} value={status}>
-                      {capitalize(status)}
+                  <SelectLabel>{t("priority")}</SelectLabel>
+                  {taskPriority.map((priority) => (
+                    <SelectItem key={priority} value={priority}>
+                      {t(`priority.${priority}`)}
                     </SelectItem>
                   ))}
                 </SelectGroup>
@@ -124,7 +129,9 @@ export const TaskFormFields = memo(
                   <ItemTitle>
                     Started at {formatDate(taskForm.startedAt)}
                   </ItemTitle>
-                  <ItemDescription>When did the task start</ItemDescription>
+                  <ItemDescription>{
+                    t('task.timeframe.start')
+                  }</ItemDescription>
                 </ItemContent>
                 <ItemActions>
                   <DialogTrigger asChild className="w-full ">
@@ -148,7 +155,9 @@ export const TaskFormFields = memo(
               <Item className="w-full">
                 <ItemContent>
                   <ItemTitle>Due at {formatDate(taskForm.due)}</ItemTitle>
-                  <ItemDescription>When will the task end</ItemDescription>
+                  <ItemDescription>{
+                    t('task.timeframe.end')
+                    }</ItemDescription>
                 </ItemContent>
                 <ItemActions>
                   <DialogTrigger asChild className="w-full ">

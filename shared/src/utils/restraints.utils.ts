@@ -3,24 +3,24 @@
 import z from "zod";
 
 export const applyRestraints = (restraint: Restraint) => {
-  return z.string().min(restraint.MIN, restraint.MESSAGE).max(restraint.MAX, restraint.MESSAGE).regex(restraint.PATTERN.EXP, restraint.PATTERN.MESSAGE)
+  return z.string().min(restraint.MIN, restraint.CODE).max(restraint.MAX, restraint.CODE).regex(restraint.PATTERN.EXP, restraint.PATTERN.CODE)
 }
 
 type RegexMap = Record<
   "alpha_numeric" | "email",
   {
     EXP: RegExp;
-    MESSAGE: string;
+    CODE: string;
   }
 >;
 
 export type Restraint = {
-  MESSAGE: string;
+  CODE: string;
   MIN: number;
   MAX: number;
   PATTERN: {
     EXP: RegExp;
-    MESSAGE: string;
+    CODE: string;
   };
 };
 
@@ -29,33 +29,33 @@ export const createRestraints = (
   max: number,
   field: string,
   options: {
-    message?: string | undefined;
+    code?: string | undefined;
     pattern?: keyof RegexMap | undefined;
-  } = { message: "", pattern: undefined }
+  } = { code: "", pattern: undefined }
 ): Restraint => {
-  const { message, pattern } = options;
+  const { code, pattern } = options;
 
   const REGEX_MAP: RegexMap = {
     alpha_numeric: {
       EXP: /^[a-zA-Z0-9]+$/,
-      MESSAGE: `${field} must not contain special characters.`,
+      CODE: ``,
     },
     email: {
       EXP: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
-      MESSAGE: "Invalid email.",
+      CODE: "Invalid email.",
     },
   };
 
   return {
-    MESSAGE:
-      message ?? `${field} must be between ${min} and ${max} characters.`,
+    CODE:
+      code ?? `${field} must be between ${min} and ${max} characters.`,
     MIN: min,
     MAX: max,
     PATTERN: pattern
       ? REGEX_MAP[pattern]
       : {
           EXP: /.*/,
-          MESSAGE: "WHAT DID YOU DO.",
+          CODE: "WHAT DID YOU DO.",
         },
   };
 };

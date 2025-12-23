@@ -56,12 +56,14 @@ export const useEventCalendar = () => {
   };
 
   const handleEventClick = (info: EventClickArg) => {
-    const eventObj: EventUpdateFormFields = {
+    console.log(info.event._instance?.range.start)
+    const eventObj: EventUpdateFormFields & { allDay: boolean }= {
       title: info.event._def.title,
       _id: info.event._def.extendedProps._id,
       start: info.event._instance?.range.start ?? new Date(),
       description: info.event._def.extendedProps?.description ?? "",
       end: info.event._instance?.range.end ?? undefined,
+      allDay: true
     };
     setEventForm(eventObj);
     openDetailSheet(eventObj);

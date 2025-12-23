@@ -29,6 +29,7 @@ import type { FormHTMLAttributes, JSX } from "react";
 import type { useEventActions } from "../hooks";
 import { Input } from "@/components/ui/input";
 import { EVENT_LIMIT } from "@shared/limits";
+import { useTranslation } from "react-i18next";
 
 type EventFormFieldProps = ReturnType<typeof useEventActions>["formControl"] & {
   title?: string;
@@ -42,6 +43,9 @@ export const EventFormFields = ({
   ...props
 }: EventFormFieldProps & FormHTMLAttributes<HTMLFormElement>) => {
   const { title: eventTitle, description } = EVENT_LIMIT;
+  const { t } = useTranslation();
+
+  
   return (
     <form {...props}>
       <SheetHeader>
@@ -54,7 +58,7 @@ export const EventFormFields = ({
             className="w-full"
             value={eventForm.title}
             name="title"
-            required 
+            required
             minLength={eventTitle.MIN}
             maxLength={eventTitle.MAX}
             onChange={handleSetEventText}
@@ -80,13 +84,14 @@ export const EventFormFields = ({
             <ItemActions>
               <Dialog>
                 <DialogTrigger>
-                  <Button variant={"ghost"}>
+                  <Button type="button" variant={"ghost"}>
                     <CalendarCogIcon />
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="w-fit flex items-center flex-col justify-center">
                   <DialogTitle>Start date</DialogTitle>
                   <Calendar
+                  required
                     onSelect={handleSetTimeframe("start")}
                     selected={eventForm.start}
                     showOutsideDays={false}
@@ -111,14 +116,16 @@ export const EventFormFields = ({
             <ItemActions>
               <Dialog>
                 <DialogTrigger>
-                  <Button variant={"ghost"}>
+                  <Button type="button" variant={"ghost"}>
                     <CalendarCogIcon />
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="w-fit flex items-center flex-col justify-center">
                   <DialogTitle>End date</DialogTitle>
                   <Calendar
+                 
                     onSelect={handleSetTimeframe("end")}
+                    
                     selected={eventForm.end}
                     showOutsideDays={false}
                     mode="single"

@@ -168,7 +168,6 @@ export class TaskServices {
     const {
       page,
       limit,
-      sort,
       priority,
       description,
       due,
@@ -176,7 +175,6 @@ export class TaskServices {
       status,
       keywords,
     } = filters;
-    console.log(filters);
     const filterQuery: QueryFilter<TaskSchema> = { userId, status, priority };
     if (description !== "") {
       filterQuery.description = { $regex: description, $options: "i" };
@@ -205,6 +203,10 @@ export class TaskServices {
       const op = comparisonOperatorsMap[startedAt.specific.operator];
       filterQuery.startedAt = { [op]: startedAt.specific.date };
     }
-    return await taskHelper.getListOfResource(filterQuery, page, limit, -1);
+
+    const taskQuery = await taskHelper.getListOfResource(filterQuery, page, limit, -1);
+    return {
+      taskQuery
+    }
   };
 }

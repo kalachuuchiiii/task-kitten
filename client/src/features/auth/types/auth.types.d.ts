@@ -7,6 +7,7 @@ export type SessionState = Pick<Session, 'user' | 'accessToken'>;
 
 export type Session = {
   isAuthenticated: boolean;
+  totalOwnedTasks: number;
   user: UserFields | null;
   setAccessToken: (token: string) => void;
   isLookingForSession: boolean;

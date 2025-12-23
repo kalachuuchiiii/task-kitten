@@ -7,12 +7,13 @@ import {
   ItemDescription,
   ItemTitle,
 } from "@/components/ui/item";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/features/auth";
 import { NicknameFormSheet, UsernameFormSheet } from "../components";
 
 const AccountManager = () => {
   const { user } = useSession();
+
   if (!user) return;
   return (
     <div>

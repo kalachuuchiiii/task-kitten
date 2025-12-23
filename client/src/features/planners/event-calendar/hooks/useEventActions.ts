@@ -25,8 +25,8 @@ export const useEventActions = (
       const parsed = eventFormSchema.strip().parse(eventForm);
       const p = api.post("/event/create", { eventForm: parsed });
       await toast.promise(p, {
-        loading: t('event.creating'),
-        success: t('event.created'),
+        loading: t('event.create.loading'),
+        success: t('event.create.success'),
       });
       const res = await p;
       eventCalendarRef.current?.getApi().addEvent(res.data.newEvent);
@@ -41,8 +41,8 @@ export const useEventActions = (
       const parsed = eventFormSchema.strip().parse(eventForm);
       const p = api.patch(`/event/update/${eventId}`, { eventForm: parsed });
       await toast.promise(p, {
-        loading: t('event.updating'),
-        success: t("event.updated"),
+        loading: t('event.update.loading'),
+        success: t("event.update.success"),
       });
       setEventForm(createEventFormDefault());
       return await p;
@@ -54,8 +54,8 @@ export const useEventActions = (
     mutationFn: async (eventId: string) => {
       const p = api.delete(`/event/delete/${eventId}`);
       await toast.promise(p, {
-        loading: t('event.deleting'),
-        success: t('event.deleted'),
+        loading: t('event.delete.loading'),
+        success: t('event.delete.success'),
         error: extractErrorMessage,
       });
       return await p;

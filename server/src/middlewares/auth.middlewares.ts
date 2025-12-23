@@ -1,6 +1,6 @@
 import { verifyToken } from "@/helpers";
 import { AuthService } from "@/services";
-import { ExpiredSessionError, UnauthorizedError } from "@/utils/errors";
+import { UnauthorizedError } from "@/utils/errors";
 import { RequestHandler } from "express";
 import { isValidObjectId } from "mongoose";
 
@@ -11,22 +11,12 @@ export class AuthMiddleware {
     const header = req.headers.authorization ?? "";
 
     if (!header.startsWith("Bearer ")) {
-      throw new UnauthorizedError("Invalid Token.");
+      throw new UnauthorizedError("Invalid Token.", "auth.error.invalid_token");
     }
     const accessToken = header.split(" ")[1];
-    const decodedToken = await verifyToken(accessToken, false);
+    const decodedToken = await verifyToken(accessToken);
+    req.user = decodedToken.user;
 
-    if (decodedToken?.user) {
-      if (!isValidObjectId(decodedToken.user)) {
-        throw new UnauthorizedError("Invalid Session.");
-      }
-      req.user = decodedToken.user;
-      return next();
-    }
-
-    const { accessToken: newAccessToken } = await authService.refresh(
-      req.cookies?.["refresh-token"]
-    );
-    throw new ExpiredSessionError(newAccessToken); //frontend will replace in-memory token and retry
+    return next();
   };
 }

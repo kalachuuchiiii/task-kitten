@@ -18,15 +18,15 @@ export const verifyToken = async (
   token: string | undefined,
   throwImmediately: boolean = true
 ): Promise<jwt.JwtPayload> => {
-  if (!token) throw new UnauthorizedError("Invalid Token.");
+  if (!token) throw new UnauthorizedError("Invalid Token.", 'auth.error.token_not_found');
 
   try {
     const decoded = await jwt.verify(token, config.JWT_KEY as string);
     return decoded as jwt.JwtPayload;
   } catch (e) {
     if(throwImmediately){
-      throw new UnauthorizedError("Invalid Token.");
+      throw new UnauthorizedError("Invalid Token.", 'auth.error.expired_token');
     }
-    return new UnauthorizedError('Invalid Token.')
+    return new UnauthorizedError('Invalid Token.', 'auth.error.expired_token')
   }
 };

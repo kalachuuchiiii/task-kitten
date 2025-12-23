@@ -17,14 +17,7 @@ export const CreateNewEvent = () => {
   } = useEventActions();
 
   return (
-    <div className="w-full flex items-center justify-center">
-     <Sheet>
-      <SheetTrigger>
-        <button className="flex items-center gap-2 button-bg px-5 py-2">
-          <CalendarCogIcon /> <p>New Event</p>
-        </button>
-      </SheetTrigger>
-       <SheetContent className="p-3">
+     <SheetContent className="p-3">
          <EventFormFields onSubmit={createEvent} id = 'create-event' {...formControl} />
          <button
           disabled={isCreatingEvent}
@@ -34,7 +27,6 @@ export const CreateNewEvent = () => {
           Create
         </button>
        </SheetContent>
-     </Sheet>
-    </div>
+ 
   );
 };

@@ -24,7 +24,7 @@ export const appRoutes: RouteObject[] = [
       {
         path: "/home",
         element: (
-          <PageLayout title="Welcome to Taskitten!">
+          <PageLayout title="app.title">
             <AuthGuard>
               <HomePage />
             </AuthGuard>
@@ -34,20 +34,19 @@ export const appRoutes: RouteObject[] = [
       {
         path: "/planners/to-do-list",
         element: (
-          <PageLayout
-            title="Your task list"
-            description="Track your tasks, view changelogs, and other stuffs!"
-          >
-            <AuthGuard>
+      
+          <PageLayout title = 'taskList.title' description="taskList.subtitle">
+              <AuthGuard>
               <Tasks />
             </AuthGuard>
           </PageLayout>
+
         ),
       },
       {
         path: "/task/:id",
         element: (
-          <PageLayout title = 'Task details'>
+          <PageLayout title = 'taskDetails.title'>
             <AuthGuard>
               <TaskDetails />
             </AuthGuard>
@@ -57,7 +56,7 @@ export const appRoutes: RouteObject[] = [
       {
         path: "/planners/event-calendar",
         element: (
-          <PageLayout title="Event Calendar" description="Events presented in a calendar.">
+          <PageLayout title="event.title" description="event.subtitle">
             <AuthGuard>
               <EventCalendar />
             </AuthGuard>
@@ -68,8 +67,8 @@ export const appRoutes: RouteObject[] = [
         path: "/account/manager",
         element: (
           <PageLayout
-            title="Account Manager"
-            description="Manage your account, security, and privacy."
+            title="accountManager.title"
+      
           >
             <AuthGuard>
               <Manager />
@@ -81,9 +80,11 @@ export const appRoutes: RouteObject[] = [
         path: "/account/preferences",
         element: (
     
-            <AuthGuard>
+          <PageLayout title = 'preferences.title' >
+              <AuthGuard>
               <Preferences />
             </AuthGuard>
+          </PageLayout>
     
         ),
       },
@@ -121,7 +122,7 @@ export const appRoutes: RouteObject[] = [
   {
     path: "/getting-started",
     element: (
-      <PageLayout title="Getting Started" description="Taskitten's documentation.">
+      <PageLayout title="sidebar.other.gettingStarted">
         <GettingStarted />
       </PageLayout>
     ),

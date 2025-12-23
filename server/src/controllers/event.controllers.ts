@@ -47,7 +47,6 @@ export class EventController {
   //GET /event/month-events
   getMonthEvents: RequestHandler = async (req, res) => {
     const userId = z.string().parse(req.user);
-    console.log(req.query.timeframe);
     const { start, end } = eventTimeframeSchema.parse(JSON.parse(req.query.timeframe as string || '{}'));
     const events = await eventService.getMonthEvents({ start, end, userId });
 

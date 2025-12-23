@@ -21,6 +21,15 @@ export class AuthController {
       code: 'username.updated'
     })
   }
+  
+  refresh: RequestHandler = async(req, res) => {
+    const refreshToken = z.string().parse(req.cookies['refresh-token']);
+    const { accessToken } = await authService.refresh(refreshToken);
+    return res.status(200).json({
+      success: true,
+      accessToken
+    })
+  }
 
   updatePassword: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
@@ -36,20 +45,19 @@ export class AuthController {
 
   getSession: RequestHandler = async (req, res) => {
     const refreshToken = req.cookies?.["refresh-token"];
-    const { user, accessToken } = await authService.getSession(refreshToken);
+    const sessionData = await authService.getSession(refreshToken);
     return res.status(200).json({
       success: true,
-      accessToken,
-      user,
-      isAuthenticated: !!accessToken && user !== null,
-    });
+      ...sessionData,
+      isAuthenticated: true
+    }); 
   };
 
   signOut: RequestHandler = async (req, res) => {
     const tokenName = "refresh-token";
     const cookie = req.cookies[tokenName];
     if (!cookie) {
-      throw new UnauthorizedError("No Session Found");
+      throw new UnauthorizedError("No Session Found", 'auth.error.sessionNotFound');
     }
     res.clearCookie(tokenName, { ...cookieOptions });
     return res.status(200).json({

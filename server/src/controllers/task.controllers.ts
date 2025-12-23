@@ -103,14 +103,14 @@ export class TaskController {
     const filter: Record<string, any> = JSON.parse(String(req.query.filters ?? {}) ?? '{}') ?? {};
     const filters = filterQuerySchema().parse(filter);
 
-    const { resourceList, nextPage, totalResource } =
+    const { taskQuery: { resourceList, nextPage, totalResource } } =
       await taskService.getTaskList({ userId, filters });
 
     return res.status(200).json({
       success: true,
       tasks: resourceList,
       nextPage,
-      totalTasks: totalResource,
+      totalTasksFound: totalResource
     });
   };
 }

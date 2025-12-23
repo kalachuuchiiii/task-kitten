@@ -12,6 +12,7 @@ const initialSession: Omit<Session, "getSession" | "clearSession" | 'setAccessTo
   user: null,
   accessToken: null,
   isLookingForSession: true,
+  totalOwnedTasks: 0
 };
 
 export const useSession = create<Session>((set) => ({
@@ -19,6 +20,7 @@ export const useSession = create<Session>((set) => ({
   user: null,
   accessToken: null,
   isLookingForSession: true,
+  totalOwnedTasks: 0,
   setAccessToken: (accessToken: string) => set({ accessToken }),
   clearSession: () => {  //logging out
     set((state) => ({ 
@@ -31,7 +33,7 @@ export const useSession = create<Session>((set) => ({
     set({ isLookingForSession: true });
    try{ 
      const response = await API.get('/auth/session');
-     const { user, accessToken, isAuthenticated } = response.data;
+     const { user, accessToken, isAuthenticated, totalOwnedTasks } = response.data;
 
      if(!user) throw new Error('No user found in this session.');
      if(!accessToken) throw new Error('No access token found in this session.')
@@ -39,6 +41,7 @@ export const useSession = create<Session>((set) => ({
      set({
       isAuthenticated,
       user,
+      totalOwnedTasks,
       accessToken
      })
    }catch(error){

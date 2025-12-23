@@ -18,7 +18,7 @@ export const taskSchema = z
     priority: z.enum(taskPriority),
   })
   .refine((task) => task.startedAt <= task.due, {
-    message: "Due date must be after or equal to when the task started",
+    message: "task.error.due_must_be_ahead",
     path: ["due"],
   })
 
@@ -27,7 +27,7 @@ export const taskSchema = z
       note: z.string().max(note.MAX, note.MESSAGE).min(note.MIN, note.MESSAGE),
     }),
   ).refine((task) => task.startedAt <= task.due, {
-    message: "Due date must be after or equal to when the task started",
+    message: "task.error.due_must_be_ahead",
     path: ["due"],
   })
   

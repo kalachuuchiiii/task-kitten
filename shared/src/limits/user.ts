@@ -1,7 +1,13 @@
-import { createRestraints } from "../utils";
+import { createRestraints, regexSelelector } from "../utils";
 
-export const USER_LIMIT = {
-  username: createRestraints(6, 26, 'Username', { pattern: "alpha_numeric" }),
-  nickname: createRestraints(3, 36, 'Nickname', { pattern: 'alpha_numeric' }),
-  password: createRestraints(6, 36, 'Password', { pattern: 'alpha_numeric' })
-};
+export const USER_LIMITS = {
+  username: {
+    min: 6, 
+    max: 26,
+    code: 'user.error.username_exceeded_length_limit',
+    pattern: {
+      exp: regexSelelector('alphanumeric'),
+      code: 'user.error.invalid_characters'
+    }
+  }
+}

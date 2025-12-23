@@ -12,6 +12,7 @@ const authRouter = Router();
 const authController = new AuthController();
 const authMiddleware = new AuthMiddleware();
 
+authRouter.post('/refresh', catchErrors(authController.refresh))
 authRouter.post('/sign-in', catchErrors(authController.signIn));
 authRouter.post('/sign-up', catchErrors(authController.signUp));
 authRouter.post('/sign-out', catchErrors(authController.signOut));

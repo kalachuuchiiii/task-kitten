@@ -9,12 +9,14 @@ import type { FormEvent } from "react";
 import { historyRecordSchema, taskSchema } from "@shared/schema";
 import { extractErrorMessage, renderErrorToast } from "@/utils/error";
 import { extractSuccessMessage } from "@/utils";
+import { useTranslation } from "react-i18next";
 
 export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal) => {
 
   const queryClient = useQueryClient();
   const formControl = useTaskForm(initialTaskForm);
   const { taskForm } = formControl;
+  const { t } = useTranslation();
 
 
   const api = useApi();
@@ -24,9 +26,9 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
     mutationFn: async () => {
       const p = api.delete(`/task/delete/${id}`);
       toast.promise(p, {
-        loading: "Deleting task...",
+        loading: t('task.delete.loading'),
         error: (err) => extractErrorMessage(err),
-        success: extractSuccessMessage
+        success: t("task.delete.success")
       });
       return await p;
     },
@@ -42,8 +44,8 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const parsed = taskSchema.parse(taskForm);
       const p = api.post("/task/create", { taskForm: parsed });
       await toast.promise(p, {
-        loading: "Creating task...",
-        success: extractSuccessMessage
+        loading: t('task.create.loading'),
+        success: t('task.create.success')
       });
       return await p;
     },
@@ -61,8 +63,8 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const parsed = historyRecordSchema.strip().parse(taskForm);
       const p = api.patch(`/task/update/${id}`, { ...parsed });
       await toast.promise(p, {
-        loading: "Updating task...",
-        success: extractSuccessMessage,
+        loading: t('task.update.loading'),
+        success: t('task.update.success'),
       });
       return await p;
     },
@@ -73,8 +75,8 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
     mutationFn: async (historyId: string) => {
       const p = api.patch(`/task/revert/${id}/${historyId}`);
       toast.promise(p, {
-        loading: 'Reverting...',
-        success: extractSuccessMessage,
+        loading: t('task.revert.loading'),
+        success: t('task.revert.success'),
         error: extractErrorMessage
       })
       return p;
