@@ -1,18 +1,18 @@
 import z from "zod";
 import { taskPriority, taskStatus } from "../constants";
-import { HISTORY_RECORD_LIMIT, TASK_LIMIT } from "../limits";
-import { toDate } from "../utils";
+import { applyLimits, toDate } from "../utils";
+import { TASK_LIMITS, TASK_RECORD_LIMITS } from "../limits";
 
 
 
-const { keywordString, keywordArray, description } = TASK_LIMIT;
-const { note } = HISTORY_RECORD_LIMIT; 
+const { description, keyword, keywords } = TASK_LIMITS;
+
 
 export const taskSchema = z
   .object({
-    description: z.string().min(description.MIN, description.MESSAGE).max(description.MAX, description.MESSAGE),
+    description: applyLimits(description),
     status: z.enum(taskStatus),
-    keywords: z.array(z.string().max(keywordString.MAX, keywordString.MESSAGE)).max(keywordArray.MAX, keywordArray.MESSAGE),
+    keywords: z.array(z.string().max(keyword.max, keyword.code)).max(keywords.max, keywords.code),
     due: z.preprocess(toDate(), z.date()),
     startedAt: z.preprocess(toDate(), z.date()),
     priority: z.enum(taskPriority),
@@ -22,9 +22,9 @@ export const taskSchema = z
     path: ["due"],
   })
 
-  export const historyRecordSchema = taskSchema.merge(
+  export const taskRecordSchema = taskSchema.merge(
     z.object({
-      note: z.string().max(note.MAX, note.MESSAGE).min(note.MIN, note.MESSAGE),
+      note: applyLimits(TASK_RECORD_LIMITS.note),
     }),
   ).refine((task) => task.startedAt <= task.due, {
     message: "task.error.due_must_be_ahead",

@@ -1,8 +1,10 @@
 import mongoose from "mongoose";
 import { TaskHistorySchema, TaskRecordFields } from "@shared/types";
 import { formatDate } from "@shared/utils";
-import { HISTORY_RECORD_LIMIT } from "@shared/limits";
 import { taskRecordAllowedFields } from "@shared/constants";
+import { TASK_RECORD_LIMITS } from "@shared/limits";
+
+const { note } = TASK_RECORD_LIMITS;
 
 const updatedFields = new mongoose.Schema<TaskRecordFields>({ 
   field: { type: String ,required: true, enum: taskRecordAllowedFields}, 
@@ -21,7 +23,7 @@ const taskRecordSchema = new mongoose.Schema<TaskHistorySchema>({
    },
    note: {
     type: String,
-    maxlength: [HISTORY_RECORD_LIMIT.note.MAX, HISTORY_RECORD_LIMIT.note.MESSAGE],
+    maxlength: [note.max, note.code],
     default: 'Update'
    }
 }, { timestamps: true, _id: true })

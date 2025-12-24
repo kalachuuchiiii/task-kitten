@@ -1,17 +1,19 @@
 
 import { isAlphanumeric } from "@/utils";
+import { USER_LIMITS } from "@shared/limits";
 import { UserSchema } from "@shared/types";
 import mongoose from "mongoose";
 
+const { username, nickname } = USER_LIMITS;
 
 const userSchema = new mongoose.Schema<UserSchema>({
     username: {
         type: String,
-        minlength: [6, 'Username is too short!'],
+        minlength: [],
         maxlength: [26, 'Username is too long!'], 
         validate: {
-            validator: function(username: string){
-                return isAlphanumeric(username);
+            validator: function(candidateUsername: string){
+                
             },
             message: 'Username can only contain letters (a-z) and numbers (0-9).'
         },

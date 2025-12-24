@@ -1,23 +1,29 @@
 import z from "zod";
-import { USER_LIMIT } from "../limits";
-import { applyRestraints, getRemainingCooldown, toDate } from "../utils";
+
+import {  applyLimits, getRemainingCooldown, toDate } from "../utils";
 import { UPDATE_USERNAME_COOLDOWN } from "../constants";
 import { formatDuration, intervalToDuration } from "date-fns";
+import { CREDENTIAL_LIMITS, USER_LIMITS } from "../limits";
 
-const { password, username } = USER_LIMIT;
+const { username } = USER_LIMITS;
+const { password } = CREDENTIAL_LIMITS;  
 
 export const usernameFormSchema = z.object({
-  oldUsername: applyRestraints(username),
-  newUsername: applyRestraints(username),
+  oldUsername: applyLimits(username),
+  newUsername: applyLimits(username),
   lastUsernameUpdate: z.preprocess(toDate(), z.date()).nullable().optional(),
 }).superRefine((data, ctx) => {
   const remaining = getRemainingCooldown(data.lastUsernameUpdate, UPDATE_USERNAME_COOLDOWN);
-  const duration = intervalToDuration({ start: 0, end: remaining });
-  const formattedRemainingTime = formatDuration(duration, { format: ['days', 'hours', 'minutes', 'seconds']});
+  const duration = intervalToDuration({
+  start: 0,
+  end: remaining,
+});
+
   if(remaining > 0){
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      message: `You can change your username again after ${formattedRemainingTime}`,
+      remainingTime: duration,
+      message: 'auth.error.update_username_on_cooldown',
       path: ['lastUsernameUpdate']
     })
   }
@@ -30,28 +36,28 @@ export const nicknameFormSchema = z.object({
 
 export const credentialsSchema = z
   .object({
-    oldPassword: applyRestraints(password),
-    newPassword: applyRestraints(password),
-    confirmNewPassword: applyRestraints(password),
+    oldPassword: applyLimits(password),
+    newPassword: applyLimits(password),
+    confirmNewPassword: applyLimits(password),
   })
   .refine((pass) => pass.newPassword === pass.confirmNewPassword, {
-    message: "Passwords do not match.",
+    message: "auth.error.passwords_do_not_match",
     path: ["newPassword"],
   }).refine((pass) => pass.newPassword !== pass.oldPassword, {
-    message: 'Please enter a new password.',
+    message: 'auth.error.password_unchanged',
     path: ['newPassword']
   });
 
  export const signInFormSchema = z.object({
-    username: applyRestraints(username),
-    password: applyRestraints(password)
+    username: applyLimits(username),
+    password: applyLimits(password)
   })
 
   export const signUpFormSchema = z.object({
-    username: applyRestraints(username),
-    password: applyRestraints(password),
-    confirmPassword: applyRestraints(password),
+    username: applyLimits(username),
+    password: applyLimits(password),
+    confirmPassword: applyLimits(password),
   }).refine(credentials => credentials.password === credentials.confirmPassword, {
-    message: 'Passwords do not match.',
+    message: 'auth.error.passwords_do_not_match',
     path: ['password', 'confirmPassword']
   })

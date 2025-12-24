@@ -1,26 +1,28 @@
 import z from "zod";
 import { toDate } from "../utils/toDate";
-import { EVENT_LIMIT } from "../limits";
+import { EVENT_LIMITS } from "../limits";
+import { applyLimits } from "../utils";
 
-const { title, description } = EVENT_LIMIT;
+const { title, description } = EVENT_LIMITS;
 
 export const eventTimeframeSchema = z
   .object({
-    start: z.preprocess(toDate({excludeTime: true }), z.date() ),
-    end: z.preprocess(toDate({ excludeTime: true }), z.date())
+    start: z.preprocess(toDate({ excludeTime: true }), z.date()),
+    end: z.preprocess(toDate({ excludeTime: true }), z.date()),
   })
   .refine((event) => event.end >= event.start, {
-    message: 'End date must be after or equal to the start date',
-    path: ['end']
-  })
+    message: "event.error.end_must_be_ahead",
+    path: ["end"],
+  });
 
 export const eventFormSchema = z
   .object({
-    title: z.string().max(title.MAX, title.MESSAGE).min(title.MIN, title.MESSAGE),
+    title: applyLimits(title),
+    description: applyLimits(description),
     start: z.preprocess(toDate({ excludeTime: true }), z.date()),
-    description: z.string().max(description.MAX, description.MESSAGE).min(description.MIN, description.MESSAGE),
     end: z.preprocess(toDate({ excludeTime: true }), z.date()).optional(),
-  }).refine((event) => !event.end || event.end >= event.start, {
-    message: 'End date must be after or equal to the start date',
-    path: ['end']
   })
+  .refine((event) => !event.end || event.end >= event.start, {
+    message: "event.error.end_must_be_ahead",
+    path: ["end"],
+  });

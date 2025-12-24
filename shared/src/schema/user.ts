@@ -1,5 +1,5 @@
-import { USER_LIMIT } from "../limits";
-import { applyRestraints } from "../utils";
+import { USER_LIMITS } from "../limits";
+import { applyLimits } from "../utils";
 
 
-export const nicknameSchema = applyRestraints(USER_LIMIT.nickname);
+export const nicknameSchema = applyLimits(USER_LIMITS.nickname);
