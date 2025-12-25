@@ -33,6 +33,6 @@ const eventSchema = new mongoose.Schema<EventSchema>({
     }
 }, { timestamps: true })
 
-eventSchema.plugin(verifyOwnerPlugin<EventSchema>('userId'));
+eventSchema.plugin(verifyOwnerPlugin<EventSchema>('userId', 'Event'));
 
 export const Event = mongoose.model('Event', eventSchema); //literal event...

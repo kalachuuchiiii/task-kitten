@@ -14,15 +14,22 @@ export const usernameFormSchema = z.object({
   lastUsernameUpdate: z.preprocess(toDate(), z.date()).nullable().optional(),
 }).superRefine((data, ctx) => {
   const remaining = getRemainingCooldown(data.lastUsernameUpdate, UPDATE_USERNAME_COOLDOWN);
+  console.log(remaining);
   const duration = intervalToDuration({
   start: 0,
   end: remaining,
 });
 
+console.log('dur', duration)
+
   if(remaining > 0){
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
-      remainingTime: duration,
+      params: {
+        days: duration.days ?? 0,
+        hours: duration.hours ?? 0,
+        minutes: duration.minutes ?? 0
+      },
       message: 'auth.error.update_username_on_cooldown',
       path: ['lastUsernameUpdate']
     })

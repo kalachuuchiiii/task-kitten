@@ -9,10 +9,8 @@ import {
 import { generateToken, verifyToken } from "@/helpers";
 import {
   ConflictError,
-  ForbiddenError,
   NotFoundError,
   UnauthorizedError,
-  ValidationError,
 } from "@/utils/errors";
 import { Credentials, Task, User } from "@/models";
 import { runWithSession } from "@/utils";
@@ -33,7 +31,7 @@ export class AuthService {
     newUsername: string;
   }) => {
     const user = await User.findById(userId).orFail(
-      new NotFoundError("User not found.", missingUserCode)
+      new NotFoundError(missingUserCode)
     );
  
     const { update } = await runWithSession(async (session) => {
@@ -60,7 +58,7 @@ export class AuthService {
     newPassword: string;
   }) => {
     const credentials = await Credentials.findOne({ userId }).orFail(
-      new NotFoundError("User credentials not found.", missingCredentialsCode)
+      new NotFoundError( missingCredentialsCode)
     );
     const updatedPass = await credentials.updateOne(
       { password: newPassword },
@@ -73,7 +71,7 @@ export class AuthService {
     const decodedToken = await verifyToken(refreshToken);
     const userId = (decodedToken as jwt.JwtPayload).user;
     await User.exists({ _id: userId })
-      .orFail(new UnauthorizedError("User not found.", missingUserCode))
+      .orFail(new UnauthorizedError( missingUserCode))
       .lean();
     const accessToken = await generateToken(
       { user: userId },
@@ -86,7 +84,7 @@ export class AuthService {
     const decodedToken = await verifyToken(refreshToken);
     const userId = (decodedToken as jwt.JwtPayload).user;
     const user = await User.findById(userId)
-      .orFail(new UnauthorizedError("User not found.", missingUserCode))
+      .orFail(new UnauthorizedError( missingUserCode))
       .lean();
       const totalOwnedTasks = await Task.countDocuments({ userId: user._id });
     const accessToken = await generateToken(
@@ -106,7 +104,7 @@ export class AuthService {
 
     const doesUserExist = await User.findOne({ username });
     if (doesUserExist)
-      throw new ConflictError("This username is already taken.", 'auth.error.username_already_taken');
+      throw new ConflictError('auth.error.username_already_taken');
 
     const created = await runWithSession<CreatedEntities>(async (session) => {
       const user: UserSchema = await new User({ username }).save({ session });
@@ -127,13 +125,13 @@ export class AuthService {
   login = async (userRequest: Omit<UserForm, "confirmPassword">) => {
     const { username, password } = userRequest;
 
-    const doesUserExist = await User.findOne({ username }).orFail(new NotFoundError('User not found.', missingUserCode));
+    const doesUserExist = await User.findOne({ username }).orFail(new NotFoundError(missingUserCode));
     const credentials = await Credentials.findOne({
       userId: String(doesUserExist._id),
-    }).orFail(new NotFoundError('Credentials not found.', missingCredentialsCode));
+    }).orFail(new NotFoundError(missingCredentialsCode));
 
     const isPasswordCorrect = await credentials.isPasswordCorrect(password);
-    if (!isPasswordCorrect) throw new UnauthorizedError("Invalid Credentials", 'auth.error.credentials_invalid');
+    if (!isPasswordCorrect) throw new UnauthorizedError('auth.error.invalid_credentials');
 
     const tokenPayload = { user: doesUserExist._id };
     const refreshToken = await generateToken(

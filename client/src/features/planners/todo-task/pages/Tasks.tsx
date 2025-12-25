@@ -33,7 +33,7 @@ const CreateTaskSheet = () => {
     <Sheet>
       <SheetTrigger asChild>
         <Button className="button-bg">
-          {t("taskList.action.create")} <Plus />
+          {t("task_list.action.create")} <Plus />
         </Button>
       </SheetTrigger>
 
@@ -75,8 +75,8 @@ const Tasks = () => {
             <EmptyMedia variant={"icon"}>
               <ListTodo />
             </EmptyMedia>
-            <EmptyTitle>{t("taskList.empty.title")}</EmptyTitle>
-            <EmptyDescription>{t("taskList.empty.subtitle")}</EmptyDescription>
+            <EmptyTitle>{t("task_list.empty.title")}</EmptyTitle>
+            <EmptyDescription>{t("task_list.empty.subtitle")}</EmptyDescription>
             <EmptyContent>
               <div className="p-2">
                 <CreateTaskSheet />
@@ -91,7 +91,7 @@ const Tasks = () => {
           ))}
         </div>
       )  : <p className="w-full opacity-50 font-semibold text-center">
-        {t('taskList.noTasksFound')}
+        {t('task_list.no_tasks_found')}
         </p>}  
       {
         //** no tasks found ( main cause is the filter, so reset )  */

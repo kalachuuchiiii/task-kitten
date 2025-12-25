@@ -4,8 +4,9 @@ import { toast } from "sonner";
 import { useSession } from "./useSession";
 import { useNavigate } from "react-router-dom";
 import { API, extractSuccessMessage } from "@/utils";
-import { extractErrorMessage } from "@/utils/error";
+
 import { useTranslation } from "react-i18next";
+import { extractErrorCodeKeys } from "@/utils/error";
 
 
 export const useSignOut = () => {
@@ -19,7 +20,7 @@ export const useSignOut = () => {
       toast.promise(p, {
         loading: t('auth.signout.loading'),
         success: t('auth.signout.success'),
-        error: extractErrorMessage,
+        error: extractErrorCodeKeys,
       })
       return await p;
     },

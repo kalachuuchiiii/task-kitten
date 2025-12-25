@@ -8,8 +8,8 @@ export type Limit = {
     max: number;
     code: LocaleKeys,
     pattern?: {
-        exp?: RegExp;
-        code?: LocaleKeys;
+        exp: RegExp;
+        code: LocaleKeys;
     }
 }
 

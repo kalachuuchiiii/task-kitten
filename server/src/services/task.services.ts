@@ -30,10 +30,10 @@ export class TaskServices {
     recordId,
   }: IDS<{ recordId: string }>) => {
     const task = (
-      await Task.findById(taskId).orFail(new NotFoundError("Task not found."))
+      await Task.findById(taskId).orFail(new NotFoundError("task.error.task_not_found"))
     ).verifyOwner(userId);
     const taskRecord = await TaskRecord.findOne({ taskId, _id: recordId })
-      .orFail(new NotFoundError("History Record not found."))
+      .orFail(new NotFoundError("task_record.error.task_record_not_found"))
       .lean();
 
     const changes = taskRecord.updatedFields.reduce<
@@ -56,7 +56,7 @@ export class TaskServices {
     taskId,
   }: IDS<{ taskForm: TaskFormFieldTypes }>) => {
     const currentTask = (
-      await Task.findById(taskId).orFail(new NotFoundError("Task not found."))
+      await Task.findById(taskId).orFail(new NotFoundError('task.error.task_not_found'))
     ).verifyOwner(userId);
     const changes: TaskRecordFields[] = [];
     let hasChanges = false;
@@ -71,7 +71,7 @@ export class TaskServices {
     }
 
     if (!hasChanges) {
-      throw new ConflictError("No changes found.");
+      throw new ConflictError('task.error.no_changes_found');
     }
 
     return await runWithSession(async (session) => {
@@ -91,7 +91,7 @@ export class TaskServices {
   };
   getTask = async ({ taskId, userId }: IDS) => {
     const task = (
-      await Task.findById(taskId).orFail(new NotFoundError("Task not found."))
+      await Task.findById(taskId).orFail(new NotFoundError('task.error.task_not_found'))
     ).verifyOwner(userId);
     return task;
   };
@@ -105,8 +105,9 @@ export class TaskServices {
     const task = (
       await Task.findById(taskId)
         .select("userId")
-        .orFail(new NotFoundError("Task not found."))
+        .orFail(new NotFoundError("task.error.task_not_found"))
     ).verifyOwner(userId);
+
     const {
       resourceList: updateHistory,
       totalResource: totalUpdates,
@@ -154,7 +155,7 @@ export class TaskServices {
 
   deleteById = async ({ taskId, userId }: IDS) => {
     const data = (
-      await Task.findById(taskId).orFail(new NotFoundError("Task not found."))
+      await Task.findById(taskId).orFail(new NotFoundError('task.error.task_not_found'))
     )
       .verifyOwner(userId)
       .deleteOne();

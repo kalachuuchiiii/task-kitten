@@ -28,7 +28,7 @@ import { CalendarCogIcon } from "lucide-react";
 import type { FormHTMLAttributes, JSX } from "react";
 import type { useEventActions } from "../hooks";
 import { Input } from "@/components/ui/input";
-import { EVENT_LIMIT } from "@shared/limits";
+import { EVENT_LIMITS } from "@shared/limits";
 import { useTranslation } from "react-i18next";
 
 type EventFormFieldProps = ReturnType<typeof useEventActions>["formControl"] & {
@@ -42,7 +42,7 @@ export const EventFormFields = ({
   title = "New Event",
   ...props
 }: EventFormFieldProps & FormHTMLAttributes<HTMLFormElement>) => {
-  const { title: eventTitle, description } = EVENT_LIMIT;
+  const { title: eventTitle, description } = EVENT_LIMITS;
   const { t } = useTranslation();
 
   
@@ -59,8 +59,8 @@ export const EventFormFields = ({
             value={eventForm.title}
             name="title"
             required
-            minLength={eventTitle.MIN}
-            maxLength={eventTitle.MAX}
+            minLength={eventTitle.min}
+            maxLength={eventTitle.max}
             onChange={handleSetEventText}
             placeholder="Event name"
           />
@@ -68,8 +68,8 @@ export const EventFormFields = ({
             className="w-full"
             value={eventForm.description}
             onChange={handleSetEventText}
-            minLength={description.MIN}
-            maxLength={description.MAX}
+            minLength={description.min}
+            maxLength={description.max}
             name="description"
             required
             placeholder="Event description"

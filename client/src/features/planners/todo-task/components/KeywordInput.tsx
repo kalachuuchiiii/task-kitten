@@ -4,7 +4,7 @@ import {
   InputGroupInput,
   InputGroupText,
 } from "@/components/ui/input-group";
-import { TASK_LIMIT } from "@shared/limits";
+import { TASK_LIMITS } from "@shared/limits";
 import { memo, useMemo, useState } from "react";
 
 export const KeywordInput = memo(({
@@ -16,9 +16,9 @@ export const KeywordInput = memo(({
 
 }) => {
   const [keyword, setKeyword] = useState<string>("");
-  const { keywordString, keywordArray } = TASK_LIMIT;
+  const { keyword: keywordString, keyword: keywordArray } = TASK_LIMITS;
   const isButtonDisabled = useMemo(() => {
-    return keywords.includes(keyword.trim().toLowerCase()) || keyword.length > keywordString.MAX || keyword.length < keywordString.MIN || keywords.length > keywordArray.MAX ;
+    return keywords.includes(keyword.trim().toLowerCase()) || keyword.length > keywordString.max || keyword.length < keywordString.min || keywords.length > keywordArray.max ;
   }, [keyword, keywords])
 
   return (

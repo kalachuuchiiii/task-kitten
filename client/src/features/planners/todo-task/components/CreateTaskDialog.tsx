@@ -30,9 +30,9 @@ export const CreateTaskDialog = () => {
   return (
     <SheetContent className=" p-3 overflow-y-auto">
         <SheetHeader>
-          <SheetTitle>{t('taskForm.title')}</SheetTitle>
+          <SheetTitle>{t('task_form.title')}</SheetTitle>
           <SheetDescription>
-            {t('taskForm.subtitle')}
+            {t('task_form.subtitle')}
           </SheetDescription>
         </SheetHeader>
         <TaskFormFields onSubmit={(e) => createTask(e)} id="create-task" {...formControl} />

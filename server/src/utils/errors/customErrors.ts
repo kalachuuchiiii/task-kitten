@@ -1,45 +1,38 @@
-import { CustomError } from "./customError";
+import { LocaleKeys } from "@shared/types"
+import { CustomError } from "./customError"
 
-export class InternalServerError extends CustomError {
-    constructor(message: string = 'Internal Server Error', code?:string){
-        super(message, 500, 'InternalServerError', code);
-    }
+export class BadRequestError extends CustomError {
+  constructor(code: LocaleKeys, params: Record<string, any> = {}) {
+    super(code, params, 400)
+  }
 }
 
 export class UnauthorizedError extends CustomError {
-    constructor(message: string = 'Unauthorized Error', code?:string){
-        super(message, 401, 'UnauthorizedError', code);
-    }
-}
-
-export class BadRequestError extends CustomError {
-    constructor(message: string = 'Bad Request Error', code?:string){
-        super(message, 400, 'BadRequestError', code);
-    }
-}
-
-export class NotFoundError extends CustomError {
-    constructor(message: string = 'Not Found Error', code?:string){
-        super(message, 404, 'NotFoundError', code);
-    }
-}
-
-export class ConflictError extends CustomError {
-    constructor(message: string = 'Conflict Error', code?:string){
-        super(message, 409, 'ConflictError', code);
-    }
-}
-
-export class ValidationError extends CustomError {
-    constructor(message: string = 'ValidationError', code: string){
-        super(message, 400, 'ValidationError', code);
-    }
+  constructor(code: LocaleKeys, params: Record<string, any> = {}) {
+    super(code, params, 401)
+  }
 }
 
 export class ForbiddenError extends CustomError {
-    constructor(message: string = 'ForbiddenError', code: string){
-        super(message, 403, 'ForbiddenError', code);
-    }
+  constructor(code: LocaleKeys, params: Record<string, any> = {}) {
+    super(code, params, 403)
+  }
 }
 
+export class NotFoundError extends CustomError {
+  constructor(code: LocaleKeys, params: Record<string, any> = {}) {
+    super(code, params, 404)
+  }
+}
 
+export class ConflictError extends CustomError {
+  constructor(code: LocaleKeys, params: Record<string, any> = {}) {
+    super(code, params, 409)
+  }
+}
+
+export class InternalServerError extends CustomError {
+  constructor(code: LocaleKeys = "error.internal", params: Record<string, any> = {}) {
+    super(code, params, 500)
+  }
+}

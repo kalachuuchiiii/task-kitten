@@ -57,7 +57,7 @@ export class AuthController {
     const tokenName = "refresh-token";
     const cookie = req.cookies[tokenName];
     if (!cookie) {
-      throw new UnauthorizedError("No Session Found", 'auth.error.sessionNotFound');
+      throw new UnauthorizedError('auth.error.session_not_found');
     }
     res.clearCookie(tokenName, { ...cookieOptions });
     return res.status(200).json({

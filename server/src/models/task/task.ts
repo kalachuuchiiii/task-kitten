@@ -61,7 +61,7 @@ const taskSchema = new mongoose.Schema<TaskSchema>(
 );
 
 
-taskSchema.plugin(verifyOwnerPlugin<TaskSchema>('userId'));
+taskSchema.plugin(verifyOwnerPlugin<TaskSchema>('userId', 'Task'));
 
 export const taskFields = Object.keys(taskSchema.paths);
 export const Task = mongoose.model("Task", taskSchema);

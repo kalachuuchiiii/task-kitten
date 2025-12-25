@@ -6,8 +6,8 @@ import { useTaskForm } from "./useTaskForm";
 import type { TaskFormFieldTypes } from "@shared/types";
 import { initialVal } from "../constants";
 import type { FormEvent } from "react";
-import { historyRecordSchema, taskSchema } from "@shared/schema";
-import { extractErrorMessage, renderErrorToast } from "@/utils/error";
+import { taskRecordSchema, taskSchema } from "@shared/schema";
+import {  extractErrorCodeKeys, renderErrorToast } from "@/utils/error";
 import { extractSuccessMessage } from "@/utils";
 import { useTranslation } from "react-i18next";
 
@@ -27,7 +27,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       const p = api.delete(`/task/delete/${id}`);
       toast.promise(p, {
         loading: t('task.delete.loading'),
-        error: (err) => extractErrorMessage(err),
+        error:  extractErrorCodeKeys,
         success: t("task.delete.success")
       });
       return await p;
@@ -41,8 +41,9 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
     mutationKey: ["tasks"],
     mutationFn: async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      const parsed = taskSchema.parse(taskForm);
-      const p = api.post("/task/create", { taskForm: parsed });
+      const parsedTaskForm = taskSchema.strip().parse(taskForm);
+
+      const p = api.post("/task/create", { taskForm: parsedTaskForm });
       await toast.promise(p, {
         loading: t('task.create.loading'),
         success: t('task.create.success')
@@ -59,8 +60,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
     mutationKey: ['task', id],
     mutationFn: async (e: FormEvent<HTMLFormElement>) => {
       e.preventDefault();
-      console.log(taskForm);
-      const parsed = historyRecordSchema.strip().parse(taskForm);
+      const parsed = taskRecordSchema.strip().parse(taskForm);
       const p = api.patch(`/task/update/${id}`, { ...parsed });
       await toast.promise(p, {
         loading: t('task.update.loading'),
@@ -77,7 +77,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
       toast.promise(p, {
         loading: t('task.revert.loading'),
         success: t('task.revert.success'),
-        error: extractErrorMessage
+        error: extractErrorCodeKeys
       })
       return p;
     }

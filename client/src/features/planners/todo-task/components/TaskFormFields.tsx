@@ -34,7 +34,7 @@ import { Label } from "@/components/ui/label";
 import { KeywordInput } from "./KeywordInput";
 import { KeywordList } from "./KeywordList";
 import { Button } from "@/components/ui/button";
-import { TASK_LIMIT } from "@shared/limits";
+import { TASK_LIMITS } from "@shared/limits";
 import { useTranslation } from "react-i18next";
 
 type TaskFormFieldProps = {
@@ -67,9 +67,9 @@ export const TaskFormFields = memo(
             <Label>Description</Label>
             <Textarea
               required
-              maxLength={TASK_LIMIT.description.MAX}
-              minLength={TASK_LIMIT.description.MIN}
-              placeholder={t("taskForm.describe")}
+              maxLength={TASK_LIMITS.description.max}
+              minLength={TASK_LIMITS.description.min}
+              placeholder={t("task_form.describe")}
               onChange={handleChangeDescription}
               value={taskForm.description}
               name="description"
@@ -103,7 +103,7 @@ export const TaskFormFields = memo(
                 style={{ height: 24 }}
               >
                 {t(`priority.${taskForm.priority}`)}
-              </SelectTrigger>
+              </SelectTrigger>t
               <SelectContent>
                 <SelectGroup>
                   <SelectLabel>{t("priority")}</SelectLabel>

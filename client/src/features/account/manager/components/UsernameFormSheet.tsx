@@ -13,7 +13,7 @@ import { useSession } from "@/features/auth";
 import type { TextChangeEvent } from "@/features/planners/todo-task";
 import { useState } from "react";
 import { useAccountActions } from "../hooks";
-import { USER_LIMIT } from "@shared/limits";
+import { USER_LIMITS } from "@shared/limits";
 
 export const UsernameFormSheet = () => {
   const { user } = useSession();
@@ -31,7 +31,7 @@ export const UsernameFormSheet = () => {
       <main>
         <InputGroup>
           <InputGroupText className="pl-2">Username</InputGroupText>
-          <InputGroupInput maxLength={USER_LIMIT.username.MAX} onChange={handleChangeUsername} placeholder={user?.username} />
+          <InputGroupInput maxLength={USER_LIMITS.username.max} minLength={USER_LIMITS.username.min} onChange={handleChangeUsername} placeholder={user?.username} />
         </InputGroup>
       </main>
 

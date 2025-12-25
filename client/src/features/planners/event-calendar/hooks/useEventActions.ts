@@ -6,7 +6,7 @@ import {  useRef, useState } from "react";
 import { toast } from "sonner";
 import type { TextChangeEvent } from "../../todo-task";
 import { createEventFormDefault } from "@shared/defaults";
-import { extractErrorMessage, renderErrorToast } from "@/utils/error";
+import { extractErrorCodeKeys, renderErrorToast } from "@/utils/error";
 import { eventFormSchema } from "@shared/schema";
 import { extractSuccessMessage } from "@/utils";
 import { useTranslation } from "react-i18next";
@@ -56,7 +56,7 @@ export const useEventActions = (
       await toast.promise(p, {
         loading: t('event.delete.loading'),
         success: t('event.delete.success'),
-        error: extractErrorMessage,
+        error: extractErrorCodeKeys,
       });
       return await p;
     },

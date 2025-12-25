@@ -38,7 +38,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import { HISTORY_RECORD_LIMIT } from "@shared/limits";
+import { TASK_RECORD_LIMITS } from "@shared/limits";
 
 export const TaskOptions = ({
   taskDetail,
@@ -77,8 +77,8 @@ export const TaskOptions = ({
               </SheetHeader>
               <TaskFormFields id = 'update-task' onSubmit={(e) => updateTask(e)} {...formControl} />
               <Textarea
-                minLength={HISTORY_RECORD_LIMIT.note.MIN}
-                maxLength = {HISTORY_RECORD_LIMIT.note.MAX}
+                minLength={TASK_RECORD_LIMITS.note.min}
+                maxLength = {TASK_RECORD_LIMITS.note.max}
                 onChange={formControl.handleChangeNote}
                 value={formControl.taskForm.note}
                 placeholder="Describe this update (optional)"

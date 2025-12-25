@@ -11,7 +11,7 @@ export class AuthMiddleware {
     const header = req.headers.authorization ?? "";
 
     if (!header.startsWith("Bearer ")) {
-      throw new UnauthorizedError("Invalid Token.", "auth.error.invalid_token");
+      throw new UnauthorizedError("auth.error.invalid_token");
     }
     const accessToken = header.split(" ")[1];
     const decodedToken = await verifyToken(accessToken);

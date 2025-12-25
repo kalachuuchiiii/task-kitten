@@ -5,11 +5,11 @@ import { CalendarCheck, CoinsIcon, ListChecksIcon, Settings2, StarsIcon, User } 
 
 export const plannerRouteLinks: RouteLink[] = [
     {
-      code: 'sidebar.planners.todoList',
+      code: 'sidebar.planners.todo_list',
       path: '/planners/to-do-list',
       icon: <ListChecksIcon />
     },{
-      code: 'sidebar.planners.eventCalendar',
+      code: 'sidebar.planners.event_calendar',
       path: '/planners/event-calendar',
       icon: <CalendarCheck />
     }
@@ -30,7 +30,7 @@ export const plannerRouteLinks: RouteLink[] = [
 
  export const otherRouteLinks: RouteLink[] = [
     {
-      code: "sidebar.other.gettingStarted",
+      code: "sidebar.other.getting_started",
       path: "/getting-started",
       icon: <StarsIcon />,
     }

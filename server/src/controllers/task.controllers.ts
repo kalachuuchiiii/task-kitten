@@ -3,7 +3,7 @@ import z from "zod";
 import { TaskServices } from "@/services";
 import { filterQuerySchema } from "@/utils/validation/filterQuerySchema";
 import { paramSchema } from "@/utils/validation";
-import { historyRecordSchema, taskSchema } from "@shared/schema";
+import { taskRecordSchema, taskSchema } from "@shared/schema";
 
 const taskService = new TaskServices();
 
@@ -40,7 +40,7 @@ export class TaskController {
   //PATCH /task/update/:taskId
   updateTaskById: RequestHandler = async (req, res) => {
     const taskForm =
-      historyRecordSchema.parse(req.body);
+      taskRecordSchema.parse(req.body);
     const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
 

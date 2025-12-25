@@ -35,7 +35,7 @@ export const appRoutes: RouteObject[] = [
         path: "/planners/to-do-list",
         element: (
       
-          <PageLayout title = 'taskList.title' description="taskList.subtitle">
+          <PageLayout title = 'task_list.title' description="task_list.subtitle">
               <AuthGuard>
               <Tasks />
             </AuthGuard>
@@ -46,7 +46,7 @@ export const appRoutes: RouteObject[] = [
       {
         path: "/task/:id",
         element: (
-          <PageLayout title = 'taskDetails.title'>
+          <PageLayout title = 'task_details.title'>
             <AuthGuard>
               <TaskDetails />
             </AuthGuard>
@@ -67,7 +67,7 @@ export const appRoutes: RouteObject[] = [
         path: "/account/manager",
         element: (
           <PageLayout
-            title="accountManager.title"
+            title="account_manager.title"
       
           >
             <AuthGuard>
@@ -122,7 +122,7 @@ export const appRoutes: RouteObject[] = [
   {
     path: "/getting-started",
     element: (
-      <PageLayout title="sidebar.other.gettingStarted">
+      <PageLayout title="sidebar.other.getting_started">
         <GettingStarted />
       </PageLayout>
     ),

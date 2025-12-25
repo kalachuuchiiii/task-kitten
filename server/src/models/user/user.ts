@@ -9,16 +9,16 @@ const { username, nickname } = USER_LIMITS;
 const userSchema = new mongoose.Schema<UserSchema>({
     username: {
         type: String,
-        minlength: [],
-        maxlength: [26, 'Username is too long!'], 
+        minlength: [username.min, username.code],
+        maxlength: [username.max, username.code], 
         validate: {
             validator: function(candidateUsername: string){
-                
+                return username.pattern.exp.test(candidateUsername);
             },
-            message: 'Username can only contain letters (a-z) and numbers (0-9).'
+            message: username.pattern.code
         },
         unique: true,
-        required: [true, 'Username cannot be empty.']
+        required: true
     },
     avatar: {
         type: String,
@@ -26,8 +26,8 @@ const userSchema = new mongoose.Schema<UserSchema>({
     },
     nickname: {
         type: String,
-        minlength: [1, 'Nickname cannot be empty'],
-        maxlength: [36, 'Nickname can only contain up to 36 characters'],
+        minlength: [nickname.min, nickname.code],
+        maxlength: [nickname.max, nickname.code],
         default: null
     },
     lastUsernameUpdate: {

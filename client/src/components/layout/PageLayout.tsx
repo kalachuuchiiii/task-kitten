@@ -1,4 +1,5 @@
-import type { LocaleKeys } from "@/lib/internalization/i18n.schema";
+
+import type { LocaleKeys } from "@shared/types";
 import {  useTranslation } from "react-i18next";
 
 export const PageLayout = ({

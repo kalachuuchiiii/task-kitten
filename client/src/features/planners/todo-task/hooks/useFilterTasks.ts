@@ -8,7 +8,7 @@ import { create } from "zustand";
 import type { TextChangeEvent } from "./useTaskForm";
 import type { DateRange, OnSelectHandler } from "react-day-picker";
 import { initialFilterValues } from "../constants";
-import { TASK_LIMIT } from "@shared/limits";
+import { TASK_LIMITS } from "@shared/limits";
 
 
 export const useFilterTask = () => {
@@ -52,7 +52,6 @@ export const useFilterTask = () => {
 
      const handleChangeDescription = (e: TextChangeEvent) => {
         const { value } = e.target;
-        if (!isValidLength(value, TASK_LIMIT.description)) return;
         setFilter((prev) => ({
           ...prev,
           description: value,

@@ -1,12 +1,14 @@
+import { LocaleKeys } from "@shared/types"
 
 export class CustomError extends Error {
-  public status: number;
-  public name: string;
-  public code: string | undefined;
-  constructor(message: string, status: number, name: string, code?: string) {
-    super(message);
-    this.status = status;
-    this.name = name;
-    this.code = code;
+  public readonly status: number
+  public readonly code: string
+  public readonly params: Record<string, any>
+
+  constructor(code: LocaleKeys, params: Record<string, any> = {}, status = 400) {
+    super(code)             
+    this.code = code
+    this.params = params
+    this.status = status
   }
 }
