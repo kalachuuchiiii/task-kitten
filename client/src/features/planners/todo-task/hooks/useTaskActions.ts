@@ -11,17 +11,14 @@ import {  extractErrorCodeKeys, renderErrorToast } from "@/utils/error";
 import { extractSuccessMessage } from "@/utils";
 import { useTranslation } from "react-i18next";
 
-export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal) => {
+export const useTaskActions = () => {
 
   const queryClient = useQueryClient();
-  const formControl = useTaskForm(initialTaskForm);
-  const { taskForm } = formControl;
   const { t } = useTranslation();
-
-
   const api = useApi();
   const { id } = useParams();
   const nav = useNavigate();
+  
   const { mutate: deleteTask, isPending: isDeletingTask } = useMutation({
     mutationFn: async () => {
       const p = api.delete(`/task/delete/${id}`);
@@ -39,8 +36,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
 
   const { mutate: createTask, isPending: isCreatingTask } = useMutation({
     mutationKey: ["tasks"],
-    mutationFn: async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    mutationFn: async (taskForm: TaskFormFieldTypes) => {
       const parsedTaskForm = taskSchema.strip().parse(taskForm);
 
       const p = api.post("/task/create", { taskForm: parsedTaskForm });
@@ -58,8 +54,7 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
 
   const { mutate: updateTask, isPending: isUpdatingTask } = useMutation({
     mutationKey: ['task', id],
-    mutationFn: async (e: FormEvent<HTMLFormElement>) => {
-      e.preventDefault();
+    mutationFn: async (taskForm: TaskFormFieldTypes) => {
       const parsed = taskRecordSchema.strip().parse(taskForm);
       const p = api.patch(`/task/update/${id}`, { ...parsed });
       await toast.promise(p, {
@@ -90,7 +85,6 @@ export const useTaskActions = (initialTaskForm: TaskFormFieldTypes = initialVal)
     updateTask,
     isRevertingTask,
     isUpdatingTask,
-    formControl,
     isCreatingTask,
     isDeletingTask,
   };

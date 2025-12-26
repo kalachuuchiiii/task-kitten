@@ -1,5 +1,5 @@
 import { EventFormFields } from "./EventFormFields";
-import { useContext } from "react";
+import { useContext, type FormEvent } from "react";
 import { EventCalendarContext } from "../context";
 import {
   AlertDialog,
@@ -17,25 +17,25 @@ export const EventDetails = () => {
   const eventCalendarContext = useContext(EventCalendarContext);
   if (!eventCalendarContext) return null;
   const {
-    formControl,
     selectedEvent,
     actions: { updateEvent, isUpdatingEvent, deleteEvent, isDeletingEvent },
+    eventFormControl
   } = eventCalendarContext;
-  const { eventForm } = formControl;
   const relevantFields = ['description', 'title', 'start', 'end'];
+  const { eventForm} = eventFormControl;
 
   const hasNoChanges = _.isEqual( _.pick(selectedEvent, relevantFields), _.pick(eventForm, relevantFields));
 
   return (
     <>
       <EventFormFields
-        onSubmit={(e) => {
+        onSubmit={(e: FormEvent<HTMLFormElement>) => {
           e.preventDefault();
-          updateEvent(selectedEvent._id);
+          updateEvent({ eventId: selectedEvent._id, eventForm});
         }}
         id="event-details"
         title="Details"
-        {...formControl}
+        {...eventFormControl}
       />
       <div className="flex items-center justify-center gap-1 w-full flex-col">
         <button

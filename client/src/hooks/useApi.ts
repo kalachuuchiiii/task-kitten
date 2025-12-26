@@ -1,5 +1,6 @@
 import { useSession } from "@/features/auth/hooks/useSession"
 import { API } from "@/utils";
+import { t } from "i18next";
 
 import { useEffect } from "react";
 import { toast } from "sonner";
@@ -13,9 +14,9 @@ export const useApi = () => {
     if (!accessToken || isLookingForSession) return;
     const interceptorId = API.interceptors.request.use((config) => {
       if (!navigator.onLine) {
-        const msg = 'Network connection is unstable. Please check your internet and try again.'
-        toast.error(msg);
-        throw new Error(msg);
+
+        toast.error(t('network.error.offline'));
+        throw new Error('netork.error.offline');
       }
       config.headers.Authorization = `Bearer ${accessToken}`;
       return config;

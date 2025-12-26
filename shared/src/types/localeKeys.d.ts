@@ -82,4 +82,5 @@ export type LocaleKeys =
   | "task.error.no_changes_found"
   | 'task.error.due_must_be_ahead'
   | 'auth.error.update_username_on_cooldown'
+  | 'network.error.offline'
   

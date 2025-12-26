@@ -122,4 +122,7 @@ export const fil = {
   // General / internal errors
   "error.internal": "Internal server error",
   "error.forbidden": "Forbidden",
+
+  //network
+  "network.error.offline": "Wala kang koneksyon sa internet. Pakisuri ang iyong koneksyon.",
 } as const satisfies LocaleDict;

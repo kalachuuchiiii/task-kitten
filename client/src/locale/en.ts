@@ -116,4 +116,7 @@ export const en = {
   // General / internal errors
   "error.internal": "Internal server error",
   "error.forbidden": "Forbidden",
+
+  // netwoek
+  "network.error.offline": "You are currently offline. Please check your internet connection.",
 } as const satisfies LocaleDict;

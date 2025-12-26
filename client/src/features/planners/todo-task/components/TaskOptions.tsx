@@ -7,7 +7,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { EllipsisVerticalIcon } from "lucide-react";
-import { useTaskActions } from "../hooks";
+import { useTaskActions, useTaskForm } from "../hooks";
 import { Button } from "@/components/ui/button";
 import {
   AlertDialog,
@@ -39,19 +39,18 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { TASK_RECORD_LIMITS } from "@shared/limits";
+import type { FormEvent } from "react";
 
-export const TaskOptions = ({
-  taskDetail,
-}: {
-  taskDetail: TaskFormFieldTypes;
-}) => {
-  const {
-    deleteTask,
-    isDeletingTask,
-    formControl,
-    updateTask,
-    isUpdatingTask,
-  } = useTaskActions(taskDetail);
+export const TaskOptions = () => {
+  const { deleteTask, isDeletingTask, updateTask, isUpdatingTask } =
+    useTaskActions();
+  const taskFormControl = useTaskForm();
+
+  const handleUpdate = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await updateTask(taskFormControl.taskForm);
+  };
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -70,31 +69,33 @@ export const TaskOptions = ({
             </DropdownMenuItem>
           </SheetTrigger>
           <SheetContent className="p-4 overflow-y-auto">
-           
-              <SheetHeader>
-                <SheetTitle>Update</SheetTitle>
-                <SheetDescription>Update existing task.</SheetDescription>
-              </SheetHeader>
-              <TaskFormFields id = 'update-task' onSubmit={(e) => updateTask(e)} {...formControl} />
-              <Textarea
-                minLength={TASK_RECORD_LIMITS.note.min}
-                maxLength = {TASK_RECORD_LIMITS.note.max}
-                onChange={formControl.handleChangeNote}
-                value={formControl.taskForm.note}
-                placeholder="Describe this update (optional)"
-                className="border resize-none w-[98%] mx-auto "
-                aria-haspopup="false"
-              />
+            <SheetHeader>
+              <SheetTitle>Update</SheetTitle>
+              <SheetDescription>Update existing task.</SheetDescription>
+            </SheetHeader>
+            <TaskFormFields
+              id="update-task"
+              onSubmit={handleUpdate}
+              {...taskFormControl}
+            />
+            <Textarea
+              minLength={TASK_RECORD_LIMITS.note.min}
+              maxLength={TASK_RECORD_LIMITS.note.max}
+              onChange={taskFormControl.handleChangeNote}
+              value={taskFormControl.taskForm.note}
+              placeholder="Describe this update (optional)"
+              className="border resize-none w-[98%] mx-auto "
+              aria-haspopup="false"
+            />
 
-              <button
-                type = 'submit'
-                form = 'update-task'
-                disabled={isUpdatingTask}
-                className="button-bg w-full rounded p-2"
-              >
-                Update
-              </button>
-            
+            <button
+              type="submit"
+              form="update-task"
+              disabled={isUpdatingTask}
+              className="button-bg w-full rounded p-2"
+            >
+              Update
+            </button>
           </SheetContent>
         </Sheet>
 

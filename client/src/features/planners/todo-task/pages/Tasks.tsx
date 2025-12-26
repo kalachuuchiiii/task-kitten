@@ -1,20 +1,12 @@
-import {
-  InputGroup,
-  InputGroupAddon,
-  InputGroupButton,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
 
 import { FilterIcon, ListTodo, Plus, Search } from "lucide-react";
 
 import { useTasks } from "../hooks/useTasks";
 import { TaskCard } from "../components/TaskCard";
-import { CreateTaskDialog } from "../components";
+
 import { FilterTaskForm } from "../components/FilterTaskForm";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
-import { TaskContext } from "../context";
 import { Button } from "@/components/ui/button";
-import { PageLayout } from "@/components/layout/PageLayout";
 import { useSession } from "@/features/auth";
 import {
   Empty,
@@ -25,9 +17,12 @@ import {
   EmptyTitle,
 } from "@/components/ui/empty";
 import { useTranslation } from "react-i18next";
-import { t } from "i18next";
+import { useFilterTask } from "../hooks";
+import { TaskFilterContext } from "../context";
+import { useMemo } from "react";
+import { CreateTaskSheet } from "../components";
 
-const CreateTaskSheet = () => {
+const CreateTaskComponent = () => {
   const { t } = useTranslation();
   return (
     <Sheet>
@@ -36,16 +31,19 @@ const CreateTaskSheet = () => {
           {t("task_list.action.create")} <Plus />
         </Button>
       </SheetTrigger>
-
-      <CreateTaskDialog />
+      <CreateTaskSheet />
     </Sheet>
   );
 };
 
 const Tasks = () => {
-  const { tasks, ref, filterControl } = useTasks();
+  const filterTaskValues = useFilterTask();
+  const { filter } = filterTaskValues;
+  const { tasks, ref, taskActions } = useTasks(filter);
   const { t } = useTranslation();
   const { totalOwnedTasks } = useSession();
+
+  const memoizedValues = useMemo(() => ({ ...filterTaskValues, ...taskActions}), [filter, taskActions])
 
   return (
     <div>
@@ -53,23 +51,23 @@ const Tasks = () => {
         <div className="p-2 flex w-full items-center justify-end  rounded-xl">
           {totalOwnedTasks > 0 && (
             <div className="flex items-center   gap-2">
-              <CreateTaskSheet />
+              <CreateTaskComponent />
               <Sheet>
                 <SheetTrigger asChild>
                   <Button variant={"secondary"}>
                     <FilterIcon />
                   </Button>
                 </SheetTrigger>
-                <TaskContext value={{ ...filterControl }}>
+                <TaskFilterContext.Provider value={{ ...memoizedValues}}>
                   <FilterTaskForm />
-                </TaskContext>
+                </TaskFilterContext.Provider>
               </Sheet>
             </div>
           )}
         </div>
       </div>
 
-       {totalOwnedTasks === 0 ? (
+      {totalOwnedTasks === 0 ? (
         <Empty>
           <EmptyHeader>
             <EmptyMedia variant={"icon"}>
@@ -79,7 +77,7 @@ const Tasks = () => {
             <EmptyDescription>{t("task_list.empty.subtitle")}</EmptyDescription>
             <EmptyContent>
               <div className="p-2">
-                <CreateTaskSheet />
+                <CreateTaskComponent />
               </div>
             </EmptyContent>
           </EmptyHeader>
@@ -90,9 +88,11 @@ const Tasks = () => {
             <TaskCard key={task._id} task={task} />
           ))}
         </div>
-      )  : <p className="w-full opacity-50 font-semibold text-center">
-        {t('task_list.no_tasks_found')}
-        </p>}  
+      ) : (
+        <p className="w-full opacity-50 font-semibold text-center">
+          {t("task_list.no_tasks_found")}
+        </p>
+      )}
       {
         //** no tasks found ( main cause is the filter, so reset )  */
       }

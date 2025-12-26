@@ -2,13 +2,14 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import { CreateNewEvent } from "../components/CreateNewEvent";
-import { useEventCalendar } from "../hooks";
+import { useEventCalendar, useEventDetails } from "../hooks";
 import { EventCalendarContext } from "../context";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { EventDetails } from "../components/EventDetails";
 import { PageLayout } from "@/components/layout/PageLayout";
 import { CalendarCogIcon } from "lucide-react";
 import { useTranslation } from "react-i18next";
+import { useEventForm } from "../hooks/useEventForm";
 
 const EventCalendar = () => {
   const {
@@ -16,15 +17,14 @@ const EventCalendar = () => {
     onDateChange,
     timeframe,
     eventActions,
-    eventDetailsControl: {
-      isDetailSheetOpen,
-      onOpenChange,
-      selectedEvent,
-      handleEventClick,
-    },
   } = useEventCalendar();
+  const eventFormControl =  useEventForm();
+  const { setEventForm } = eventFormControl; 
+  const { isDetailSheetOpen, onOpenChange, openDetailSheet, selectedEvent, onEventClick } = useEventDetails(setEventForm);
   const { t } = useTranslation();
-  const { formControl, actions, eventCalendarRef } = eventActions;
+  const { actions, eventCalendarRef } = eventActions;
+
+
 
   return (
     <div>
@@ -51,10 +51,10 @@ const EventCalendar = () => {
           info.event.setAllDay(true);
         }}
         height="100vh"
-        eventClick={handleEventClick}
+        eventClick={onEventClick}
       />
       <Sheet open={isDetailSheetOpen} onOpenChange={onOpenChange}>
-        <EventCalendarContext value={{ formControl, actions, selectedEvent }}>
+        <EventCalendarContext value={{ eventFormControl, actions, selectedEvent }}>
           <SheetContent className="p-3">
             <EventDetails />
           </SheetContent>

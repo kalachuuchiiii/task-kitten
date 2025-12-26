@@ -24,8 +24,8 @@ import { COMPARISON_OPERATORS } from "@shared/constants";
 import { formatDate } from "@shared/utils";
 import { CalendarCogIcon, ChevronRight } from "lucide-react";
 import { useContext } from "react";
-import { TaskContext } from "../context";
 import { Button } from "@/components/ui/button";
+import { TaskFilterContext } from "../context";
 
 const RenderDate = ({ date }: { date: Date | undefined }) => {
   return (
@@ -40,17 +40,13 @@ const RenderDate = ({ date }: { date: Date | undefined }) => {
 };
 
 export const DateFilterTabs = () => {
-  const filterControl = useContext(TaskContext);
+  const taskFilterValues = useContext(TaskFilterContext);
 
-  if (!filterControl) return null;
+  if (!taskFilterValues) return null;
 
-  const {
-    selectOperator,
-    selectSpecificDate,
-    handleChangeDateRange,
-    filter,
-  } = filterControl;
-
+  const { filterControl, filter } = taskFilterValues;
+  const { selectOperator, selectSpecificDate, handleChangeDateRange } =
+    filterControl;
   const { due, startedAt } = filter;
 
   return (
@@ -71,7 +67,7 @@ export const DateFilterTabs = () => {
           <ItemActions>
             <Dialog>
               <DialogTrigger>
-              <Button variant = 'ghost' className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2">
                   <CalendarCogIcon size="20" />
                 </Button>
               </DialogTrigger>
@@ -117,7 +113,7 @@ export const DateFilterTabs = () => {
           <ItemActions>
             <Dialog>
               <DialogTrigger>
-                <Button variant = 'ghost' className="flex items-center gap-2">
+                <Button variant="ghost" className="flex items-center gap-2">
                   <CalendarCogIcon size="20" />
                 </Button>
               </DialogTrigger>
@@ -152,10 +148,8 @@ export const DateFilterTabs = () => {
           </Item>
         </Item>
       </TabsContent>{" "}
-
       <TabsContent value="range" className="border-1 rounded-lg">
         {" "}
-     
         <Item>
           <ItemContent>
             <ItemTitle>Started At</ItemTitle>
@@ -207,7 +201,6 @@ export const DateFilterTabs = () => {
           </ItemActions>
         </Item>
       </TabsContent>{" "}
-    
     </Tabs>
   );
 };

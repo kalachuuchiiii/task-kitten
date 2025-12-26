@@ -34,7 +34,7 @@ export class TaskServices {
     ).verifyOwner(userId);
     const taskRecord = await TaskRecord.findOne({ taskId, _id: recordId })
       .orFail(new NotFoundError("task_record.error.task_record_not_found"))
-      .lean();
+      .lean();54
 
     const changes = taskRecord.updatedFields.reduce<
       Record<string, TaskHistory>

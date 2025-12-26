@@ -1,16 +1,16 @@
 import { useApi } from "@/hooks/useApi";
 import { useInfiniteQuery } from "@tanstack/react-query";
-import {  useEffect, useMemo } from "react";
+import { useEffect, useMemo } from "react";
 import { useInView } from "react-intersection-observer";
 import { useSession } from "@/features/auth";
 import { useFilterTask } from "./useFilterTasks";
-import type { TaskDocument } from "@shared/types";
+import type { TaskDocument, TaskFilter } from "@shared/types";
+import { initialFilterValues } from "../constants";
 
-export const useTasks = () => {
+export const useTasks = (filter: TaskFilter = initialFilterValues) => {
   const { accessToken } = useSession();
- const filterControl = useFilterTask();
- const { filter, resetFilter } = filterControl; 
-  const API = useApi();
+
+  const api = useApi();
   const {
     data,
     fetchNextPage: fetchNextTask,
@@ -22,26 +22,22 @@ export const useTasks = () => {
     initialPageParam: 1,
     enabled: !!accessToken,
     queryFn: async ({ pageParam }) => {
-      const res = await API.get(
-        `/task/list?limit=5&sort=-1`,
-        {
-          params: {
-            filters: JSON.stringify({...filter, page: pageParam, limit: 5, sort: -1}),
-          },
-        }
-      );
+      const res = await api.get(`/task/list?limit=5&sort=-1`, {
+        params: {
+          filters: JSON.stringify({
+            ...filter,
+            page: pageParam,
+            limit: 5,
+            sort: -1,
+          }),
+        },
+      });
       return res.data;
     },
     getNextPageParam: (nextPage) => nextPage?.nextPage ?? null,
   });
 
-  const tasks: TaskDocument[] = data?.pages.flatMap((task) => task.tasks ) ?? [];
-  
-
-  const resetFilterAndRefetch = async() => {
-    resetFilter();
-    await refetch();
-  }
+  const tasks: TaskDocument[] = data?.pages.flatMap((task) => task.tasks) ?? [];
 
   const { ref, inView } = useInView();
 
@@ -51,15 +47,12 @@ export const useTasks = () => {
     fetchNextTask();
   }, [inView]);
 
- 
   return {
     tasks,
     ref,
-    filterControl: {
-      ...filterControl,
+    taskActions: {
       isFetchingTasks,
       refetchTasks: refetch,
-      resetFilterAndRefetch
     },
     hasNextPage,
   };

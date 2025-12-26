@@ -1,47 +1,16 @@
-import { ButtonGroup } from "@/components/ui/button-group";
-import { Calendar } from "@/components/ui/calendar";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
-  InputGroup,
-  InputGroupButton,
-  InputGroupInput,
-  InputGroupText,
-  InputGroupTextarea,
-} from "@/components/ui/input-group";
-import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-} from "@/components/ui/select";
+
 import { capitalize } from "@/utils";
 import {
-  COMPARISON_OPERATORS,
   taskPriority,
   taskStatus,
 } from "@shared/constants";
 import {
-  CalendarCogIcon,
   ChevronDown,
-  ChevronRight,
-  Filter,
-  X,
 } from "lucide-react";
-import type { TaskForm } from "../types/task";
-import { useContext, useState, type ChangeEvent } from "react";
-import { formatDate } from "@shared/utils";
+import { useContext } from "react";
 import { Checkbox } from "@/components/ui/checkbox";
 import {
   Popover,
-  PopoverAnchor,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
@@ -62,20 +31,9 @@ import {
 } from "@/components/ui/sheet";
 import { Label } from "@/components/ui/label";
 import { KeywordInput } from "./KeywordInput";
-import type { TaskFilter } from "@shared/types";
-import type { TextChangeEvent } from "../hooks";
-import type {
-  InfiniteData,
-  QueryObserverResult,
-  RefetchOptions,
-} from "@tanstack/react-query";
 import { KeywordList } from "./KeywordList";
-import type { DateRange, OnSelectHandler } from "react-day-picker";
-import { Card } from "@/components/ui/card";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { TaskContext } from "../context";
-import { LoadingDisplay } from "@/components/ui/LoadingDisplay";
 import { DateFilterTabs } from "./DateFilterTabs";
+import { TaskFilterContext } from "../context";
 
 //  refetchTasks: refetch,
 //       handleSelect,
@@ -86,19 +44,21 @@ import { DateFilterTabs } from "./DateFilterTabs";
 //       filter,
 
 export const FilterTaskForm = () => {
-  const filterControl = useContext(TaskContext);
-  if (!filterControl) return null;
+  const taskFilterValues = useContext(TaskFilterContext);
+  if (!taskFilterValues) return null;
+  const { filterControl, filter, refetchTasks, isFetchingTasks } = taskFilterValues
 
   const {
-    refetchTasks,
     handleSelect,
     handleChangeDescription,
-    filter,
     handleRemoveKeyword,
     handleAddKeyword,
-    resetFilterAndRefetch,
-    isFetchingTasks,
   } = filterControl;
+
+  const resetFilterAndRefetch = async() => {
+    filterControl.resetFilter();
+    await refetchTasks();
+  }
 
   return (
     <SheetContent className="p-4 overflow-y-auto">

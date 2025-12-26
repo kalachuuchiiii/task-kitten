@@ -1,8 +1,8 @@
-export { TaskCard } from "./TaskCard.tsx";
-export { TaskOptions } from "./TaskOptions.tsx";
-export { TaskManager } from "./TaskManager.tsx";
-export { CreateTaskDialog } from './CreateTaskDialog.tsx';
-export { StatusBadge} from './StatusBadge.tsx';
+export * from "./TaskCard.tsx";
+export * from "./TaskOptions.tsx";
+export * from "./TaskManager.tsx";
+export * from './CreateTaskSheet.tsx';
+export * from './StatusBadge.tsx';
 export * from './HistoryCard.tsx';
 export * from './TaskFormFields';
 export * from './FilterTaskForm';
