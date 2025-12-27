@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSession } from './useSession';
 
 import type { SignInForm } from '../types/auth.types';
-import { API, extractSuccessMessage } from '@/utils';
+import { API } from '@/utils';
 import { signInFormSchema } from '@shared/schema';
 import { renderErrorToast } from '@/utils/error';
 import { useTranslation } from 'react-i18next';

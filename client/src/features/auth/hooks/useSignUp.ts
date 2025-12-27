@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 import type { SignUpForm } from "../types/auth.types";
-import { API, extractSuccessMessage } from "@/utils";
+import { API } from "@/utils";
 import { signUpFormSchema } from "@shared/schema";
 import { renderErrorToast } from "@/utils/error";
 import { useTranslation } from "react-i18next";

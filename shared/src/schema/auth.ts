@@ -20,8 +20,6 @@ export const usernameFormSchema = z.object({
   end: remaining,
 });
 
-console.log('dur', duration)
-
   if(remaining > 0){
     ctx.addIssue({
       code: z.ZodIssueCode.custom,
@@ -41,7 +39,7 @@ export const nicknameFormSchema = z.object({
 })
 
 
-export const credentialsSchema = z
+export const passwordFormSchema = z
   .object({
     oldPassword: applyLimits(password),
     newPassword: applyLimits(password),

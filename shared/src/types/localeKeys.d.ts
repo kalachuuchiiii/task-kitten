@@ -14,6 +14,7 @@ export type LocaleKeys =
   | "event.delete.success"
   | "event.delete.loading"
   | "auth.signin.success"
+  | 'auth.update_password.loading'
   | "auth.signin.loading"
   | "auth.signup.success"
   | "auth.signup.loading"
@@ -78,6 +79,7 @@ export type LocaleKeys =
   | "auth.error.username_already_taken"
   | "auth.error.invalid_credentials"
   | "auth.error.user_not_found"
+  | 'auth.error.passwords_do_not_match'
   | "auth.error.credentials_not_found"
   | "task.error.no_changes_found"
   | 'task.error.due_must_be_ahead'

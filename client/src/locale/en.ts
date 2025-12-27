@@ -50,6 +50,8 @@ export const en = {
   "event.subtitle": "Events presented in a calendar",
   "event.error.title_exceeded_length_limit": `Title must be between ${title.min}-${title.max}`,
   "event.error.description_exceeded_length_limit": `Description must be between ${eventDescription.min}-${eventDescription.max} characters`,
+  "auth.update_password.loading": 'Updating your password...',
+
 
   // Auth
   "auth.signin.success": "Signed in successfully!",
@@ -68,6 +70,7 @@ export const en = {
   "auth.error.token_not_found": "Token not found",
   "auth.error.expired_token": "Token has expired",
   "auth.error.invalid_token": "Invalid token",
+  'auth.error.passwords_do_not_match': 'Passwords do not match.',
 
   // User
   "user.error.username_exceeded_length_limit": `Username must be between ${username.min}-${username.max}`,

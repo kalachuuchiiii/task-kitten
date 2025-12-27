@@ -45,7 +45,7 @@ const Preferences = () => {
           <ItemContent>
             <ItemTitle>Language</ItemTitle>
             <ItemDescription>
-              {t("preferences.action.changeLanguage")}
+              {t("preferences.action.change_language")}
             </ItemDescription>
           </ItemContent>
           <ItemActions>

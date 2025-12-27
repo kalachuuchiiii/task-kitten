@@ -1,5 +1,3 @@
-import { PageLayout } from "@/components/layout/PageLayout";
-import { Button } from "@/components/ui/button";
 import {
   Item,
   ItemActions,
@@ -9,7 +7,9 @@ import {
 } from "@/components/ui/item";
 import { Sheet, SheetTrigger } from "@/components/ui/sheet";
 import { useSession } from "@/features/auth";
-import { NicknameFormSheet, UsernameFormSheet } from "../components";
+import { NicknameFormSheet, PasswordFormSheet, UsernameFormSheet } from "../components";
+import { Button } from "@/components/ui/button";
+import { PencilLineIcon, UserLock } from "lucide-react";
 
 const AccountManager = () => {
   const { user } = useSession();
@@ -25,7 +25,9 @@ const AccountManager = () => {
         <ItemActions>
           <Sheet>
             <SheetTrigger>
-              <button>Change</button>
+              <Button variant={"outline"}>
+                <PencilLineIcon />
+              </Button>
             </SheetTrigger>
 
             <UsernameFormSheet />
@@ -40,9 +42,27 @@ const AccountManager = () => {
         <ItemActions>
           <Sheet>
             <SheetTrigger>
-              <button>Change</button>
+              <Button variant={"outline"}>
+                <PencilLineIcon />
+              </Button>
             </SheetTrigger>
             <NicknameFormSheet />
+          </Sheet>
+        </ItemActions>
+      </Item>
+      <Item>
+        <ItemContent>
+          <ItemTitle>Password</ItemTitle>
+          <ItemDescription>Change your password</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Sheet>
+            <SheetTrigger>
+              <Button variant={"outline"}>
+                <UserLock />
+              </Button>
+            </SheetTrigger>
+           <PasswordFormSheet />
           </Sheet>
         </ItemActions>
       </Item>

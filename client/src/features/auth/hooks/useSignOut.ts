@@ -3,7 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { useSession } from "./useSession";
 import { useNavigate } from "react-router-dom";
-import { API, extractSuccessMessage } from "@/utils";
+import { API } from "@/utils";
 
 import { useTranslation } from "react-i18next";
 import { extractErrorCodeKeys } from "@/utils/error";

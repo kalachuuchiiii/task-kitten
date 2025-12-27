@@ -4,7 +4,7 @@ import { AuthService } from "../services/auth.services";
 import { UnauthorizedError } from "../utils/errors/customErrors";
 import { cookieOptions } from "../constants";
 import z from "zod";
-import { credentialsSchema, signInFormSchema, signUpFormSchema, usernameFormSchema } from "@shared/schema";
+import { passwordFormSchema, signInFormSchema, signUpFormSchema, usernameFormSchema } from "@shared/schema";
 
 
 const authService = new AuthService();
@@ -33,7 +33,7 @@ export class AuthController {
 
   updatePassword: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
-    const { newPassword } = credentialsSchema.parse(req.body.credentials); 
+    const { newPassword } = passwordFormSchema.parse(req.body.passwordForm); 
     
     const update = await authService.updatePassword({ newPassword, userId });
 

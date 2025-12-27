@@ -1,6 +1,6 @@
 import { useSession } from "@/features/auth"
 import { useApi } from "@/hooks"
-import { extractSuccessMessage } from "@/utils"
+import { renderSuccessToast } from "@/utils"
 import { renderErrorToast } from "@/utils/error"
 import { usernameFormSchema } from "@shared/schema"
 import { useMutation } from "@tanstack/react-query"
@@ -18,7 +18,7 @@ export const useAccountActions = () => {
             
             await toast.promise(p, {
                 loading: 'Updating username...',
-                success: extractSuccessMessage,
+                success: renderSuccessToast,
             })
             return await p;
         },

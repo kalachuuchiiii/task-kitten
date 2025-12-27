@@ -74,6 +74,8 @@ export const fil = {
   "auth.error.expired_token": "Nag-expire na ang token",
   "auth.error.invalid_token": "Hindi valid ang token",
   "auth.error.update_username_on_cooldown": "Maaari mo ulit baguhin ang iyong username sa loob ng {{days}}d, {{hours}}hr, at {{minutes}}.",
+  "auth.update_password.loading": 'Binabago ang iyong password...',
+    'auth.error.passwords_do_not_match': 'Ang password ay hindi tugma.',
 
   // User
   "user.error.username_exceeded_length_limit": `Ang username ay dapat nasa pagitan ng ${username.min}-${username.max}`,
@@ -92,7 +94,7 @@ export const fil = {
 
   // Sidebar
   "sidebar.planners.title": "Mga Planner",
-  "sidebar.planners.todo_list": "To Do List",
+  "sidebar.planners.todo_list": "Listahan ng Gawain",
   "sidebar.planners.event_calendar": "Kalendaryo ng Event",
   "sidebar.you.title": "Ikaw",
   "sidebar.you.account": "Account",

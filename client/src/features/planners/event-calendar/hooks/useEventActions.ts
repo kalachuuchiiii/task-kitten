@@ -2,13 +2,10 @@ import { useApi } from "@/hooks";
 import type FullCalendar from "@fullcalendar/react";
 import type { EventForm } from "@shared/types";
 import { useMutation } from "@tanstack/react-query";
-import {  useRef, useState } from "react";
+import {  useRef } from "react";
 import { toast } from "sonner";
-import type { TextChangeEvent } from "../../todo-task";
-import { createEventFormDefault } from "@shared/defaults";
 import { extractErrorCodeKeys, renderErrorToast } from "@/utils/error";
 import { eventFormSchema } from "@shared/schema";
-import { extractSuccessMessage } from "@/utils";
 import { useTranslation } from "react-i18next";
 
 export const useEventActions = () => {
