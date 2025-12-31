@@ -71,9 +71,13 @@ export const en = {
   "auth.error.expired_token": "Token has expired",
   "auth.error.invalid_token": "Invalid token",
   'auth.error.passwords_do_not_match': 'Passwords do not match.',
+  'auth.error.password_unchanged': "Password is unchanged.",
+  'auth.update_password.success': "Password updated successfully!",
 
   // User
   "user.error.username_exceeded_length_limit": `Username must be between ${username.min}-${username.max}`,
+  "user.update_username.loading": "Updating username...",
+  "user.update_username.success": "Successfully updated your username!",
   "user.error.username_invalid_characters": "Username contains invalid characters",
   "user.error.nickname_exceeded_length_limit": `Nickname must be ${USER_LIMITS.nickname.min}-${USER_LIMITS.nickname.max} characters.`,
   "user.error.nickname_invalid_characters": "Nickname contains invalid characters",
@@ -96,8 +100,10 @@ export const en = {
   "sidebar.you.preferences": "Preferences",
   "sidebar.other.getting_started": "Getting Started",
 
+
   // Account / Task details
   "account_manager.title": "Manage your account",
+  "account_manager.email.subtitle": "Manage your email address",
   "task_details.title": "Task Details",
 
   // App

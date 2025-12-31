@@ -1,11 +1,36 @@
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "../../../components/ui/input";
 import { TaskKitten } from "../../../components/ui/TaskKitten";
-import { useSignUp } from "../hooks/useSignUp";
+import { useAuthActions } from "../hooks";
+import { useState } from "react";
+import { z } from "zod";
+import type { signUpFormSchema } from "@shared/schema";
 
 const SignUpPage = () => {
-  const { form, handleChangeForm, handleSignUp, isCreatingAccount } =
-    useSignUp();
+  const { signUp, isSigningUp } = useAuthActions();
+
+  const [form, setForm] = useState<z.infer<typeof signUpFormSchema>>({
+    username: "",
+    password: "",
+    confirmPassword: "",
+  });
+  const nav = useNavigate();
+
+  const handleSignUp = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+
+    await signUp(form).then(() => {
+      nav("/sign-in");
+    });
+  };
+
+  const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
     <form
@@ -69,7 +94,7 @@ const SignUpPage = () => {
       </div>
       <button
         type="submit"
-        disabled={isCreatingAccount}
+        disabled={isSigningUp}
         className="p-2 w-full align-x button-bg rounded-lg hover:bg-muted outline-1 outline-black/20 shadow-md"
       >
         <img src="/star108.gif" /> Create account

@@ -1,5 +1,6 @@
 import { useSession } from "@/features/auth/hooks/useSession"
 import { API } from "@/utils";
+import type { LocaleKeys } from "@shared/types";
 import { t } from "i18next";
 
 import { useEffect } from "react";
@@ -29,10 +30,11 @@ export const useApi = () => {
       },
       async(error) => {
         const originalRequest = error.config;
-        const res = await API.post('/auth/refresh');
+      
+       const expiredTokenCode: LocaleKeys = 'auth.error.expired_token';
+        if (error.response.status === 401 && error.response.data.code === expiredTokenCode) {
+            const res = await API.post('/auth/refresh');
         const newAccessToken = res.data.accessToken;
-    
-        if (error.response.status === 401 && newAccessToken) {
           setAccessToken(newAccessToken);
           originalRequest.headers['Authorization'] = `Bearer ${newAccessToken}`;
           return API(originalRequest);

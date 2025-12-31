@@ -75,9 +75,13 @@ export const fil = {
   "auth.error.invalid_token": "Hindi valid ang token",
   "auth.error.update_username_on_cooldown": "Maaari mo ulit baguhin ang iyong username sa loob ng {{days}}d, {{hours}}hr, at {{minutes}}.",
   "auth.update_password.loading": 'Binabago ang iyong password...',
+  "auth.update_password.success": "Matagumpay na Nabago ang iyong password!",
     'auth.error.passwords_do_not_match': 'Ang password ay hindi tugma.',
+    'auth.error.password_unchanged': "Walang pagbabagong natukoy.",
 
   // User
+  "user.update_username.loading": "Binabago ang iyong username...",
+  "user.update_username.success": "Tagumpay na nabago ang iyong username!",
   "user.error.username_exceeded_length_limit": `Ang username ay dapat nasa pagitan ng ${username.min}-${username.max}`,
   "user.error.username_invalid_characters": "May hindi pinapayagang karakter ang username",
   "user.error.nickname_exceeded_length_limit": `Ang nickname ay dapat nasa ${USER_LIMITS.nickname.min}-${USER_LIMITS.nickname.max} na mga karakter.`,
@@ -103,6 +107,7 @@ export const fil = {
 
   // Account / Task details
   "account_manager.title": "Pamahalaan ang iyong account",
+  "account_manager.email.subtitle": "Pamahalaan ang iyong email address",
   "task_details.title": "Detalye ng Task",
 
   // App

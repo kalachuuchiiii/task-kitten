@@ -1,32 +1,71 @@
-
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { Input } from "../../../components/ui/input";
 import { TaskKitten } from "../../../components/ui/TaskKitten";
-import { useSignIn } from "../hooks/useSignIn";
-
-
-
+import { useAuthActions, useSession } from "../hooks";
+import { useState, type FormEvent } from "react";
+import { z } from "zod";
+import type { signInFormSchema } from "@shared/schema";
 
 const SignInPage = () => {
+  const { signIn, isSigningIn } = useAuthActions();
+  const [form, setForm] = useState<z.infer<typeof signInFormSchema>>({
+    username: "",
+    password: "",
+  });
+  const nav = useNavigate();
+  const { getSession } = useSession();
+  
+  const handleSignIn = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    await signIn(form).then(async () => {
+      await getSession();
+      nav('/home')
+    });
+  };
 
-  const { handleSignIn, handleChangeForm, form, isSigningIn } = useSignIn();
+  const handleChangeForm = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setForm((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
 
   return (
-    <form id="signin-form" onSubmit={(e) => handleSignIn(e)} className="mx-auto space-y-5   align-y ">
+    <form
+      id="signin-form"
+      onSubmit={(e) => handleSignIn(e)}
+      className="mx-auto space-y-5   align-y "
+    >
       <div className="space-y-2 text-2xl flex items-center gap-4">
         <img
           src="/cat22.png "
           className="rounded-full bg-white object-cover mx-auto  outline-4 outline-offset-4 outline-indigo-600 size-20 overflow-hidden"
         />
-        <TaskKitten size = {10} />
+        <TaskKitten size={10} />
       </div>
       <div className="space-y-1  w-10/12">
         <label>Username</label>
-        <Input required form="signin-form" name = 'username' value = {form.username} onChange={handleChangeForm}  placeholder="Your @username" />
+        <Input
+          required
+          form="signin-form"
+          name="username"
+          value={form.username}
+          onChange={handleChangeForm}
+          placeholder="Your @username"
+        />
       </div>
       <div className="space-y-1  w-10/12">
         <label>Password</label>
-        <Input required form="signin-form" name = 'password' value = {form.password} onChange={handleChangeForm} placeholder="Your password" type="password" />
+        <Input
+          required
+          form="signin-form"
+          name="password"
+          value={form.password}
+          onChange={handleChangeForm}
+          placeholder="Your password"
+          type="password"
+        />
       </div>
       <div>
         <p className="text-xs">
@@ -36,11 +75,16 @@ const SignInPage = () => {
           </NavLink>
         </p>
       </div>
-      <button form="signin-form" type = 'submit' disabled = {isSigningIn} className="p-2 w-full align-x button-bg rounded-lg hover:bg-muted outline-1 outline-black/20 shadow-md">
+      <button
+        form="signin-form"
+        type="submit"
+        disabled={isSigningIn}
+        className="p-2 w-full align-x button-bg rounded-lg hover:bg-muted outline-1 outline-black/20 shadow-md"
+      >
         <img src="/star108.gif" /> Sign in!
       </button>
     </form>
   );
-}
+};
 
 export default SignInPage;

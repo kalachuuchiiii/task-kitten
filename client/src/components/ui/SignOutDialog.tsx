@@ -1,4 +1,4 @@
-import { useSession, useSignOut } from "@/features/auth";
+import { useAuthActions, useSession } from "@/features/auth";
 import { Button } from "./button";
 import { LinkPlaceholder } from "./LinkPlaceholder";
 import {
@@ -7,10 +7,19 @@ import {
   AlertDialogDescription,
   AlertDialogTitle,
 } from "./alert-dialog";
+import { useNavigate } from "react-router-dom";
 
 export const SignOutDialog = () => {
-  const { signOut, isSigningOut } = useSignOut();
-  const { isLookingForSession, user } = useSession();
+  const { signOut, isSigningOut } = useAuthActions();
+  const { isLookingForSession, user, clearSession } = useSession();
+  const nav = useNavigate();
+
+  const handleSignOut = async () => {
+    await signOut().then(() => {
+      nav("/sign-in");
+      clearSession();
+    });
+  };
 
   if (isLookingForSession || !user) {
     return <LinkPlaceholder />;
@@ -27,8 +36,7 @@ export const SignOutDialog = () => {
           Cancel
         </AlertDialogCancel>
         <Button
-          className=""
-          onClick={() => signOut()}
+          onClick={handleSignOut}
           disabled={isSigningOut}
           variant={"secondary"}
         >

@@ -39,6 +39,7 @@ export type LocaleKeys =
   | "sidebar.you.preferences"
   | "sidebar.other.getting_started"
   | "account_manager.title"
+  | 'account_manager.email.subtitle'
   | "task_details.title"
   | "app.title"
   | "task_form.describe"
@@ -66,6 +67,8 @@ export type LocaleKeys =
   | "user.error.username_exceeded_length_limit"
   | "user.error.invalid_characters"
   | "user.error.username_invalid_characters"
+  | 'user.update_username.success'
+  | 'user.update_username.loading'
   | "user.error.nickname_invalid_characters"
   | "user.error.nickname_exceeded_length_limit"
   | "credential.error.password_exceeded_length_limit"
@@ -85,4 +88,8 @@ export type LocaleKeys =
   | 'task.error.due_must_be_ahead'
   | 'auth.error.update_username_on_cooldown'
   | 'network.error.offline'
+  | 'auth.error.email_already_set'
+  | 'auth.error.send_verification_code_failed'
+  | 'auth.error.password_unchanged'
+  | 'auth.update_password.success'
   

@@ -3,6 +3,10 @@ import mongoose, { Types } from "mongoose";
 import bcrypt from 'bcryptjs';
 import { InternalServerError } from "@/utils/errors";
 import { CredentialsSchema } from "@/types";
+import { config } from "@/config/env";
+import { applyLimits } from "@shared/utils";
+import { CREDENTIAL_LIMITS, USER_LIMITS } from "@shared/limits";
+import z from "zod";
 
 
 const credentialsSchema = new mongoose.Schema<CredentialsSchema>({
@@ -22,18 +26,12 @@ const credentialsSchema = new mongoose.Schema<CredentialsSchema>({
     }
 })
 
-credentialsSchema.pre('save', async function() {
-    if(!this.isModified('password'))return;
-    try {
-        const salt: string = await bcrypt.genSalt(10);
-        this.password = await bcrypt.hash(this.password, salt);
-    }catch(e){
-      throw new InternalServerError();
-    }
-})
+const glue = (pass: string) => `${config.PEPPER}${pass.trim()}`
+
 
 credentialsSchema.methods.isPasswordCorrect = async function(candidatePassword: string){
- return await bcrypt.compare(candidatePassword, this.password);
+    const passwordToCompare = glue(candidatePassword);
+ return await bcrypt.compare(passwordToCompare, this.password);
 }
 export const Credentials = mongoose.model('Credential', credentialsSchema);
 

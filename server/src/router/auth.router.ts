@@ -20,5 +20,7 @@ authRouter.get('/session', catchErrors(authController.getSession));
 authRouter.use(catchErrors(authMiddleware.authenticateOrRefresh));
 authRouter.patch('/update-username', catchErrors(authController.updateUsername));
 authRouter.patch('/update-password', catchErrors(authController.updatePassword));
+authRouter.post('/send-verification-code', catchErrors(authController.sendVerificationCode));
+
 
 export default authRouter;

@@ -10,9 +10,11 @@ import { useSession } from "@/features/auth";
 import { NicknameFormSheet, PasswordFormSheet, UsernameFormSheet } from "../components";
 import { Button } from "@/components/ui/button";
 import { PencilLineIcon, UserLock } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
 const AccountManager = () => {
   const { user } = useSession();
+  const { t } = useTranslation();
 
   if (!user) return;
   return (
@@ -63,6 +65,22 @@ const AccountManager = () => {
               </Button>
             </SheetTrigger>
            <PasswordFormSheet />
+          </Sheet>
+        </ItemActions>
+      </Item>
+         <Item>
+        <ItemContent>
+          <ItemTitle>Email</ItemTitle>
+          <ItemDescription>{t('account_manager.email.subtitle')}</ItemDescription>
+        </ItemContent>
+        <ItemActions>
+          <Sheet>
+            <SheetTrigger>
+              <Button variant={"outline"}>
+                <UserLock />
+              </Button>
+            </SheetTrigger>
+         
           </Sheet>
         </ItemActions>
       </Item>

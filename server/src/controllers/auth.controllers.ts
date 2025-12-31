@@ -11,6 +11,19 @@ const authService = new AuthService();
 
 export class AuthController {
 
+  sendVerificationCod: RequestHandler = async(req, res) => {
+    const userId = z.string().parse(req.user);
+    const email = z.string().email().parse(req.body.email);
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    const sentMail = await authService.sendVerificationCode({ userId, email, code });
+    
+    return res.status(200).json({
+      success: true,
+      sentMail,
+      code: 'auth.send_verification_code.success'
+    })
+  }
+
   updateUsername: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
     const { newUsername } = usernameFormSchema.strip().parse(req.body.usernameForm);
@@ -33,13 +46,12 @@ export class AuthController {
 
   updatePassword: RequestHandler = async(req, res) => {
     const userId = z.string().parse(req.user);
-    const { newPassword } = passwordFormSchema.parse(req.body.passwordForm); 
-    
-    const update = await authService.updatePassword({ newPassword, userId });
+    const { newPassword, oldPassword } = passwordFormSchema.parse(req.body.passwordForm); // confirm pass checking alr handled here so no additional check needed
+    const update = await authService.updatePassword({ newPassword, userId, oldPassword });
 
     return res.status(200).json({
       success: true,
-      code: 'password.updated'
+      code: 'auth.update_password.success'
     })
   }
 

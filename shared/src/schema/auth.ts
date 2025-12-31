@@ -34,6 +34,8 @@ export const usernameFormSchema = z.object({
   }
 })
 
+
+
 export const nicknameFormSchema = z.object({
   
 })
@@ -48,11 +50,9 @@ export const passwordFormSchema = z
   .refine((pass) => pass.newPassword === pass.confirmNewPassword, {
     message: "auth.error.passwords_do_not_match",
     path: ["newPassword"],
-  }).refine((pass) => pass.newPassword !== pass.oldPassword, {
-    message: 'auth.error.password_unchanged',
-    path: ['newPassword']
   });
 
+  
  export const signInFormSchema = z.object({
     username: applyLimits(username),
     password: applyLimits(password)

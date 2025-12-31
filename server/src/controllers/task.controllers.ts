@@ -40,7 +40,7 @@ export class TaskController {
   //PATCH /task/update/:taskId
   updateTaskById: RequestHandler = async (req, res) => {
     const taskForm =
-      taskRecordSchema.parse(req.body);
+      taskRecordSchema.parse(req.body.updatedTaskRecord);
     const taskId = z.string().parse(req.params.taskId);
     const userId = z.string().parse(req.user);
 

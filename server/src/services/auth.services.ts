@@ -6,9 +6,10 @@ import {
   ACCESS_TOKEN_EXPIRATION,
   REFRESH_TOKEN_EXPIRATION,
 } from "../constants";
-import { generateToken, verifyToken } from "@/helpers";
+import { AuthHelper, generateToken, verifyToken } from "@/helpers";
 import {
   ConflictError,
+  InternalServerError,
   NotFoundError,
   UnauthorizedError,
 } from "@/utils/errors";
@@ -16,13 +17,43 @@ import { Credentials, Task, User } from "@/models";
 import { runWithSession } from "@/utils";
 import { UserSchema } from "@shared/types";
 import { formatDuration, intervalToDuration } from "date-fns";
+import { transporter } from "@/config/nodemailer";
+import { verificationCodeEmail } from "@/templates";
+import { redisClient } from "@/config/redis";
+import { passwordFormSchema } from "@shared/schema";
 
 type UserForm = { username: string; password: string; };
 type CreatedEntities = { user: UserSchema; credentials: CredentialsSchema };
 const missingUserCode = 'auth.error.user_not_found';
 const missingCredentialsCode = 'auth.error.credentials_not_found';
 
+const authHelper = new AuthHelper();
+
 export class AuthService {
+
+
+  sendVerificationCode = async ({ userId, email, code }:{userId: string, email: string, code: string}) => {
+    const userCredentials = await Credentials.findOne({ userId }).orFail(new NotFoundError(missingCredentialsCode));
+    if(userCredentials.email){
+      throw new ConflictError('auth.error.email_already_set');
+    }
+  
+    const sentMail = await transporter.sendMail({
+        to: email,
+        ...verificationCodeEmail(code),
+    });;
+    if(sentMail.rejected.length > 0){
+      throw new InternalServerError('auth.error.send_verification_code_failed');
+    }
+
+     await redisClient.set(`verify_email:${userId}`, code, { expiration: {
+        type: 'EX',
+        value: 10 * 60
+      } });
+
+    return sentMail;
+  }
+
   updateUsername = async ({
     userId,
     newUsername,
@@ -53,15 +84,29 @@ export class AuthService {
   updatePassword = async ({
     userId,
     newPassword,
+    oldPassword,
   }: {
     userId: string;
     newPassword: string;
+    oldPassword: string;
   }) => {
     const credentials = await Credentials.findOne({ userId }).orFail(
-      new NotFoundError( missingCredentialsCode)
+      new NotFoundError(missingCredentialsCode)
     );
+    const isCorrectPassword = await credentials.isPasswordCorrect(oldPassword);
+
+    if(!isCorrectPassword){
+      throw new UnauthorizedError('auth.error.invalid_credentials');
+    }
+
+    if(credentials.password.trim() === newPassword.trim()){
+      throw new ConflictError('auth.error.password_unchanged');
+    }
+
+    const hashedNewPassword = await authHelper.hashPassword(newPassword);
+
     const updatedPass = await credentials.updateOne(
-      { password: newPassword },
+      { password: hashedNewPassword },
       { runWithValidators: true }
     );
     return updatedPass;
@@ -108,8 +153,9 @@ export class AuthService {
 
     const created = await runWithSession<CreatedEntities>(async (session) => {
       const user: UserSchema = await new User({ username }).save({ session });
+      const hashedPassword = await authHelper.hashPassword(password);
       const credentials: CredentialsSchema = await new Credentials({
-        password,
+        password: hashedPassword,
         userId: String(user._id),
       }).save({ session });
 
